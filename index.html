@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rosewood Conservatory — Management Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FAF6EF;
+    --surface: #FFFFFF;
+    --ink: #2B2420;
+    --muted: #8A7F72;
+    --line: #E7DFD2;
+    --maroon: #7A2E2E;
+    --maroon-dark: #5E2222;
+    --brass: #B8842E;
+    --brass-light: #F1E2C4;
+    --green: #3E6B4F;
+    --red: #A23B3B;
+    --shadow: 0 1px 2px rgba(43,36,32,0.06);
+    --radius: 4px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{font-family:'Fraunces', serif;}
+  button{font-family:inherit;}
+  a{color:inherit;}
+
+  /* ---------- Login screen ---------- */
+  #login-screen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 20px;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(122,46,46,0.06), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(184,132,46,0.08), transparent 45%),
+      var(--bg);
+  }
+  .login-card{
+    width:100%;
+    max-width:920px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:6px;
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    overflow:hidden;
+    box-shadow:0 8px 30px rgba(43,36,32,0.08);
+  }
+  .login-hero{
+    background:linear-gradient(165deg, var(--maroon) 0%, var(--maroon-dark) 100%);
+    color:#F4EBE0;
+    padding:44px 40px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .login-hero .staff-lines{
+    position:absolute; inset:0; opacity:0.12;
+    background-image:repeating-linear-gradient(
+      to bottom, transparent, transparent 22px, #F4EBE0 22px, #F4EBE0 23px
+    );
+    mask-image:linear-gradient(to bottom, transparent, black 20%, black 60%, transparent);
+  }
+  .login-hero h1{
+    font-size:2.1rem;
+    font-weight:600;
+    margin:0 0 10px;
+    position:relative;
+    letter-spacing:-0.01em;
+  }
+  .login-hero p{
+    margin:0;
+    color:#E8D9C4;
+    max-width:34ch;
+    position:relative;
+    font-size:0.97rem;
+  }
+  .login-hero .est{
+    position:relative;
+    color:#CBA76B;
+    font-size:0.82rem;
+    margin-top:36px;
+  }
+  .login-body{
+    padding:40px 36px;
+  }
+  .login-body h2{
+    font-size:1.15rem;
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .login-body .sub{
+    color:var(--muted);
+    font-size:0.88rem;
+    margin:0 0 22px;
+  }
+  .role-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .role-btn{
+    text-align:left;
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:var(--radius);
+    padding:13px 14px;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .role-btn:hover{ border-color:var(--maroon); background:#FBF4EC; }
+  .role-btn.active{ border-color:var(--maroon); background:var(--brass-light); }
+  .role-btn .rname{ font-weight:600; font-size:0.93rem; display:block; }
+  .role-btn .rdesc{ color:var(--muted); font-size:0.78rem; display:block; margin-top:2px; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:0.78rem; color:var(--muted); margin-bottom:5px; }
+  .field input{
+    width:100%; padding:10px 12px; border:1px solid var(--line);
+    border-radius:var(--radius); font-size:0.92rem; background:#FEFCF9;
+  }
+  .field input:focus{ outline:2px solid var(--brass); outline-offset:1px; }
+  .btn-primary{
+    width:100%; padding:12px; background:var(--maroon); color:#fff; border:none;
+    border-radius:var(--radius); font-size:0.94rem; font-weight:600; cursor:pointer;
+    margin-top:6px;
+  }
+  .btn-primary:hover{ background:var(--maroon-dark); }
+  .login-note{ font-size:0.76rem; color:var(--muted); margin-top:14px; text-align:center; }
+
+  /* ---------- App shell ---------- */
+  #app-screen{ display:none; min-height:100vh; }
+  .shell{ display:grid; grid-template-columns:230px 1fr; min-height:100vh; }
+  .sidebar{
+    background:var(--maroon-dark); color:#EFE2D2; padding:22px 0;
+    display:flex; flex-direction:column;
+  }
+  .brand{ padding:0 20px 18px; border-bottom:1px solid rgba(239,226,210,0.15); margin-bottom:10px;}
+  .brand .mark{ font-family:'Fraunces',serif; font-weight:600; font-size:1.15rem; color:#fff; }
+  .brand .role-tag{ font-size:0.72rem; color:#CBA76B; margin-top:3px; letter-spacing:0.02em; }
+  nav.navlist{ flex:1; padding:6px 10px; }
+  nav.navlist button{
+    display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+    background:none; border:none; color:#E8D9C4; padding:10px 12px; border-radius:var(--radius);
+    font-size:0.87rem; cursor:pointer; margin-bottom:2px;
+  }
+  nav.navlist button .ic{ width:18px; text-align:center; opacity:0.85; }
+  nav.navlist button:hover{ background:rgba(239,226,210,0.08); }
+  nav.navlist button.active{ background:var(--brass); color:#3A2A12; font-weight:600; }
+  .sidebar-foot{ padding:14px 20px 4px; border-top:1px solid rgba(239,226,210,0.15); }
+  .sidebar-foot .who{ font-size:0.82rem; font-weight:600; }
+  .sidebar-foot .signout{
+    background:none;border:none;color:#CBA76B;font-size:0.78rem;cursor:pointer;padding:6px 0 0;
+  }
+
+  .main{ padding:26px 34px 60px; max-width:1180px; }
+  .topbar{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:8px;}
+  .topbar h1{ font-size:1.5rem; font-weight:600; margin:0; }
+  .topbar .breadcrumb{ color:var(--muted); font-size:0.82rem; }
+
+  .grid{ display:grid; gap:16px; }
+  .cols-2{ grid-template-columns:1fr 1fr; }
+  .cols-3{ grid-template-columns:repeat(3,1fr); }
+  .cols-4{ grid-template-columns:repeat(4,1fr); }
+  @media (max-width:900px){ .cols-2,.cols-3,.cols-4{ grid-template-columns:1fr; } .shell{grid-template-columns:1fr;} .sidebar{display:none;} }
+
+  .panel{
+    background:var(--surface); border:1px solid var(--line); border-radius:6px;
+    padding:18px 20px;
+  }
+  .panel h3{ font-size:0.95rem; font-weight:600; margin:0 0 4px; }
+  .panel .panel-sub{ color:var(--muted); font-size:0.78rem; margin:0 0 14px; }
+  .stat{
+    border:1px solid var(--line); border-radius:6px; padding:16px 18px; background:var(--surface);
+  }
+  .stat .num{ font-family:'Fraunces',serif; font-size:1.9rem; font-weight:600; line-height:1; }
+  .stat .label{ color:var(--muted); font-size:0.8rem; margin-top:6px; }
+  .stat .delta{ font-size:0.76rem; margin-top:6px; }
+  .delta.up{ color:var(--green); } .delta.down{ color:var(--red); }
+
+  table{ width:100%; border-collapse:collapse; font-size:0.87rem; }
+  th{ text-align:left; color:var(--muted); font-weight:600; font-size:0.74rem; text-transform:uppercase; letter-spacing:0.03em; padding:0 10px 8px; border-bottom:1px solid var(--line); }
+  td{ padding:10px 10px; border-bottom:1px solid var(--line); vertical-align:middle; }
+  tr:last-child td{ border-bottom:none; }
+  tr:hover td{ background:#FBF7F0; }
+
+  .pill{ display:inline-block; padding:3px 9px; border-radius:20px; font-size:0.73rem; font-weight:600; }
+  .pill.green{ background:#E5EFE8; color:var(--green); }
+  .pill.red{ background:#F5E7E7; color:var(--red); }
+  .pill.amber{ background:var(--brass-light); color:#8A5F1E; }
+  .pill.gray{ background:#EEE9E1; color:var(--muted); }
+
+  .btn{ padding:7px 13px; border-radius:var(--radius); font-size:0.82rem; border:1px solid var(--line); background:#fff; cursor:pointer; font-weight:500;}
+  .btn:hover{ border-color:var(--maroon); }
+  .btn.solid{ background:var(--maroon); color:#fff; border-color:var(--maroon); }
+  .btn.solid:hover{ background:var(--maroon-dark); }
+  .btn.sm{ padding:5px 10px; font-size:0.76rem; }
+  .btn.ghost{ background:none; }
+
+  .toolbar{ display:flex; gap:10px; align-items:center; margin-bottom:16px; flex-wrap:wrap; justify-content:space-between;}
+  .toolbar .left{ display:flex; gap:10px; flex-wrap:wrap; }
+  input.search, select.select{
+    padding:8px 11px; border:1px solid var(--line); border-radius:var(--radius); font-size:0.85rem; background:#fff;
+  }
+
+  .avatar{
+    width:34px; height:34px; border-radius:50%; background:var(--brass-light); color:#8A5F1E;
+    display:inline-flex; align-items:center; justify-content:center; font-weight:600; font-size:0.8rem; margin-right:10px;
+  }
+  .name-cell{ display:flex; align-items:center; }
+  .sub-text{ color:var(--muted); font-size:0.76rem; }
+
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(43,36,32,0.35); display:none;
+    align-items:center; justify-content:center; padding:20px; z-index:50;
+  }
+  .modal{
+    background:#fff; border-radius:8px; padding:26px 26px 22px; width:100%; max-width:460px;
+    max-height:88vh; overflow:auto;
+  }
+  .modal h3{ margin-top:0; }
+  .modal .field{ margin-bottom:12px; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
+
+  .bar-row{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .bar-row .blabel{ width:64px; font-size:0.78rem; color:var(--muted); flex-shrink:0; }
+  .bar-track{ flex:1; background:#EFE7DA; border-radius:20px; height:10px; overflow:hidden; }
+  .bar-fill{ height:100%; background:var(--maroon); border-radius:20px; }
+  .bar-val{ width:70px; text-align:right; font-size:0.78rem; color:var(--ink); font-weight:600; }
+
+  .empty{ text-align:center; padding:40px 20px; color:var(--muted); }
+  .empty .big{ font-size:1.6rem; margin-bottom:8px; }
+
+  .badge-row{ display:flex; gap:6px; flex-wrap:wrap; }
+
+  .att-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+  .att-card{ border:1px solid var(--line); border-radius:6px; padding:12px; }
+  .att-card .an{ font-weight:600; font-size:0.87rem; margin-bottom:8px; }
+  .seg{ display:flex; border:1px solid var(--line); border-radius:20px; overflow:hidden; }
+  .seg button{ flex:1; border:none; background:#fff; padding:6px 0; font-size:0.72rem; cursor:pointer; color:var(--muted); }
+  .seg button.on.p{ background:var(--green); color:#fff; }
+  .seg button.on.a{ background:var(--red); color:#fff; }
+  .seg button.on.l{ background:var(--brass); color:#fff; }
+
+  .weekgrid{ display:grid; grid-template-columns:70px repeat(6,1fr); gap:6px; }
+  .weekgrid .hcell{ font-size:0.72rem; color:var(--muted); font-weight:600; text-align:center; padding:6px 0; }
+  .weekgrid .tcell{ font-size:0.72rem; color:var(--muted); padding:8px 4px; text-align:right; }
+  .slot{ background:var(--brass-light); border-left:3px solid var(--maroon); border-radius:4px; padding:6px 7px; font-size:0.72rem; min-height:44px; }
+  .slot .sc{ font-weight:600; display:block; }
+  .slot .sm{ color:var(--muted); display:block; margin-top:2px; }
+  .slotcell{ min-height:44px; }
+
+  footer.appfoot{ color:var(--muted); font-size:0.74rem; margin-top:30px; border-top:1px solid var(--line); padding-top:16px; }
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN SCREEN ===================== -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-hero">
+      <div class="staff-lines"></div>
+      <div>
+        <h1>Rosewood<br/>Conservatory</h1>
+        <p>One console for admissions, classes, fees, attendance, exams, and recitals — built from the college's own requirements document.</p>
+      </div>
+      <div class="est">Management Console · Prototype v0.1</div>
+    </div>
+    <div class="login-body">
+      <h2>Sign in</h2>
+      <p class="sub">Choose the role you'd like to test the app as.</p>
+      <div class="role-grid" id="role-grid"></div>
+      <div class="field">
+        <label for="loginName">Name</label>
+        <input id="loginName" type="text" placeholder="e.g. Meera Nair" />
+      </div>
+      <button class="btn-primary" id="loginBtn">Continue</button>
+      <div class="login-note">No real accounts here — this is a click-through prototype for review before the Android build.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APP SCREEN ===================== -->
+<div id="app-screen">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="mark">Rosewood</div>
+        <div class="role-tag" id="sidebarRoleTag">ADMIN CONSOLE</div>
+      </div>
+      <nav class="navlist" id="navlist"></nav>
+      <div class="sidebar-foot">
+        <div class="who" id="whoName">—</div>
+        <button class="signout" id="signOutBtn">Switch role / sign out</button>
+      </div>
+    </aside>
+    <main class="main" id="main">
+      <!-- rendered by JS -->
+    </main>
+  </div>
+</div>
+
+<!-- ===================== MODAL ===================== -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
