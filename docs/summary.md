@@ -1,7 +1,7 @@
-# Project Summary — Music College Management App
+# Project Summary — Swarsetu (Music College Management App)
 
 ## What this is
-A prototype web application for managing a music college — students, faculty,
+A prototype web application called **Swarsetu**, for managing a music college — students, faculty,
 courses, schedules, fees, attendance, exams, events, and reporting — built
 from `docs/requirements.md`. It's a clickable, front-end-only demo intended
 to validate the workflow and screen design **before** committing to a real

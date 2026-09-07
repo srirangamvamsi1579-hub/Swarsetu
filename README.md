@@ -1,4 +1,4 @@
-# Rosewood Conservatory — Music College Management App (Prototype)
+# Swarsetu — Music College Management App (Prototype)
 
 A click-through prototype of a music college management system, built from
 [`docs/requirements.md`](docs/requirements.md). It covers all 10 requirement
@@ -32,7 +32,7 @@ If GitHub Pages is enabled for this repo (Settings → Pages → Deploy from
 branch `main` / root), it will be reachable at:
 
 ```
-https://<your-github-username>.github.io/<repo-name>/
+https://srirangamvamsi1579-hub.github.io/Swarsetu/
 ```
 
 ## What to test

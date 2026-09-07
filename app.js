@@ -1,5 +1,5 @@
 /* =======================================================================
-   Rosewood Conservatory — Music College Management App (prototype)
+   Swarsetu — Music College Management App (prototype)
    Front-end only. All data below is in-memory sample data used to
    demonstrate the workflows described in docs/requirements.md.
    ======================================================================= */
