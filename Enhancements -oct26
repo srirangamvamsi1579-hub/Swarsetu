@@ -1,0 +1,53 @@
+Updates for oct 24
+
+1. Sign in page should ask for user name and password and also have a dropdown with values like (‘Admin’,’Faculty’,’Student’)
+2. Check an option for New/ Existing user , so it reads the profile add to access for existing users from backend 
+3. For new user need to create 3 different screens 
+    1. Admin: A screen to capture all the details like first name, last name, email id, user name and password (with standard rules) to create a password, contact info, City, Country, this profile should have access to full access to all the screens for additions , deletions and updates. For now User “Admin” as the password to allow entry to applications
+    2. Faculty: A screen to capture all the details like first name, last name, email id, user name and password (with standard rules) to create a password, contact info, City, Country, this profile should have access to full access to all the screens for additions and updates only . Cant delete existing entries and data.  For now User “Faculty” as the password to allow entry to applications
+    3. Student: A screen to capture all the details like first name, last name, email id, user name and password (with standard rules) to create a password, contact info, City, Country, this profile should have to read only  access to all the Timetable, Fees & Payments , Attendance, exams, Events and Recitals screens for additions and updates only.
+4. Option for users to select option incase user name or password of forgotten 
+5. Incase of username or password is wrong or forgotten, create a screen to help create new password, by sharing the link to to reset password to them email 
+6.  Create an inline process to add the entries done , as this app does not have any temporary or permanent database are added 
+7. Use the storage of data being done for reference and export data population done by users 
+8. Create such process for each screen and create a relationship to export data from the tables
+9. Students Screen updates:
+    1. Update students screen to also add details to store like first name, last name, dropdown for levels (“Beginner”, “Intermediate”,”Advanced” ,text box to add others, if any). Batch (day & time) should fetch the batch from the current list , Age column (below 5 years, 5-10 years, 10-15 years, 15 and above) , city, country , times-lot with dropdown as (30 mins, 1 hour) , Connect with drop down options as Online/Offline , Batch Timings: Weekly once/ Twice options , auto populate total classes , based on batch timings and doing the calculation, like for ex, if 2 days (Mon/Wed) batch is selected ,count how any of them come in that month as total 
+    2. On Enroll student  is pressed , should add the details to backend file which is used to store the data for retrieval
+Courses screen updates:	
+. Admin and faculty profile users to have ability to add or delete existing courses added 
+Timetable screen updates:
+. For admin and faculty user profiles, they should be able to map available students with batch details, timeslot, connect 
+. For admin and faculty user profiles Should also have another option at the top for 1. When a batch is selected , should show all the students from that batch 	
+. For student profiles, it should only display when they classes are also show many classes they enrolled and attended in that month 
+Attendance screen updates:
+. For student profiles Instead of % under Attendance, should show how many days added in that month and also show many, how many pending vs/total as a comment(not editable) and this needs to pulled from backend
+. For admin and faculty profile users , they should be able to mark a student attendance (present/Absent) , select dates from calendar , create a count of how many classes attended in that month , total classes based on batch timings selected from students screen
+
+
+Updates for oct 25:
+
+execute the following , implement the changes, update the requriement document , update git hub all the files created, so the changes implemented are tracked . Once all the changes are implemented , create a prompt based on what was done, so this prompt can be used for future reference and updates. "Take the backup current datasource and add those entries back once the all the below changes are implemented
+1. Make user name non case sensitive
+2. When registration are one, validate for duplicate user profile and thrown an error for new one
+3. Accept even mobile no as userprofile
+4. As a admin you should be able add college name at the top , affiliated info if any,
+5. Add another columns to registrations screen for an admin to add name of the college , affiliation details
+6. Admin users, should be able to modify any details fr all the screen and the app should be changed to accept the changes
+7. Based on the country, add country code and followed by mobile which need to be 10 numbers .Create another optional column to add home/work contact information too 
+8. When user profile or password are forgotten, send profile to gmail.id , provide link to reset password to gmail id shared
+9. Validate for correct gmail id when user registration is done and accepted
+10. Students Screen updates: a. All existing users added should come automatically, b. Option to upload existing records to add to the app details like when an attachment is shared, read it map the columns in the attachment with column values present so they can bd added to the database . But ask for approval before they are added to database  c. Auto populate cities , based on country selected d. Rename batch with course and fetch available courses added e. Add column for course selected to the screen f. Add a dropdown option at the top , so course filter can be applied to select students opted for that course g. Add column to track pending classes at student using attendance database
+11. Summary screen updates: Counters should automatically refresh once the additions/deletions/modifications are done from other screens.
+12. Fee Payments screen updates: a. Need another columns to track Total Payment , so Pending dues are auto populated
+13. Attendance screen updates: a. Add another option like V for “Vacation Days”, DH for “Faculty on leave” b. C for “Compensation class” c. Rename Total CLASSES to “Total Monthly Classes” d. Add Vacation Days e. create column to track compensation classes and add count based “DH” selection f. Pending count should be (Total monthly - DH count + C count ) g. Should also have All students and details section should auto populate with the students records, unless a filter is applied
+14. Notifications Screen update: a. Should have option to select batch b. ability link this with zoom or google meetings already in place b. Should also have a detail section listing all the students from that batch c. You should also have all as a dropdown at the top section , so the common messages like vacation days , “Faculty on leave” messages can be send to all the batches OR option to select only few batches for targeted notifications d. Based on the vacation days already added , an automated emails/notification should go to all the batches one day before Or as per the admin preference set and this is valid only for Vacations 10. Weekends should be considered regular holidays
+15. Built a process to automatically display available slots on the dashboard screen , so the faculty knows if he/she can enrol new students.
+16. New Registration :a. When admin or faculty users enrolled, for online mode how many students can be enrolled , calculate availability based on current strength in that batch and provide that details
+17. Create a new screen only for admin or faculty user profiles and give add/modify/delete ability and add columns like a. Columns to track total batches per batch of 30 mins or 1 hours slot b. No.of students per batch c. Track how many added d. Build count to display how many can be added , based total expected vs/ students enrolled for the batch and slot d. Track college holidays/vacation days so his information can be added to Events @ Recitals page e. Working hours f. Working weekdazzz
+
+October 26:
+
+1. Add all the requirement security features to the product built
+2. This will be done as html page and later the same need to build as an app, so the UI/UX should be built in such a way, that it can be easily moved to n App Store without major UI/UX issues
+3. Always work on performance tuning, so the access it faster 
