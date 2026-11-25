@@ -1,5 +1,89 @@
 # Changelog
 
+## v8 — 2026-11-25
+
+### One link for many colleges
+- Each college has its own record and a unique **college code** (e.g. `RAM-7K2Q`). Every
+  record carries its college's ID, and signed-in users see only their own college.
+- **Register a new college:** the person who registers becomes its Admin. Duplicate
+  college names are blocked at registration and when renaming in College Profile.
+- **Join my college:** Faculty and Students choose their college or enter its code. The
+  request goes to that college's Admins, who approve or reject it. On approval the Admin
+  can change the role and, for students, link the enrolment; the app suggests a match by
+  email or mobile.
+- College Profile settings: sign-ups need approval or students are auto-approved,
+  optionally require Gmail, the reminder lead time, and SMS/email reminders (simulated).
+- Existing single-college data is moved automatically into its own college with a code.
+- Student IDs are now unique across all colleges.
+
+### Accounts & security
+- Sign in with a username, email or mobile. A username can itself be a name, a mobile or
+  a Gmail address. The role dropdown was removed: the role comes from the account.
+- **Registration checks:** valid email with Gmail typo detection ("Did you mean …"),
+  Gmail naming rules, and an optional Gmail-only rule. Indian mobiles need 10 digits
+  starting 6–9, and obviously fake numbers are rejected. Usernames, emails and mobiles
+  must be unique across everyone. Email and mobile are verified with codes (sending is
+  simulated).
+- Passwords are hashed (PBKDF2-SHA256 with a per-user salt). Existing plain-text
+  passwords are converted on first load and never written to the database again.
+- **Lockout:** 5 wrong passwords lock the account for 15 minutes, and Admins are
+  notified. Users are signed out after 30 minutes idle.
+- **Forgot password:** a 6-digit code that expires in 10 minutes and allows 5 tries. It
+  does not reveal whether an account exists.
+- **Admin "Reset password":** needs the Admin's own password, and gives a one-time
+  temporary password that must be changed at first sign-in.
+- Role changes, payment-detail changes and password resets create security notices in
+  the Inbox.
+- Signing out closes any open dialogs.
+
+### My Profile
+- Every user can edit their name, username, email, mobile, other contact, city and
+  country. Changing the email or mobile needs a verification code. For students, the
+  linked enrolment is updated too.
+- Change password (needs the current one). Shows the security summary and the college
+  name and code.
+- Request to move to another college, which needs approval there.
+
+### Inbox and automatic reminders
+- A new Inbox, with an unread count in the menu.
+- **Holiday and vacation reminders:** created automatically 1 day before by default
+  (2, 3 or 7 days, or off, in College Profile). They go to the students they apply to and
+  to all staff, with no duplicates. Optional SMS/email copies are simulated and logged in
+  Notifications.
+
+### Students: "I can't attend"
+- My Attendance lets a student notify their teacher before an upcoming class, with a
+  reason. They can cancel the notice before the class.
+- Faculty see "Absence notices from students" under the register and in their Inbox.
+  They can mark a notice as seen, or as leave (V); the student is told either way. The
+  register marks noticed classes with **N**.
+
+### Fee payments by UPI and bank
+- **College Profile → Fee payment details (Admin):**
+  - payee name, UPI ID, the mobile linked to payment apps, and which apps are accepted
+  - bank, branch, account number (entered twice) and IFSC (format checked)
+  - the QR code: either generated from the UPI ID, or the college's own scanner. An
+    uploaded scanner is decoded, and is refused if it is not a UPI code or if it pays a
+    different UPI ID.
+- **My Fees (Student):**
+  - shows dues, the payee name, a QR code with the amount filled in, the UPI ID and bank
+    details with Copy buttons, and an "Open in a UPI app" link
+  - safety tips, plus a warning if payment details changed in the last 14 days
+  - after paying, the student sends the 12-digit UTR or bank reference; duplicate
+    references are refused
+- **Fee Payments (staff):** "Payments waiting for verification". Verify adds the amount to
+  the student's payment for that month (or creates one). Reject records a reason. The
+  student is told either way.
+
+### Navigation and help
+- The Attendance menu starts collapsed. It opens on click and closes again when you
+  leave the attendance screens; it also works on phones.
+- **Help & FAQ:** step-by-step guides for each role, a searchable FAQ, and a downloadable
+  user guide. The same content is in `docs/USER_GUIDE.md`.
+- Backups now cover one college. Restoring needs the Admin's password and never touches
+  other colleges, user accounts or payment details.
+
+
 ## v7 — 2026-11-25
 
 ### Data Import & Export (new screen)

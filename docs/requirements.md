@@ -1,4 +1,4 @@
-# Swarsetu — Requirements (current build, v7)
+# Swarsetu — Requirements (current build, v8)
 
 Last updated: 24 Nov 2026. The original v1.0 requirement list (Sept 2026) is kept below
 this section for reference.
@@ -118,7 +118,55 @@ this section for reference.
 - Downloads: any list as Excel or CSV, all lists in one workbook, templates, rows with
   errors, and a JSON backup (Admin only). They need **Download / export data**.
 
-## 9. Rules carried over
+## 9. Colleges, accounts and security (v8)
+- **One link, many colleges.** Each college has a unique code (3 letters, a dash, and 4
+  characters). Names are unique after normalising (ignoring case, punctuation and a leading
+  "The").
+- **Admins.** The first Admin is whoever registers the college. More Admins can be
+  approved or promoted only by an Admin. Each college always keeps at least one active Admin.
+- **Joining.** Faculty and students join by choosing the college or entering its code.
+  Requests stay pending until an Admin (or a user with Manage Users) approves them,
+  unless the college auto-approves students. Rejected requests show the reason at sign-in.
+- **Identifiers.** Sign-in accepts a username, email or mobile. A username may be a name
+  (letters, numbers, `.`, `_`, `-`), the user's own email, or the user's own mobile.
+  Usernames, emails and mobiles are unique across all colleges.
+- **Registration checks.**
+  - email format, Gmail naming rules and common-typo suggestions; optional Gmail-only per college
+  - mobile: 10 digits starting 6–9 for +91 (7–12 digits otherwise), rejecting repeated or
+    sequential numbers
+  - email and mobile verified by 6-digit codes, valid 10 minutes, 5 tries
+- **Passwords.** PBKDF2-SHA256, 100,000 iterations, 16-byte salt. They need 8+
+  characters with upper and lower case, a number and a symbol. Accounts lock for 15
+  minutes after 5 failures. Users are signed out after 30 minutes idle.
+- **Forgot password.** A code goes to the account's email and mobile. The response does
+  not reveal whether an account exists.
+- **Admin password reset.** The Admin re-enters their password, the user gets a one-time
+  temporary password, and must change it at next sign-in.
+- **Profile.** Users edit their own details. A new email or mobile must be verified. Users
+  can change their password and request to move college (which needs approval there).
+- **Reminders.** Holiday and vacation reminders go out N days before (default 1; 0 turns
+  them off) to affected students and all staff, once per user per event. Optional
+  SMS/email copies are simulated.
+- **Absence notices.** Students notify their teacher for an upcoming scheduled class
+  before it starts. Staff with Mark/Edit Attendance are notified and can mark it seen or as
+  leave (V). Students can cancel before the class.
+- **Fee payment details** (Admin only, password re-entry required):
+  - payee name, UPI ID (`name@handle`), payment-app mobile, accepted apps, bank, branch,
+    account number (9–18 digits, entered twice) and IFSC (`AAAA0XXXXXX`)
+  - QR code generated from the UPI ID, or the college's uploaded scanner, which must decode
+    to the same UPI ID
+  - every change is logged, all Admins are notified, and students are warned for 14 days
+- **Student payment.** The student pays in their own UPI or bank app, then submits the
+  amount, method, reference (12-digit UTR for UPI; 6–22 characters for bank) and date.
+  References are unique across all colleges. Staff with Add/Edit Fee Payments verify or
+  reject. Verified amounts go into the month's payment record.
+- **Navigation.** The Attendance group is collapsed by default.
+- **Help.** In-app guides and FAQ, filtered by role, with search and a download.
+- **Limits.** Separation between colleges and permission checks run in the browser, and
+  the shared database can be read by every signed-in viewer of the link. Production
+  needs a server.
+
+## 10. Rules carried over
 - Batch = course + weekdays + timing + mode for group classes, with a private batch for
   each one-to-one student. Empty batches are removed automatically.
 - Dues = Total fee − Paid. Every record gets a unique id before saving.

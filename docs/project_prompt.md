@@ -1,7 +1,12 @@
-PROJECT: Swarsetu — Music College Manager (v7)
+PROJECT: Swarsetu — Music College Manager (v8)
 Single-file HTML/CSS/vanilla JS app for music college teachers. Shared database via
 the artifact db capability (one document per record, diff sync from persistAll()),
 localStorage as offline copy. Web link for testing, Android/iOS app later.
+
+MULTI-COLLEGE: one link, many colleges. colleges collection (id = unique code). Every
+scoped record has collegeId. rescope()/splitScope() keep only the signed-in college in the
+working lists; snapshot() merges the others back. Registering a college makes you its
+Admin; faculty/students join by college or code and wait for approval. College names unique.
 
 ROLES: Admin (everything, always), Faculty, Student. Faculty and Student rights come from
 the Roles & Permissions matrix (college.permissions). Defaults: Faculty can add and edit
@@ -17,7 +22,8 @@ all, selected batches or selected students), Attendance > Mark Attendance (statu
 buttons, draft then Save, audit by/at/was, month or month range) and Summary (month
 range), Classes (labelled filters, share levels, expiry, Copy link), Fee Payments
 (labelled filters, multi-month, list/month-wise/student-wise views, totals), Notifications,
-Events & Recitals, Import & Export (upload Excel/CSV/text/PDF/photo → check read →
+Events & Recitals, Inbox (reminders, notices, payments, security), My Profile
+(edit details, verify new email/mobile, change password, move college), Help & FAQ, Import & Export (upload Excel/CSV/text/PDF/photo → check read →
 match columns to fields with defaults → review/fix rows → import; history with undo;
 downloads as Excel/CSV, templates, error rows, backup), College Profile (Online seat limit, batch capacity table, App link),
 User Management, Roles & Permissions.
@@ -37,6 +43,13 @@ RULES
   DB_COLS and applyRemote.
 - Give every record a unique id before saving.
 - Label anything simulated. Audio, meeting, Drive and app links must be https.
+- Passwords: PBKDF2 hashes only (setPassword/verifyPw); never write `password` to the
+  database or localStorage (stripSecrets). Lockout 5/15 min, idle sign-out 30 min.
+- Sign-up: emailCheck (Gmail typos), mobileCheck (+91: 6-9 start), usernameCheck (name,
+  own mobile or own email), unique identifiers, verification codes (simulated).
+- Payment details: Admin + reauth(); QR upload must decode to the same UPI ID; audit +
+  Admin notices + 14-day student warning. Student payments: unique UTR, staff verify.
+- Attendance nav group is collapsed by default.
 - Imports reuse the form rules (validation, batches, ids) and never save rows with errors.
   Photos and scanned PDFs are read by Claude (sample capability) and labelled. Excel/PDF
   readers load from cdnjs (SheetJS 0.18.5, pdf.js 3.11.174).
@@ -53,5 +66,6 @@ docs/data_model.md, docs/project_prompt.md (this prompt), a shareable link, and 
 summary of what changed, what is pending and what is simulated. Commit to GitHub only
 when the push has succeeded.
 
-PENDING: mobile login, Gmail and phone validation everywhere, automatic vacation reminders
-one day before, server-side auth with hashed passwords, importing classes and events.
+PENDING: real SMS/email sending, server-side enforcement of college separation and
+permissions, payment gateway or bank statement matching, importing classes and events,
+Android/iOS packaging.

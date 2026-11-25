@@ -1,17 +1,26 @@
-# Swarsetu — Data model (v7)
+# Swarsetu — Data model (v8)
 
 The app keeps one list per record type. Each list is a collection in the shared database
 (the artifact `db` capability). Each record is a document with the same id as the record.
-College settings are a single document, `meta/college`. `localStorage` key
+**v8:** colleges live in the `colleges` collection (doc id = college code). Every record
+in the per-college lists carries `collegeId`. `users` is shared across colleges; each user
+has a `collegeId`. `meta/platform` holds migration flags. In the app, the per-college
+lists hold only the signed-in college's rows; the other colleges' rows are kept aside and
+merged back when saving. `localStorage` key
 `swarsetu_data_v4` keeps an offline copy of everything.
 
 To add a new list, add it to: the state variables, `snapshot()` (used by
 `persistAll()` and `writeStore`), `loadAll()`, `DB_COLS` and `applyRemote()`.
 
-## meta/college
+## colleges (one doc per college; was meta/college)
 | Field | Type | Notes |
 |---|---|---|
-| name, affiliation, location, country, address, phone, email | string | |
+| id, code | string | The same unique college code, e.g. RAM-7K2Q |
+| name, affiliation, location, country, address, phone, email | string | name unique (normalised) |
+| approveSignups, requireGmail, reminderDays, reminderExternal | bool / number | v8 settings |
+| pay {payee, upi, upiMobile, apps[], bank, branch, acct, ifsc, qrMode gen\|upload, qrImg (data URL), qrVpa, changedAt, changedBy} | object | v8 fee payment details |
+| payAudit [{at, by, fields[], oldUpi, oldAcct (masked)}] | array | v8 change log (last 50) |
+| createdAt, createdBy | | |
 | groupSize | number 1–50 | Students per **Online** group batch |
 | driveLink, appUrl | https string | appUrl is the base for class share links |
 | youtube, instagram, facebook | string | |
@@ -25,6 +34,10 @@ To add a new list, add it to: the state variables, `snapshot()` (used by
 `id, firstName, lastName, username, password, role (admin|faculty|student), email, mobile,
 countryCode, fullMobile, altContact, city, country, collegeName, affiliation,`
 **`active` (bool, v6)**, `createdBy, createdAt, updatedBy, updatedAt`.
+**v8:** `collegeId`, `status (active|pending|rejected|inactive)`, `pwHash`, `pwSalt`,
+`pwSetAt` (the plain `password` field is removed on load), `mustChange`, `failCount`,
+`lockUntil`, `lastLogin`, `prevLogin`, `emailVerified`, `mobileVerified`, `studentId`
+(the linked enrolment), `requestedAt`, `approvedBy/At`, `rejectReason`, `movedFrom`.
 
 ## students
 `id (STU0001-XXX), firstName, lastName, email, mobile, countryCode, parent, ageGroup, city,
@@ -74,6 +87,19 @@ students[]` (attendees when there's no batch), and sharing (v6): `shareLevel
 (none|batch|students), shareStudents[], shareExpiry, shareAccess (view|download),
 shareToken, sharedWith[]` (a snapshot of the audience at save time). Share link:
 `<appUrl>#class-<shareToken>`.
+
+## inbox (new in v8)
+`id, collegeId, userId, title, body, kind (holiday|absence|payment|join|security|system),
+link (page), at, read`. Ids are derived from an event key, so reminders are not duplicated.
+
+## absenceNotices (new in v8)
+`id, collegeId, studentId, student, batchId, batchName, date, reason, note, at, by,
+status (sent|seen|marked|cancelled), seenBy/At, markedBy/At, cancelledAt`.
+
+## payClaims (new in v8)
+`id, collegeId, studentId, student, batchId, month, amount, method (UPI|Bank transfer),
+ref (UTR, unique), paidOn, at, by, status (pending|verified|rejected), reviewBy, reviewAt,
+note, paymentId`. Payments gain `refs[]` (the verified references).
 
 ## importLog (new in v7)
 `id, at, by, target (students|courses|payments|attendance|calendar|users), file, kind,

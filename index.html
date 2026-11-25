@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swarsetu — Music College Manager v7</title>
+<title>Swarsetu — Music College Manager v8</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -304,6 +304,43 @@ td>.reg-cell.dirty{outline:2px dashed var(--brass);outline-offset:-3px;}
 .perm-t tr.grp td{background:#FAF7EF;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;text-align:left;}
 .denied{max-width:520px;margin:40px auto;text-align:center;}
 td.mono{white-space:nowrap;}
+/* v8 */
+.join-opt{display:block;width:100%;text-align:left;border:1.5px solid var(--line);background:#FCFAF5;border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;font:inherit;color:var(--ink);}
+.join-opt:hover,.join-opt:focus{border-color:var(--brass);background:#FCF6E6;}
+.join-opt b{display:block;font-size:14px;margin-bottom:2px;}.join-opt span{font-size:12px;color:var(--muted);}
+.side-btn,.side-link{background:transparent;border:0;color:inherit;font:inherit;cursor:pointer;text-align:left;}
+.side-btn{display:flex;align-items:center;gap:6px;width:100%;padding:6px 0;font-size:12.5px;color:#cfc8b8;}
+.side-btn:hover{color:#fff;}
+.bell-n{background:var(--terracotta);color:#fff;border-radius:10px;font-size:10.5px;font-weight:700;padding:0 6px;margin-left:auto;}
+.side-link{width:100%;}
+.nav-grp.tog{display:flex;align-items:center;justify-content:space-between;width:100%;background:transparent;border:0;cursor:pointer;font:inherit;color:inherit;text-align:left;}
+.nav-grp.tog .car{transition:transform .15s;}.nav-grp.tog.open .car{transform:rotate(90deg);}
+.nav-grp.tog.has-active{color:#fff;}
+.otp-sim{background:#FCF6E6;border:1px dashed var(--brass);border-radius:8px;padding:8px 10px;font-size:12px;margin:8px 0;line-height:1.6;}
+.otp-sim:empty{display:none;}
+.code-box{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#14232B;color:#fff;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px;}
+.code-box b{font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:.06em;color:#F1D58A;}
+.code-box:empty{display:none;}
+.qr-prev{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:8px 0;}
+.qr-prev img,.qr-prev svg{width:170px;height:170px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:6px;}
+.pay-grid{display:grid;grid-template-columns:200px minmax(0,1fr);gap:16px;align-items:start;}
+.pay-grid .qr img,.pay-grid .qr svg{width:190px;height:190px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:6px;}
+.payee{font-family:'Fraunces',serif;font-size:20px;}
+.kv{display:grid;grid-template-columns:130px minmax(0,1fr) auto;gap:4px 10px;align-items:center;font-size:13px;margin-top:8px;}
+.kv span{color:var(--muted);font-size:12px;}.kv code{font-family:'JetBrains Mono',monospace;word-break:break-all;}
+.warn{background:#FBEBE5;color:#8a2d14;border-radius:8px;padding:8px 10px;font-size:12.5px;margin:8px 0;line-height:1.5;}
+.safe{background:#E4F0EE;color:#1d5a52;border-radius:8px;padding:8px 10px;font-size:12px;margin:8px 0;line-height:1.5;}
+.inb{border-bottom:1px solid var(--line);padding:10px 4px;display:flex;gap:10px;align-items:flex-start;}
+.inb.unread{background:#FCFAF0;}.inb .dotu{width:8px;height:8px;border-radius:50%;background:var(--terracotta);margin-top:6px;flex:none;}
+.inb.read .dotu{background:transparent;}
+.inb h4{font-size:13.5px;margin-bottom:2px;}.inb p{font-size:12.5px;color:var(--muted);}
+.help-g{border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:#fff;}
+.help-g summary{cursor:pointer;padding:10px 12px;font-weight:600;font-size:13.5px;}
+.help-g ol,.help-g .ans{padding:0 14px 12px 34px;font-size:13px;line-height:1.6;}
+.help-g .ans{padding-left:14px;}
+.help-h{font-family:'Fraunces',serif;font-size:16px;margin:14px 0 8px;}
+.reg-cell.noticed{box-shadow:inset 0 0 0 2px #8a6a14;}
+@media(max-width:640px){.pay-grid{grid-template-columns:1fr;}.kv{grid-template-columns:100px minmax(0,1fr) auto;}}
 /* v7 import/export */
 .io-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
 .io-tab{border:1.5px solid var(--line);background:#FCFAF5;border-radius:8px;padding:8px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink);min-height:40px;}
@@ -346,6 +383,7 @@ tr.st-err td{background:#FFF8F5;}
   #sideNav .navlink{white-space:nowrap;width:auto;padding:7px 10px;}
   #sideNav .navlink.sub{padding-left:10px;}
   #sideNav .nav-grp{display:none;}
+  #sideNav .nav-grp.tog{display:flex;white-space:nowrap;width:auto;padding:7px 10px;gap:4px;}
   .navlink.active::before{display:none;}
   .brand{padding:0 14px 8px;margin-bottom:6px;}
   .sidebar-foot{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 14px 0;}
@@ -384,24 +422,21 @@ tr.st-err td{background:#FFF8F5;}
       <button id="tabNew" onclick="setLoginTab('new')">New User</button>
     </div>
     <div id="exForm">
-      <div class="field"><label>Role</label>
-        <select id="loginRole"><option value="admin">Admin</option><option value="faculty">Faculty</option><option value="student">Student</option></select>
-      </div>
-      <div class="field"><label>Username or Mobile Number (not case-sensitive)</label><input id="loginUser" autocomplete="username" placeholder="username or 10-digit mobile"></div>
+      <select id="loginRole" style="display:none;" aria-hidden="true" tabindex="-1"><option value="admin">Admin</option><option value="faculty">Faculty</option><option value="student">Student</option></select>
+      <div class="field"><label for="loginUser">Username, email or mobile number</label><input id="loginUser" autocomplete="username" placeholder="e.g. priya, priya@gmail.com or 9876543210"></div>
       <div class="field"><label>Password</label>
         <div class="pass-wrap"><input id="loginPass" type="password" autocomplete="current-password"><button class="pass-toggle" onclick="tp('loginPass',this)" type="button">Show</button></div>
       </div>
       <div class="err" id="loginErr"></div>
       <button class="btn btn-primary" onclick="handleLogin()">Log in</button>
       <div class="center-row"><button class="btn-link" onclick="showScreen('forgotScreen')">Forgot username or password?</button></div>
-      <div class="note-banner" style="margin-top:12px;">Default: <b>Admin / Admin</b> &nbsp;|&nbsp; <b>Faculty / Faculty</b> &nbsp;|&nbsp; <b>Student / Student</b> (sample data)</div>
+      <div class="note-banner" style="margin-top:12px;">Sample college logins: <b>Admin / Admin</b> &nbsp;|&nbsp; <b>Faculty / Faculty</b> &nbsp;|&nbsp; <b>Student / Student</b>. The app works out your role and college from your account.</div>
     </div>
     <div id="newForm" style="display:none;">
-      <div class="field"><label>Registering as</label>
-        <select id="newRole" onchange="updateRoleHint()"><option value="admin">Admin</option><option value="faculty">Faculty</option><option value="student">Student</option></select>
-      </div>
-      <div class="note-banner" id="roleHint">Admin: full add, edit, delete access on all screens.</div>
-      <button class="btn btn-brass" onclick="goReg()">Continue to registration &rarr;</button>
+      <p class="auth-sub" style="margin:0 0 10px;">Everyone uses this same link. Choose how you are joining:</p>
+      <button class="join-opt" onclick="goReg('admin')"><b>Register a new college</b><span>You become its Admin and set up courses, fees and permissions. The college gets its own unique code.</span></button>
+      <button class="join-opt" onclick="goReg('faculty')"><b>Join my college as Faculty</b><span>Choose your college or enter its code. Your college admin approves you.</span></button>
+      <button class="join-opt" onclick="goReg('student')"><b>Join my college as a Student</b><span>Choose your college or enter its code. Your college admin approves you and links your enrolment.</span></button>
     </div>
   </div>
 </div>
@@ -410,26 +445,26 @@ tr.st-err td{background:#FFF8F5;}
 <div class="auth-screen" id="regAdmin" style="display:none;">
   <div class="auth-card wide">
     <div class="brand-dots"><span></span><span></span><span></span></div>
-    <h1>Admin Registration</h1><p class="auth-sub">Full access — add, edit, delete on all screens</p>
-    <div class="section-label">College (set once — used across all pages)</div>
+    <h1>Register a new college</h1><p class="auth-sub">You will be this college's Admin: you set up details, courses, fees and who can do what.</p>
+    <div class="section-label">College</div>
     <div class="form-grid">
-      <div class="field full"><label>College / Institution Name</label><input id="raCollege" placeholder="e.g. Raga Academy of Music"></div>
+      <div class="field full"><label>College / Institution Name *</label><input id="raCollege" placeholder="e.g. Raga Academy of Music" oninput="raNameCheck()"><div class="hint" id="raColCheck">Each college name can be registered only once.</div></div>
       <div class="field full"><label>Affiliation / Board</label><input id="raAffil" placeholder="e.g. Affiliated to ABC University"></div>
-      <div class="field"><label>Location / City</label><input id="raColCity"></div>
-      <div class="field"><label>Country</label><input id="raColCountry"></div>
+      <div class="field"><label>College city *</label><input id="raColCity"></div>
+      <div class="field"><label>College country *</label><input id="raColCountry" value="India"></div>
     </div>
     <div class="section-label">Your Details</div>
     <div class="form-grid">
       <div class="field"><label>First Name</label><input id="raFirst"></div>
       <div class="field"><label>Last Name</label><input id="raLast"></div>
-      <div class="field"><label>Gmail ID <span style="color:var(--terracotta);">*</span></label><input id="raEmail" type="email" placeholder="must be a valid @gmail.com or work email"><div class="hint">Used for password reset link</div></div>
-      <div class="field"><label>Mobile (10 digits)</label>
-        <div style="display:flex;gap:6px;"><select id="raCC" style="width:140px;padding:8px 6px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px;background:#FCFAF5;"></select><input id="raMobile" placeholder="10-digit number" maxlength="10"></div>
+      <div class="field"><label>Gmail / email *</label><input id="raEmail" type="email" placeholder="name@gmail.com"><div class="hint">Used to verify you and to reset your password</div></div>
+      <div class="field"><label>Mobile (10 digits) *</label>
+        <div style="display:flex;gap:6px;"><select id="raCC" style="width:140px;padding:8px 6px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px;background:#FCFAF5;"></select><input id="raMobile" placeholder="10-digit number" maxlength="10" inputmode="numeric"></div>
       </div>
       <div class="field"><label>Home / Work Contact (optional)</label><input id="raAltContact" placeholder="Alternate phone or work number"></div>
       <div class="field"><label>City</label><input id="raCity"></div>
       <div class="field"><label>Country</label><input id="raCountry"></div>
-      <div class="field"><label>Username</label><input id="raUser"></div>
+      <div class="field"><label>Username *</label><input id="raUser" placeholder="a name, your mobile or your Gmail"></div>
       <div class="field"><label>Confirm Username</label><input id="raUserC"></div>
       <div class="field"><label>Password</label><div class="pass-wrap"><input id="raPass" type="password" oninput="chkP('raPass','raBar','ra')"><button class="pass-toggle" onclick="tp('raPass',this)" type="button">Show</button></div></div>
       <div class="field"><label>Confirm Password</label><div class="pass-wrap"><input id="raPassC" type="password"><button class="pass-toggle" onclick="tp('raPassC',this)" type="button">Show</button></div></div>
@@ -439,7 +474,7 @@ tr.st-err td{background:#FFF8F5;}
     <div class="err" id="raErr" style="margin-top:8px;"></div>
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button class="btn btn-ghost" onclick="showScreen('loginScreen')">Back</button>
-      <button class="btn btn-primary" style="flex:1;" onclick="handleSignup('admin')">Create Admin Account</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="handleSignup('admin')">Register college &amp; create Admin account</button>
     </div>
   </div>
 </div>
@@ -448,21 +483,24 @@ tr.st-err td{background:#FFF8F5;}
 <div class="auth-screen" id="regFaculty" style="display:none;">
   <div class="auth-card wide">
     <div class="brand-dots"><span></span><span></span><span></span></div>
-    <h1>Faculty Registration</h1><p class="auth-sub">Add and edit access — cannot delete records</p>
+    <h1>Join a college as Faculty</h1><p class="auth-sub">Your college admin approves your request and sets what you can do.</p>
+    <div class="section-label">Your college</div>
+    <div class="form-grid">
+      <div class="field"><label for="rfCollegeSel">Select your college *</label><select id="rfCollegeSel"></select></div>
+      <div class="field"><label for="rfCode">…or enter the college code</label><input id="rfCode" placeholder="e.g. RAM-7K2Q" oninput="codeToSel('rf')"></div>
+    </div>
     <div class="section-label">Your Details</div>
     <div class="form-grid">
       <div class="field"><label>First Name</label><input id="rfFirst"></div>
       <div class="field"><label>Last Name</label><input id="rfLast"></div>
-      <div class="field"><label>Gmail ID <span style="color:var(--terracotta);">*</span></label><input id="rfEmail" type="email" placeholder="must be a valid email"><div class="hint">Used for password reset link</div></div>
-      <div class="field"><label>Mobile (10 digits)</label>
-        <div style="display:flex;gap:6px;"><select id="rfCC" style="width:140px;padding:8px 6px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px;background:#FCFAF5;"></select><input id="rfMobile" placeholder="10-digit number" maxlength="10"></div>
+      <div class="field"><label>Gmail / email *</label><input id="rfEmail" type="email" placeholder="name@gmail.com"><div class="hint">Used to verify you and to reset your password</div></div>
+      <div class="field"><label>Mobile (10 digits) *</label>
+        <div style="display:flex;gap:6px;"><select id="rfCC" style="width:140px;padding:8px 6px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px;background:#FCFAF5;"></select><input id="rfMobile" placeholder="10-digit number" maxlength="10" inputmode="numeric"></div>
       </div>
       <div class="field"><label>Home / Work Contact (optional)</label><input id="rfAltContact" placeholder="Alternate contact"></div>
       <div class="field"><label>City</label><input id="rfCity"></div>
       <div class="field"><label>Country</label><input id="rfCountry"></div>
-      <div class="field"><label>College Name</label><input id="rfCollege" placeholder="If different from main college"></div>
-      <div class="field"><label>Affiliation</label><input id="rfAffil"></div>
-      <div class="field"><label>Username</label><input id="rfUser"></div>
+      <div class="field"><label>Username *</label><input id="rfUser" placeholder="a name, your mobile or your Gmail"></div>
       <div class="field"><label>Confirm Username</label><input id="rfUserC"></div>
       <div class="field"><label>Password</label><div class="pass-wrap"><input id="rfPass" type="password" oninput="chkP('rfPass','rfBar','rf')"><button class="pass-toggle" onclick="tp('rfPass',this)" type="button">Show</button></div></div>
       <div class="field"><label>Confirm Password</label><div class="pass-wrap"><input id="rfPassC" type="password"><button class="pass-toggle" onclick="tp('rfPassC',this)" type="button">Show</button></div></div>
@@ -472,7 +510,7 @@ tr.st-err td{background:#FFF8F5;}
     <div class="err" id="rfErr" style="margin-top:8px;"></div>
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button class="btn btn-ghost" onclick="showScreen('loginScreen')">Back</button>
-      <button class="btn btn-primary" style="flex:1;" onclick="handleSignup('faculty')">Create Faculty Account</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="handleSignup('faculty')">Send join request</button>
     </div>
   </div>
 </div>
@@ -481,29 +519,35 @@ tr.st-err td{background:#FFF8F5;}
 <div class="auth-screen" id="regStudent" style="display:none;">
   <div class="auth-card wide">
     <div class="brand-dots"><span></span><span></span><span></span></div>
-    <h1>Student Registration</h1><p class="auth-sub">Read-only access: schedule, attendance, fees, events</p>
+    <h1>Join a college as a Student</h1><p class="auth-sub">See your schedule, attendance, classes and fees, pay fees and tell teachers when you can't attend.</p>
+    <div class="section-label">Your college</div>
+    <div class="form-grid">
+      <div class="field"><label for="rsCollegeSel">Select your college *</label><select id="rsCollegeSel"></select></div>
+      <div class="field"><label for="rsCode">…or enter the college code</label><input id="rsCode" placeholder="e.g. RAM-7K2Q" oninput="codeToSel('rs')"></div>
+    </div>
+    <div class="section-label">Your Details</div>
     <div class="form-grid">
       <div class="field"><label>First Name</label><input id="rsFirst"></div>
       <div class="field"><label>Last Name</label><input id="rsLast"></div>
-      <div class="field"><label>Email <span style="color:var(--terracotta);">*</span></label><input id="rsEmail" type="email" placeholder="valid email address"><div class="hint">Must match your enrolled student record</div></div>
-      <div class="field"><label>Mobile (10 digits)</label>
-        <div style="display:flex;gap:6px;"><select id="rsCC" style="width:140px;padding:8px 6px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px;background:#FCFAF5;"></select><input id="rsMobile" placeholder="10-digit number" maxlength="10"></div>
+      <div class="field"><label>Gmail / email *</label><input id="rsEmail" type="email" placeholder="name@gmail.com"><div class="hint">Use the email or mobile your college has on record, so they can link your enrolment</div></div>
+      <div class="field"><label>Mobile (10 digits) *</label>
+        <div style="display:flex;gap:6px;"><select id="rsCC" style="width:140px;padding:8px 6px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px;background:#FCFAF5;"></select><input id="rsMobile" placeholder="10-digit number" maxlength="10" inputmode="numeric"></div>
       </div>
       <div class="field"><label>Home / Work Contact (optional)</label><input id="rsAltContact" placeholder="Alternate contact"></div>
       <div class="field"><label>City</label><input id="rsCity"></div>
       <div class="field"><label>Country</label><input id="rsCountry"></div>
-      <div class="field"><label>Username</label><input id="rsUser"></div>
+      <div class="field"><label>Username *</label><input id="rsUser" placeholder="a name, your mobile or your Gmail"></div>
       <div class="field"><label>Confirm Username</label><input id="rsUserC"></div>
       <div class="field"><label>Password</label><div class="pass-wrap"><input id="rsPass" type="password" oninput="chkP('rsPass','rsBar','rs')"><button class="pass-toggle" onclick="tp('rsPass',this)" type="button">Show</button></div></div>
       <div class="field"><label>Confirm Password</label><div class="pass-wrap"><input id="rsPassC" type="password"><button class="pass-toggle" onclick="tp('rsPassC',this)" type="button">Show</button></div></div>
     </div>
     <div class="strength-bar-wrap"><div class="strength-bar" id="rsBar" style="width:0"></div></div>
     <div class="pass-rules"><div class="rule" id="rsR1">Min 8 characters</div><div class="rule" id="rsR2">Uppercase letter</div><div class="rule" id="rsR3">Lowercase letter</div><div class="rule" id="rsR4">Number</div><div class="rule" id="rsR5">Special character</div></div>
-    <div class="note-banner" style="margin-top:8px;">Your student record must already be enrolled by Admin/Faculty — link is made via your email address.</div>
+    <div class="note-banner" style="margin-top:8px;">After you send the request, your college admin approves it and links it to your enrolment. You can sign in once it is approved.</div>
     <div class="err" id="rsErr" style="margin-top:8px;"></div>
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button class="btn btn-ghost" onclick="showScreen('loginScreen')">Back</button>
-      <button class="btn btn-primary" style="flex:1;" onclick="handleSignup('student')">Create Student Account</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="handleSignup('student')">Send join request</button>
     </div>
   </div>
 </div>
@@ -514,13 +558,14 @@ tr.st-err td{background:#FFF8F5;}
     <div class="brand-dots"><span></span><span></span><span></span></div>
     <h1>Reset Password</h1>
     <div id="fgS1">
-      <div class="field"><label>Email, Username or Mobile Number</label><input id="fgEmail" placeholder="any of these will work"></div>
+      <p class="auth-sub" style="margin:0 0 10px;">We send a 6-digit code to the email and mobile on your account. Codes expire in 10 minutes.</p>
+      <div class="field"><label for="fgEmail">Username, email or mobile number</label><input id="fgEmail" placeholder="any of these will work"></div>
       <div class="err" id="fgErr"></div>
-      <button class="btn btn-brass" onclick="sendReset()">Send Reset Link</button>
+      <button class="btn btn-brass" onclick="sendReset()">Send code</button>
     </div>
     <div id="fgS2" style="display:none;">
       <div class="otp-box" id="fgOtp"></div>
-      <div class="field"><label>Enter 6-digit code</label><input id="fgCode" maxlength="6"></div>
+      <div class="field"><label for="fgCode">Enter the 6-digit code</label><input id="fgCode" maxlength="6" inputmode="numeric" autocomplete="one-time-code"></div>
       <div class="err" id="fgCodeErr"></div>
       <button class="btn btn-brass" onclick="verifyReset()">Verify</button>
     </div>
@@ -548,7 +593,8 @@ tr.st-err td{background:#FFF8F5;}
     <div id="sideNav"></div>
     <div class="sidebar-foot">
       <div class="db-pill" id="dbPill" title="Where your data is saved"><span class="dbdot"></span><span id="dbPillTxt">Local only</span></div>
-      <div class="user-pill"><b id="sideUser">—</b><span id="sideChip" class="role-chip"></span></div>
+      <button class="side-btn" onclick="showPage('inbox')" title="Notifications"><span aria-hidden="true">🔔</span> Inbox <span class="bell-n" id="bellN" style="display:none;">0</span></button>
+      <button class="user-pill side-link" onclick="showPage('profile')" title="My profile"><b id="sideUser">—</b><span id="sideChip" class="role-chip"></span></button>
       <button class="logout-btn" onclick="handleLogout()">Log out</button>
     </div>
   </div>
@@ -732,9 +778,26 @@ tr.st-err td{background:#FFF8F5;}
           <div class="savebar clean p-editAttendance" id="attSaveBar"><span id="attDirtyTxt">No unsaved changes.</span><div class="spacer"></div><button class="btn btn-ghost btn-sm" onclick="discardAtt()">Discard</button><button class="btn btn-brass btn-sm" onclick="saveAttDraft()">Save attendance</button></div>
           <div class="audit" id="attAudit"></div>
         </div>
+        <div class="card">
+          <h3 style="font-size:15px;margin-bottom:4px;">Absence notices from students</h3>
+          <p class="io-hint">Students who said in advance they can't attend. Mark as Leave to record it (V) in the register.</p>
+          <div style="overflow-x:auto;" id="anStaff"></div>
+        </div>
       </div>
       <div id="attStuView" style="display:none;">
-        <div class="toolbar"><label style="font-size:12.5px;font-weight:600;">Month:</label><input id="attStuMonth" type="month" onchange="renderStuAtt()"></div>
+        <div class="card">
+          <h3 style="font-size:15px;margin-bottom:4px;">Can't attend a class? Tell your teacher</h3>
+          <p class="io-hint">Send this before the class starts. Your teacher is notified and can mark it as leave.</p>
+          <div class="toolbar lab">
+            <div class="flt"><label for="anDate">Select Class</label><select id="anDate" style="min-width:230px;"></select></div>
+            <div class="flt"><label for="anReason">Reason</label><select id="anReason"><option>Not well</option><option>Exam / school work</option><option>Travelling</option><option>Family function</option><option>Other</option></select></div>
+            <div class="flt" style="flex:1 1 200px;"><label for="anNote">Note (optional)</label><input id="anNote" maxlength="200" placeholder="e.g. back next week"></div>
+            <div class="flt"><label>&nbsp;</label><button class="btn btn-brass btn-sm" onclick="sendAbsence()">Notify teacher</button></div>
+          </div>
+          <div class="inline-err" id="anErr"></div>
+          <div id="anMine"></div>
+        </div>
+        <div class="toolbar"><label style="font-size:12.5px;font-weight:600;" for="attStuMonth">Month:</label><input id="attStuMonth" type="month" onchange="renderStuAtt()"></div>
         <div id="attStuContent"></div>
       </div>
     </div>
@@ -769,6 +832,12 @@ tr.st-err td{background:#FFF8F5;}
           <button class="btn btn-ghost btn-sm" onclick="exportTable('payments')">⬇ Export CSV</button>
           <button class="btn btn-brass btn-sm p-editFees" onclick="openPayModal()">+ Add Payment</button>
         </div>
+      </div>
+      <div id="payStuArea" style="display:none;"></div>
+      <div class="card p-editFees" id="payVerifyCard" style="display:none;">
+        <h3 style="font-size:15px;margin-bottom:4px;">Payments waiting for verification <span class="io-c upd" id="payVerifyN">0</span></h3>
+        <p class="io-hint">Students paid by UPI or bank transfer and sent the transaction reference. Check that the money reached the college account before you verify.</p>
+        <div style="overflow-x:auto;" id="payVerifyHost"></div>
       </div>
       <div class="card">
         <div class="toolbar lab">
@@ -888,6 +957,7 @@ tr.st-err td{background:#FFF8F5;}
 
     <!-- COLLEGE PROFILE -->
     <div class="page" id="page-college">
+      <div class="code-box" id="cpCodeBox"></div>
       <div class="college-strip">📍 <b id="colCollege">—</b></div>
       <div class="page-head"><div><h2>College Profile</h2><p style="color:var(--muted);font-size:12.5px;">This name &amp; affiliation appears on all pages</p></div></div>
       <div class="card">
@@ -906,8 +976,39 @@ tr.st-err td{background:#FFF8F5;}
           <div class="field"><label>Facebook</label><input id="cpFb"></div>
           <div class="field"><label>App link (used in class share links)</label><input id="cpAppUrl" placeholder="https://claude.ai/artifact/…"><div class="hint">Share links are this address plus a class code.</div></div>
         </div>
+        <div class="section-label">Sign-ups and reminders</div>
+        <div class="form-grid">
+          <div class="field"><label for="cpApprove">New faculty and student sign-ups</label><select id="cpApprove"><option value="1">Need Admin approval (recommended)</option><option value="0">Students are approved automatically</option></select></div>
+          <div class="field"><label for="cpGmail">Sign-up email</label><select id="cpGmail"><option value="0">Any valid email</option><option value="1">Must be a Gmail address</option></select></div>
+          <div class="field"><label for="cpRemDays">Holiday &amp; vacation reminders</label><select id="cpRemDays"><option value="0">Off</option><option value="1">1 day before</option><option value="2">2 days before</option><option value="3">3 days before</option><option value="7">1 week before</option></select></div>
+          <div class="field"><label for="cpRemExt">Also send reminders by SMS / email</label><select id="cpRemExt"><option value="0">No — in-app inbox only</option><option value="1">Yes (simulated in this prototype)</option></select></div>
+        </div>
         <div class="inline-err" id="cpErr"></div>
         <button class="btn btn-brass p-editCollege" onclick="saveCollegeProfile()">Save College Profile</button>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:4px;">Fee payment details</h3>
+        <p class="io-hint">Students see these on <b>My Fees</b> to pay by UPI or bank transfer. Only an Admin can change them, and you must re-enter your password. Every change is logged, all Admins are told, and students see a warning for 14 days.</p>
+        <div id="cpPayView"></div>
+        <div class="admin-only" id="cpPayEdit">
+          <div class="form-grid">
+            <div class="field"><label for="ppPayee">Payee name (as in the bank account) *</label><input id="ppPayee" maxlength="80"></div>
+            <div class="field"><label for="ppUpi">UPI ID</label><input id="ppUpi" placeholder="e.g. collegename@okhdfcbank" maxlength="60" autocomplete="off"></div>
+            <div class="field"><label for="ppUpiMob">Mobile linked to payment apps</label><input id="ppUpiMob" maxlength="10" inputmode="numeric" placeholder="10 digits"></div>
+            <div class="field"><label>Payment apps accepted</label><div class="radio-row" id="ppApps"><label><input type="checkbox" value="Google Pay"> Google Pay</label><label><input type="checkbox" value="PhonePe"> PhonePe</label><label><input type="checkbox" value="Paytm"> Paytm</label><label><input type="checkbox" value="BHIM"> BHIM</label></div></div>
+            <div class="field"><label for="ppBank">Bank name</label><input id="ppBank" maxlength="60"></div>
+            <div class="field"><label for="ppBranch">Branch</label><input id="ppBranch" maxlength="60"></div>
+            <div class="field"><label for="ppAcct">Account number</label><input id="ppAcct" maxlength="18" inputmode="numeric" autocomplete="off"></div>
+            <div class="field"><label for="ppAcct2">Confirm account number</label><input id="ppAcct2" maxlength="18" inputmode="numeric" autocomplete="off" onpaste="return false;"></div>
+            <div class="field"><label for="ppIfsc">IFSC code</label><input id="ppIfsc" maxlength="11" placeholder="e.g. HDFC0001234" style="text-transform:uppercase;"></div>
+            <div class="field"><label for="ppQrMode">QR code shown to students</label><select id="ppQrMode"><option value="gen">Create a QR from the UPI ID</option><option value="upload">Use the college's own scanner (upload)</option></select></div>
+            <div class="field full" id="ppQrUpWrap"><label for="ppQrFile">Upload the college's payment scanner (QR image)</label><input id="ppQrFile" type="file" accept="image/*" onchange="ppQrPicked(this.files[0]);this.value='';"><div class="hint" id="ppQrHint">The app reads the QR and checks it pays the UPI ID above. Mismatched or unreadable scanners are refused.</div></div>
+          </div>
+          <div id="ppQrPrev" class="qr-prev"></div>
+          <div class="inline-err" id="ppErr"></div>
+          <button class="btn btn-brass" onclick="savePayDetails()">Save payment details</button>
+        </div>
+        <div id="cpPayAudit" class="audit"></div>
       </div>
       <div class="card">
         <h3 style="font-size:15px;margin-bottom:4px;">Batch capacity</h3>
@@ -1018,6 +1119,64 @@ tr.st-err td{background:#FFF8F5;}
       </div>
     </div>
 
+
+    <!-- MY PROFILE -->
+    <div class="page" id="page-profile">
+      <div class="page-head"><div><h2>My Profile</h2><p style="color:var(--muted);font-size:12.5px;">Your account details. Changing your email or mobile needs a verification code.</p></div></div>
+      <div class="card" id="pfSummary"></div>
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:10px;">Edit my details</h3>
+        <div class="form-grid">
+          <div class="field"><label for="pfFirst">First name *</label><input id="pfFirst" maxlength="40"></div>
+          <div class="field"><label for="pfLast">Last name</label><input id="pfLast" maxlength="40"></div>
+          <div class="field"><label for="pfUser">Username * <span style="font-weight:400;">(a name, your mobile or your Gmail)</span></label><input id="pfUser" maxlength="60" autocomplete="username"></div>
+          <div class="field"><label for="pfEmail">Gmail / email *</label><input id="pfEmail" type="email" maxlength="80"></div>
+          <div class="field"><label for="pfMobile">Mobile (10 digits) *</label><input id="pfMobile" maxlength="10" inputmode="numeric"></div>
+          <div class="field"><label for="pfAlt">Other contact number</label><input id="pfAlt" maxlength="20"></div>
+          <div class="field"><label for="pfCity">City</label><input id="pfCity" maxlength="40"></div>
+          <div class="field"><label for="pfCountry">Country</label><input id="pfCountry" maxlength="40"></div>
+        </div>
+        <div class="inline-err" id="pfErr"></div>
+        <button class="btn btn-brass" onclick="saveProfile()">Save my details</button>
+      </div>
+      <div class="split">
+        <div class="card">
+          <h3 style="font-size:15px;margin-bottom:6px;">My college</h3>
+          <div id="pfCollege" style="font-size:13px;margin-bottom:10px;"></div>
+          <div class="field"><label for="pfCollegeSel">Move to a different college</label><select id="pfCollegeSel"></select></div>
+          <p class="io-hint">Your account moves to the college you choose and waits for its Admin to approve you. You will be signed out, and your records stay with your current college.</p>
+          <button class="btn btn-ghost btn-sm" onclick="requestCollegeMove()">Request to join this college</button>
+        </div>
+        <div class="card">
+          <h3 style="font-size:15px;margin-bottom:6px;">Password &amp; security</h3>
+          <div id="pfSec" style="font-size:12.5px;color:var(--muted);margin-bottom:10px;line-height:1.6;"></div>
+          <button class="btn btn-ghost btn-sm" onclick="openPwModal(false)">Change password</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INBOX -->
+    <div class="page" id="page-inbox">
+      <div class="page-head"><div><h2>Inbox</h2><p style="color:var(--muted);font-size:12.5px;">Holiday reminders, absence notices, payment updates and account messages.</p></div>
+        <div class="hactions"><button class="btn btn-ghost btn-sm" onclick="inboxReadAll()">Mark all as read</button></div></div>
+      <div class="card">
+        <div class="toolbar lab"><div class="flt"><label for="inbF">Show</label><select id="inbF" onchange="renderInbox()"><option value="unread">Unread</option><option value="all">All messages</option></select></div></div>
+        <div id="inbHost"></div>
+      </div>
+    </div>
+
+    <!-- HELP -->
+    <div class="page" id="page-help">
+      <div class="page-head"><div><h2>Help &amp; FAQ</h2><p style="color:var(--muted);font-size:12.5px;">Step-by-step guides for each task, and answers to common questions.</p></div>
+        <div class="hactions"><button class="btn btn-ghost btn-sm" onclick="dlGuide()">⬇ Download the user guide</button></div></div>
+      <div class="card">
+        <div class="toolbar lab">
+          <div class="flt" style="flex:1 1 260px;"><label for="helpQ">Search help</label><input id="helpQ" placeholder="e.g. forgot password, pay fees, holiday" oninput="renderHelp()"></div>
+          <div class="flt"><label for="helpRole">Guides for</label><select id="helpRole" onchange="renderHelp()"><option value="me">My role</option><option value="all">Everyone</option><option value="admin">Admin</option><option value="faculty">Faculty</option><option value="student">Student</option></select></div>
+        </div>
+        <div id="helpHost"></div>
+      </div>
+    </div>
     <!-- COLLEGE CALENDAR -->
     <div class="page" id="page-calendar">
       <div class="college-strip">📍 <b id="calCollege">—</b></div>
@@ -1046,16 +1205,20 @@ tr.st-err td{background:#FFF8F5;}
       <div class="page-head"><div><h2>User Management</h2><p style="color:var(--muted);font-size:12.5px;">Create users, assign roles, and activate or deactivate accounts. Deactivated users keep their history.</p></div>
         <div class="hactions"><button class="btn btn-ghost btn-sm" onclick="exportTable('users')">⬇ Export CSV</button><button class="btn btn-brass btn-sm" onclick="openUserModal()">+ Add User</button></div>
       </div>
-      <div class="note-banner">Passwords shown as plain text in this prototype.</div>
+      <div class="card" id="joinCard" style="display:none;">
+        <h3 style="font-size:15px;margin-bottom:4px;">Join requests <span class="io-c upd" id="joinN">0</span></h3>
+        <p class="io-hint">People who registered with this college's name or code. Check who they are before you approve. For students, link the request to their enrolment.</p>
+        <div style="overflow-x:auto;" id="joinHost"></div>
+      </div>
       <div class="card">
         <div class="toolbar lab">
           <div class="flt"><label for="usrRoleF">Select Role</label><select id="usrRoleF" onchange="renderUsers()"><option value="">All roles</option><option value="admin">Admin</option><option value="faculty">Faculty</option><option value="student">Student</option></select></div>
-          <div class="flt"><label for="usrStatusF">Select Status</label><select id="usrStatusF" onchange="renderUsers()"><option value="">All</option><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+          <div class="flt"><label for="usrStatusF">Select Status</label><select id="usrStatusF" onchange="renderUsers()"><option value="">All</option><option value="active">Active</option><option value="inactive">Inactive</option><option value="pending">Waiting for approval</option></select></div>
           <div class="flt"><label for="usrSearch">Search</label><input id="usrSearch" placeholder="Name, username, email…" oninput="renderUsers()"></div>
         </div>
         <div style="overflow-x:auto;">
         <table>
-          <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th>Email</th><th>Mobile</th><th>City</th><th>Password</th><th></th></tr></thead>
+          <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th>Email</th><th>Mobile</th><th>Last sign-in</th><th></th></tr></thead>
           <tbody id="usersT"></tbody>
         </table>
         </div>
@@ -1377,6 +1540,58 @@ tr.st-err td{background:#FFF8F5;}
   </div>
 </div>
 
+<div class="modal-overlay" id="otpModal" style="z-index:85;">
+  <div class="modal" style="max-width:470px;">
+    <h3 id="otpTitle">Verify your email and mobile</h3>
+    <p class="modal-sub" id="otpSub"></p>
+    <div class="otp-sim" id="otpSim"></div>
+    <div id="otpFields"></div>
+    <div class="err" id="otpErr"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="otpDone(false)">Cancel</button><button class="btn btn-ghost" onclick="otpResend()">Send new codes</button><button class="btn btn-primary" style="width:auto;" onclick="otpSubmit()">Verify</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="reauthModal" style="z-index:86;">
+  <div class="modal" style="max-width:420px;">
+    <h3>Confirm it's you</h3>
+    <p class="modal-sub" id="reauthSub">Enter your password to continue.</p>
+    <div class="field"><label for="reauthPass">Your password</label><input id="reauthPass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')reauthDone(true)"></div>
+    <div class="err" id="reauthErr"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="reauthDone(false)">Cancel</button><button class="btn btn-primary" style="width:auto;" onclick="reauthDone(true)">Confirm</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pwModal" style="z-index:84;">
+  <div class="modal" style="max-width:440px;">
+    <h3 id="pwTitle">Change password</h3>
+    <p class="modal-sub" id="pwSub"></p>
+    <div class="field" id="pwCurWrap"><label for="pwCur">Current password</label><input id="pwCur" type="password" autocomplete="current-password"></div>
+    <div class="field"><label for="pwNew">New password</label><div class="pass-wrap"><input id="pwNew" type="password" autocomplete="new-password" oninput="chkP('pwNew','pwBar','pw')"><button class="pass-toggle" onclick="tp('pwNew',this)" type="button">Show</button></div></div>
+    <div class="strength-bar-wrap"><div class="strength-bar" id="pwBar" style="width:0"></div></div>
+    <div class="pass-rules"><div class="rule" id="pwR1">Min 8 characters</div><div class="rule" id="pwR2">Uppercase</div><div class="rule" id="pwR3">Lowercase</div><div class="rule" id="pwR4">Number</div><div class="rule" id="pwR5">Special character</div></div>
+    <div class="field" style="margin-top:8px;"><label for="pwConf">Confirm new password</label><input id="pwConf" type="password" autocomplete="new-password"></div>
+    <div class="err" id="pwErr"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" id="pwCancel" onclick="closeModal('pwModal')">Cancel</button><button class="btn btn-primary" style="width:auto;" onclick="savePw()">Save password</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="textModal" style="z-index:88;">
+  <div class="modal" style="max-width:460px;">
+    <h3 id="textTitle"></h3>
+    <p class="modal-sub" id="textSub"></p>
+    <div class="field"><label for="textVal" id="textLbl"></label><textarea id="textVal" rows="3" maxlength="300"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="textDone(false)">Cancel</button><button class="btn btn-primary" style="width:auto;" id="textOk" onclick="textDone(true)">OK</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="infoModal" style="z-index:88;">
+  <div class="modal" style="max-width:460px;">
+    <h3 id="infoTitle"></h3>
+    <div id="infoBody" style="font-size:13.5px;line-height:1.6;margin:8px 0;"></div>
+    <div class="modal-actions"><button class="btn btn-primary" style="width:auto;" onclick="closeModal('infoModal')">Done</button></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="askModal" style="z-index:90;">
   <div class="modal" style="max-width:440px;">
     <h3>Please confirm</h3>
@@ -1447,33 +1662,18 @@ function migrateV3(){
   }catch(e){console.warn('Migration failed',e);}
 }
 function readStore(){try{const r=localStorage.getItem(STORE);return r?JSON.parse(r):{};} catch(e){return {};}}
-function writeStore(d){try{localStorage.setItem(STORE,JSON.stringify(d));}catch(e){console.error('Storage write failed',e);}}
-function loadAll(){
-  migrateV3();
-  const d=readStore();
-  college=d.college||{name:'',location:'',country:'',affiliation:'',affiliationDetails:'',youtube:'',instagram:'',facebook:'',workingHours:{start:'09:00',end:'18:00'},workingDays:['Mon','Tue','Wed','Thu','Fri'],holidays:[]};
-  users=d.users||[];students=d.students||[];courses=d.courses||[];timetable=d.timetable||[];
-  attendance=d.attendance||[];payments=d.payments||[];notifLog=d.notifLog||[];
-  announcements=d.announcements||[];facultySlots=d.facultySlots||[];batches=d.batches||[];classLogs=d.classLogs||[];academic=d.academic||[];calendarEvents=d.calendarEvents||[];ttSessions=d.ttSessions||[];importLog=d.importLog||[];
-  if(!users.length){
-    users=[{id:'u_admin',firstName:'Admin',lastName:'User',email:'admin@swarsetu.com',username:'Admin',password:'Admin',role:'admin',mobile:'',city:'',country:'',collegeName:'',affiliation:''},
-           {id:'u_faculty',firstName:'Faculty',lastName:'User',email:'faculty@swarsetu.com',username:'Faculty',password:'Faculty',role:'faculty',mobile:'',city:'',country:'',collegeName:'',affiliation:''}];
-    persistAll();
-  }
-}
-function snapshot(){return {college,users,students,courses,timetable,attendance,payments,notifLog,announcements,facultySlots,batches,classLogs,academic,calendarEvents,ttSessions,importLog};}
-function persistAll(){writeStore(snapshot());scheduleSync();}
+function writeStore(d){try{localStorage.setItem(STORE,JSON.stringify(stripSecrets(d)));}catch(e){console.error('Storage write failed',e);}}
+function persistAll(){writeStore(snapshot());scheduleSync();if(users.some(u=>u.password!=null))secureUsers();}
 
 /* ═══════════════════════════════════════════════════
    DATABASE — shared store (artifact "db" capability)
    One document per record. localStorage stays as an offline cache.
 ═══════════════════════════════════════════════════ */
-const DB_COLS=['users','students','courses','timetable','attendance','payments','notifLog','announcements','facultySlots','batches','classLogs','academic','calendarEvents','ttSessions','importLog'];
+const DB_COLS=['users','colleges','students','courses','timetable','attendance','payments','notifLog','announcements','facultySlots','batches','classLogs','academic','calendarEvents','ttSessions','importLog','inbox','absenceNotices','payClaims'];
 let DBH=null,lastSnap={},syncTimer=null,syncing=false,dirty=false,dbUnsubs=[];
 function jstr(v){if(v===null||typeof v!=='object')return JSON.stringify(v);if(Array.isArray(v))return '['+v.map(jstr).join(',')+']';return '{'+Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>JSON.stringify(k)+':'+jstr(v[k])).join(',')+'}';}
 function dbId(id){return String(id).replace(/[^A-Za-z0-9_-]/g,'_');}
 function setDbStatus(kind,txt){const el=document.getElementById('dbPill'),t=document.getElementById('dbPillTxt');if(!el)return;el.className='db-pill '+kind;t.textContent=txt;}
-function currentState(){const o={};DB_COLS.forEach(c=>{const arr=snapshot()[c]||[];arr.forEach(r=>{if(r.id==null)r.id=nid('x');});o[c]=Object.fromEntries(arr.map(r=>[dbId(r.id),jstr(r)]));});o.meta={college:jstr(college)};return o;}
 function scheduleSync(){if(!DBH)return;dirty=true;clearTimeout(syncTimer);setDbStatus('busy','Saving…');syncTimer=setTimeout(flushSync,500);}
 async function flushSync(){
   if(!DBH||syncing){if(DBH)syncTimer=setTimeout(flushSync,400);return;}
@@ -1493,26 +1693,9 @@ async function flushSync(){
     if(!e||(e.code!=='quota_exceeded'&&e.code!=='invalid_argument'))syncTimer=setTimeout(flushSync,6000);
   }finally{syncing=false;}
 }
-function applyRemote(snapByCol){
-  // snapByCol: {col:{id:rowObj}}
-  const g=c=>Object.values(snapByCol[c]||{});
-  users=g('users');students=g('students');courses=g('courses');timetable=g('timetable');attendance=g('attendance');
-  payments=g('payments');notifLog=g('notifLog');announcements=g('announcements');facultySlots=g('facultySlots');batches=g('batches');classLogs=g('classLogs');academic=g('academic');calendarEvents=g('calendarEvents').sort((a,b)=>String(a.start).localeCompare(String(b.start)));ttSessions=g('ttSessions');importLog=g('importLog').sort((a,b)=>String(b.at).localeCompare(String(a.at)));notifLog.sort((a,b)=>String(b.time||'').localeCompare(String(a.time||'')));
-  const m=(snapByCol.meta||{}).college;if(m)college=m;
-  students.sort((a,b)=>String(a.id).localeCompare(String(b.id)));
-  stuSeq=students.length;
-  writeStore(snapshot());
-}
-function refreshAfterRemote(){
-  if(!currentUser)return;
-  const me=users.find(u=>u.id===currentUser.id);
-  if(!me||me.active===false){handleLogout();gid('loginErr').textContent='Your account was deactivated or removed. Contact the college admin.';return;}
-  currentUser=me;
-  try{applyPerms();populateAll();const cur=document.querySelector('.page.active');if(cur&&!pageAllowed(cur.id.replace('page-','')))showPage(firstPage());}catch(e){console.warn(e);}
-}
 async function initDB(){
   try{DBH=(window.claude&&window.claude.use)?await window.claude.use('db'):null;}catch(e){DBH=null;}
-  if(!DBH){setDbStatus('','Local only (no database)');return;}
+  if(!DBH){setDbStatus('','Local only (no database)');if(!users.length&&!colleges.length)loadSampleData();if(ensureMT())writeStore(snapshot());secureUsers();return;}
   setDbStatus('busy','Connecting…');
   try{
     const reads=await Promise.all([...DB_COLS.map(c=>DBH.collection(c).get()),DBH.collection('meta').get()]);
@@ -1520,11 +1703,12 @@ async function initDB(){
     const remoteCount=DB_COLS.reduce((n,c)=>n+Object.keys(remote[c]).length,0)+Object.keys(remote.meta).length;
     lastSnap={};[...DB_COLS,'meta'].forEach(c=>{lastSnap[c]=Object.fromEntries(Object.entries(remote[c]).map(([k,v])=>[k,jstr(v)]));});
     if(remoteCount>0){
-      applyRemote(remote);ensureV5();refreshAfterRemote();setDbStatus('ok','Connected to database');
+      applyRemote(remote);if(ensureMT())persistAll();await secureUsers();refreshAfterRemote();setDbStatus('ok','Connected to database');
     }else{
-      // database is empty: keep real local data if the user has any, otherwise load the sample college
-      const hasReal=students.length>0||courses.length>0||(college&&college.name);
-      if(!hasReal){loadSampleData();ensureV5();writeStore(snapshot());refreshAfterRemote();}
+      // database is empty: keep real local data if the viewer has any, otherwise load the sample college
+      const hasReal=users.length>0||colleges.length>0;
+      if(!hasReal)loadSampleData();
+      ensureMT();await secureUsers();writeStore(snapshot());refreshAfterRemote();
       dirty=true;await flushSync();
     }
     subscribeAll();
@@ -1618,6 +1802,7 @@ function loadSampleData(){
   ];
   notifLog=[{id:'nl_1',time:new Date().toISOString(),course:'All Courses',type:'all',recipients:students.slice(0,5).map(s=>s.firstName+' '+s.lastName),message:'Classes resume as normal this week. Please keep instruments tuned.',link:''}];
   // demo student login linked to the first student's email
+  if(!users.some(u=>u.username.toLowerCase()==='admin'))users.push({id:'u_admin',firstName:'Admin',lastName:'User',email:'admin@swarsetu.example',username:'Admin',password:'Admin',role:'admin',status:'active',active:true,mobile:'',city:'',country:''},{id:'u_faculty',firstName:'Faculty',lastName:'User',email:'faculty@swarsetu.example',username:'Faculty',password:'Faculty',role:'faculty',status:'active',active:true,mobile:'',city:'',country:''});
   if(!users.some(u=>u.username.toLowerCase()==='student')){
     users.push({id:'u_student',firstName:students[0].firstName,lastName:students[0].lastName,email:students[0].email,username:'Student',password:'Student',role:'student',mobile:students[0].mobile,city:students[0].city,country:students[0].country,collegeName:'',affiliation:''});
   }
@@ -1634,18 +1819,6 @@ function nid(p){return p+'_'+Date.now()+'_'+Math.floor(Math.random()*9999);}
 
 /* BACKUP / RESTORE */
 function exportCSVFile(data,filename){if(!data||!data.length){showToast('No data to export');return;}return saveFile(filename,toCSV(data),'text/csv;charset=utf-8');}
-function exportBackup(){if(!currentUser||currentUser.role!=='admin'){showToast('Access denied — only an Admin can download a full backup.');return;}return saveFile('swarsetu_backup_'+todayStr()+'.json',JSON.stringify(snapshot(),null,1),'application/json');}
-function importBackup(input){
-  if(!currentUser||currentUser.role!=='admin'){showToast('Access denied — only an Admin can restore a backup.');input.value='';return;}
-  const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{const d=JSON.parse(e.target.result);writeStore(d);loadAll();populateAll();showToast('Backup restored successfully! All data reloaded.');}
-    catch(err){showToast('Error: invalid backup file — '+err.message);}
-  };
-  reader.readAsText(file);input.value='';
-}
-
 /* ═══════════════════════════════════════════════════
    UTILS
 ═══════════════════════════════════════════════════ */
@@ -1669,7 +1842,6 @@ function calcTotal(weekdays,yearMonth){return getDates(weekdays||[],yearMonth||y
 function fmtT(t){if(!t)return'—';const[h,m]=t.split(':').map(Number);const ap=h>=12?'PM':'AM';const h12=h%12||12;return h12+':'+String(m).padStart(2,'0')+' '+ap;}
 function stuName(sid){const s=students.find(x=>x.id===sid);return s?((s.firstName||'')+' '+(s.lastName||'')).trim():'—';}
 function stuCourse(sid){const s=students.find(x=>x.id===sid);return s?(s.courseName||'—'):'—';}
-function findStuByUser(u){return students.find(s=>s.email&&u.email&&s.email.toLowerCase()===u.email.toLowerCase());}
 function lvlTag(l){const m={Beginner:'beg',Intermediate:'int',Advanced:'adv'};return m[l]||'';}
 function updateCollegeStrips(){
   const name=college.name||'Music College';
@@ -1681,7 +1853,7 @@ function updateCollegeStrips(){
   document.getElementById('sideCN').textContent=name;
   document.getElementById('sideAff').textContent=aff;
   // login page
-  if(college.name){
+  if(currentUser&&college.name){
     document.getElementById('loginCollegeBanner').style.display='block';
     document.getElementById('lcName').textContent=college.name;
     document.getElementById('lcAffil').textContent=aff;
@@ -1699,7 +1871,7 @@ function updateCollegeStrips(){
     document.getElementById('cpYt').value=college.youtube||'';
     document.getElementById('cpIg').value=college.instagram||'';
     document.getElementById('cpFb').value=college.facebook||'';
-    document.getElementById('cpAddress').value=college.address||'';document.getElementById('cpPhone').value=college.phone||'';document.getElementById('cpEmail').value=college.email||'';document.getElementById('cpGroup').value=college.groupSize||6;document.getElementById('cpDrive').value=college.driveLink||'';document.getElementById('cpAppUrl').value=college.appUrl||'';
+    document.getElementById('cpAddress').value=college.address||'';document.getElementById('cpPhone').value=college.phone||'';document.getElementById('cpEmail').value=college.email||'';document.getElementById('cpGroup').value=college.groupSize||6;document.getElementById('cpDrive').value=college.driveLink||'';document.getElementById('cpAppUrl').value=college.appUrl||'';gid('cpApprove').value=college.approveSignups===false?'0':'1';gid('cpGmail').value=college.requireGmail?'1':'0';gid('cpRemDays').value=String(college.reminderDays==null?1:college.reminderDays);gid('cpRemExt').value=college.reminderExternal?'1':'0';gid('cpCodeBox').innerHTML=college.code?'College code <b>'+esc(college.code)+'</b><span style="font-size:12px;color:#cfc8b8;">Share it so faculty and students join this college.</span><button class="btn btn-ghost btn-sm" style="color:#fff;border-color:#5b6b72;" onclick="copyText(\''+esc(college.code)+'\',\'College code copied\')">Copy</button>':'';
   }
 }
 
@@ -1725,103 +1897,17 @@ function passOk(p){return Object.values(vPass(p)).every(Boolean);}
 const SCREENS=['loginScreen','regAdmin','regFaculty','regStudent','forgotScreen'];
 function showScreen(id){SCREENS.forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});document.getElementById('app').style.display='none';const t=document.getElementById(id);if(t)t.style.display='flex';}
 function setLoginTab(tab){document.getElementById('exForm').style.display=tab==='ex'?'block':'none';document.getElementById('newForm').style.display=tab==='new'?'block':'none';document.getElementById('tabEx').classList.toggle('active',tab==='ex');document.getElementById('tabNew').classList.toggle('active',tab==='new');}
-function updateRoleHint(){const r=document.getElementById('newRole').value;const h={admin:'Admin: full add, edit, delete on all screens.',faculty:'Faculty: add and edit only — cannot delete records.',student:'Student: read-only access to schedule, attendance, fees, events.'};document.getElementById('roleHint').textContent=h[r]||'';}
-function goReg(){const r=document.getElementById('newRole').value;const m={admin:'regAdmin',faculty:'regFaculty',student:'regStudent'};showScreen(m[r]||'loginScreen');populateCCDropdowns();}
-
 function populateCCDropdowns(){
   const ccOpts=COUNTRY_CODES.map(c=>'<option value="'+esc(c.code)+'">'+esc(c.code)+' '+esc(c.country)+'</option>').join('');
   ['raCC','rfCC','rsCC','stuCC'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=ccOpts;});
 }
-window.addEventListener('DOMContentLoaded',()=>{const hm=(location.hash||'').match(/class-([A-Za-z0-9]+)/);if(hm)pendingClassTok=hm[1];window.addEventListener('hashchange',()=>{const m=(location.hash||'').match(/class-([A-Za-z0-9]+)/);if(m){if(currentUser)openSharedClass(m[1]);else pendingClassTok=m[1];}});loadAll();showScreen('loginScreen');updateRoleHint();populateCountryDropdown('scountry');populateCCDropdowns();initDB();});
+window.addEventListener('DOMContentLoaded',()=>{const hm=(location.hash||'').match(/class-([A-Za-z0-9]+)/);if(hm)pendingClassTok=hm[1];window.addEventListener('hashchange',()=>{const m=(location.hash||'').match(/class-([A-Za-z0-9]+)/);if(m){if(currentUser)openSharedClass(m[1]);else pendingClassTok=m[1];}});loadAll();showScreen('loginScreen');populateCountryDropdown('scountry');populateCCDropdowns();initDB();});
 
-function handleLogin(){
-  const username=document.getElementById('loginUser').value.trim();
-  const password=document.getElementById('loginPass').value;
-  const role=document.getElementById('loginRole').value;
-  const err=document.getElementById('loginErr');
-  if(!username||!password){err.textContent='Enter username / mobile and password.';return;}
-  // Case-insensitive username OR mobile number match
-  const user=users.find(u=>(u.username.toLowerCase()===username.toLowerCase()||u.mobile===username)&&u.password===password);
-  if(!user){err.textContent='Incorrect username, mobile, or password.';return;}
-  if(user.role!==role){err.textContent='Role mismatch — this account is registered as "'+user.role+'". Change the role dropdown.';return;}
-  if(user.active===false){err.textContent='This account is deactivated. Please contact the college admin.';return;}
-  err.textContent='';enterApp(user);
-}
-
-function handleSignup(role){
-  const p={admin:{pre:'ra',coll:true},faculty:{pre:'rf',coll:false},student:{pre:'rs',coll:false}}[role];
-  const pfx=p.pre;
-  const first=document.getElementById(pfx+'First').value.trim();
-  const email=document.getElementById(pfx+'Email').value.trim();
-  const username=document.getElementById(pfx+'User').value.trim();
-  const usernameC=document.getElementById(pfx+'UserC').value.trim();
-  const pass=document.getElementById(pfx+'Pass').value;
-  const passC=document.getElementById(pfx+'PassC').value;
-  const err=document.getElementById(pfx+'Err');
-  if(!first||!email||!username||!pass){err.textContent='First name, email, username and password are required.';return;}
-  if(!validEmail(email)){err.textContent='Please enter a valid email address (e.g. name@gmail.com).';return;}
-  if(username!==usernameC){err.textContent='Usernames do not match.';return;}
-  if(!passOk(pass)){err.textContent='Password does not meet all requirements shown.';return;}
-  if(pass!==passC){err.textContent='Passwords do not match.';return;}
-  // Duplicate checks
-  if(users.some(u=>u.username.toLowerCase()===username.toLowerCase())){err.textContent='Username already taken — please choose another.';return;}
-  if(users.some(u=>u.email&&u.email.toLowerCase()===email.toLowerCase())){err.textContent='An account with this email already exists. Use Forgot Password to recover it.';return;}
-  // Mobile validation (optional but if entered must be 10 digits)
-  const cc=document.getElementById(pfx+'CC')?.value||'+91';
-  const mobile=document.getElementById(pfx+'Mobile').value.trim();
-  if(mobile&&!validMobile(mobile)){err.textContent='Mobile number must be exactly 10 digits.';return;}
-  if(mobile&&users.some(u=>u.mobile===mobile)){err.textContent='A user with this mobile number is already registered.';return;}
-  const altContact=document.getElementById(pfx+'AltContact')?.value?.trim()||'';
-  if(role==='admin'&&p.coll){
-    const cn=document.getElementById('raCollege').value.trim();
-    if(cn){college.name=cn;college.affiliation=document.getElementById('raAffil').value.trim();college.location=document.getElementById('raColCity').value.trim();college.country=document.getElementById('raColCountry').value.trim();}
-  }
-  const newUser={id:nid('u'),active:true,firstName:first,lastName:document.getElementById(pfx+'Last').value.trim(),email,username,password:pass,role,countryCode:cc,mobile,fullMobile:mobile?cc+mobile:'',altContact,city:document.getElementById(pfx+'City').value.trim(),country:document.getElementById(pfx+'Country').value.trim(),collegeName:role!=='student'?document.getElementById(pfx==='rf'?'rfCollege':'raCollege')?.value||'':'',affiliation:role!=='student'?document.getElementById(pfx==='rf'?'rfAffil':'raAffil')?.value||'':''};
-  users.push(newUser);persistAll();err.textContent='';enterApp(newUser);
-}
-
-function handleLogout(){currentUser=null;attDraft={};document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';document.getElementById('loginErr').textContent='';showScreen('loginScreen');setLoginTab('ex');}
-
-function enterApp(user){
-  currentUser=user;loadAll();stuSeq=students.length>0?students.length:0;
-  SCREENS.forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});
-  document.getElementById('app').style.display='block';
-  document.body.className='role-'+user.role;
-  document.getElementById('sideUser').textContent=(user.firstName||user.username)+' '+(user.lastName||'');
-  const chip=document.getElementById('sideChip');chip.className='role-chip '+user.role;chip.textContent=user.role.charAt(0).toUpperCase()+user.role.slice(1);
-  attDraft={};applyPerms();updateCollegeStrips();populateAll();
-  showPage(user.role==='student'?(pageAllowed('announcements')?'announcements':firstPage()):(pageAllowed('dashboard')?'dashboard':firstPage()));
-  if(pendingClassTok){const tk=pendingClassTok;pendingClassTok=null;openSharedClass(tk);}
-}
+function handleLogout(){currentUser=null;attDraft={};rescope(null);document.body.className='';document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));if(otpCtx)otpDone(false);if(reauthRes){const r=reauthRes;reauthRes=null;r(false);}document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';document.getElementById('loginErr').textContent='';showScreen('loginScreen');setLoginTab('ex');}
 
 /* ═══════════════════════════════════════════════════
    FORGOT PASSWORD
 ═══════════════════════════════════════════════════ */
-function sendReset(){
-  const identifier=document.getElementById('fgEmail').value.trim();const err=document.getElementById('fgErr');
-  if(!identifier){err.textContent='Enter your email, username or mobile number.';return;}
-  const user=users.find(u=>(u.email&&u.email.toLowerCase()===identifier.toLowerCase())||(u.username.toLowerCase()===identifier.toLowerCase())||(u.mobile===identifier));
-  if(!user){err.textContent='No account found — check your email, username or mobile number.';return;}
-  err.textContent='';const code=String(Math.floor(100000+Math.random()*900000));
-  pendingReset={email:user.email,code,userId:user.id};
-  const resetUrl='https://swarsetu.app/reset?token='+code+'&uid='+user.id;
-  document.getElementById('fgOtp').innerHTML='<b>Reset link sent to '+esc(user.email||'your email')+'</b><br><br>Simulated link (no email gateway connected):<br><span style="font-family:monospace;font-size:11px;word-break:break-all;">'+esc(resetUrl)+'</span><br><br>Or enter the code directly: <b>'+code+'</b>';
-  document.getElementById('fgS1').style.display='none';document.getElementById('fgS2').style.display='block';
-}
-function verifyReset(){
-  const entered=document.getElementById('fgCode').value.trim();const err=document.getElementById('fgCodeErr');
-  if(entered!==pendingReset.code){err.textContent='Incorrect code.';return;}
-  err.textContent='';document.getElementById('fgS2').style.display='none';document.getElementById('fgS3').style.display='block';
-}
-function finishReset(){
-  const p1=document.getElementById('fgNew').value;const p2=document.getElementById('fgConf').value;const err=document.getElementById('fgResetErr');
-  if(!passOk(p1)){err.textContent='Password does not meet requirements.';return;}
-  if(p1!==p2){err.textContent='Passwords do not match.';return;}
-  const u=users.find(x=>x.id===pendingReset.userId);if(u)u.password=p1;persistAll();
-  showToast('Password reset. Log in with your new password.');showScreen('loginScreen');
-  document.getElementById('fgS3').style.display='none';document.getElementById('fgS1').style.display='block';
-}
-
 /* ═══════════════════════════════════════════════════
    V5 — batches, week timetable, attendance register,
    classes, academic structure
@@ -2009,7 +2095,7 @@ function applyPerms(){
   const denied=PERM_LIST.filter(k=>!can(k));
   const css=gid('permCss');if(css)css.textContent=denied.length?denied.map(k=>'.p-'+k).join(',')+'{display:none!important;}':'';
   const ro=!can('editCollege');
-  ['cpName','cpAffil','cpCity','cpCountry','cpAddress','cpPhone','cpEmail','cpGroup','cpDrive','cpYt','cpIg','cpFb','cpAppUrl'].forEach(id=>{const el=gid(id);if(el)el.disabled=ro;});
+  ['cpName','cpAffil','cpCity','cpCountry','cpAddress','cpPhone','cpEmail','cpGroup','cpDrive','cpYt','cpIg','cpFb','cpAppUrl','cpApprove','cpGmail','cpRemDays','cpRemExt'].forEach(id=>{const el=gid(id);if(el)el.disabled=ro;});
   const fro=!can('editFaculty');['whStart','whEnd'].forEach(id=>{const el=gid(id);if(el)el.disabled=fro;});
   if(currentUser)buildNav(currentUser.role);
 }
@@ -2428,12 +2514,12 @@ function draftCount(){return Object.keys(attDraft).length;}
 function setupAttPage(){
   if(!currentUser)return;
   const admin=gid('attAdminView'),stu=gid('attStuView');if(!admin||!stu)return;
-  if(currentUser.role==='student'){admin.style.display='none';stu.style.display='block';if(!gid('attStuMonth').value)gid('attStuMonth').value=ym();renderStuAtt();return;}
+  if(currentUser.role==='student'){admin.style.display='none';stu.style.display='block';if(!gid('attStuMonth').value)gid('attStuMonth').value=ym();renderStuAtt();renderAbsenceStudent();return;}
   admin.style.display='block';stu.style.display='none';
   gid('attTitle').textContent=can('editAttendance')?'Mark Attendance':'Attendance Register';
   if(!gid('attMonth').value)gid('attMonth').value=ym();
   setOpts(gid('attBatch'),[['','All batches'],...batches.map(b=>[b.id,b.name])],true);
-  renderRegister();
+  renderRegister();renderAbsenceStaff();
 }
 function onAttPeriod(){
   const r=gid('attPeriod').value==='range';
@@ -2486,7 +2572,7 @@ function renderRegister(){
       const dis=ed?'':' disabled';
       if(hol&&!c&&sched)h+='<td class="hol"><button class="reg-cell H'+(dirty?' dirty':'')+'"'+dis+' title="'+esc(hol.type+': '+hol.title)+(ed?' — tap to record a code if the class went ahead':'')+'" onclick="cycleAtt(\''+s.id+'\',\''+d+'\')" style="background:transparent;">H</button></td>';
       else if(!sched&&!c)h+='<td class="na"><button class="reg-cell'+(dirty?' dirty':'')+'"'+dis+' style="color:#c9c3b3;" title="Not a class day'+(ed?'. Tap with Compensation selected to add a compensation class':'')+'" onclick="cycleAtt(\''+s.id+'\',\''+d+'\')">–</button></td>';
-      else h+='<td><button class="reg-cell '+c+(dirty?' dirty':'')+'"'+dis+' onclick="cycleAtt(\''+s.id+'\',\''+d+'\')" title="'+esc(stuName(s)+' · '+d+(c?' · '+(CODE_NAME[c]||c):'')+(dirty?' · not saved yet':audit))+'">'+(c||'·')+'</button></td>';
+      else{const nt=!c&&noticeFor(s.id,d);h+='<td><button class="reg-cell '+c+(dirty?' dirty':'')+(nt?' noticed':'')+'"'+dis+' onclick="cycleAtt(\''+s.id+'\',\''+d+'\')" title="'+esc(stuName(s)+' · '+d+(c?' · '+(CODE_NAME[c]||c):'')+(nt?' · student said they cannot attend: '+nt.reason:'')+(dirty?' · not saved yet':audit))+'">'+(c||(nt?'N':'·'))+'</button></td>';}
     });
     h+='<td class="tot"><b>'+st.done+'</b> of '+st.total+' done<br><span style="color:var(--terracotta);">'+st.pending+' pending</span></td></tr>';
   });
@@ -2608,6 +2694,7 @@ function renderPayments(presetQ){
     host.innerHTML='<table><thead><tr><th>Student</th><th>Batch</th><th>Course</th><th>Month</th><th>Payment date</th><th>Total Fee</th><th>Paid</th><th>Pending Dues</th><th>Method</th><th>Status</th><th>Remarks</th><th class="p-editFees"></th></tr></thead><tbody>'+rows.map(p=>'<tr><td><b>'+esc(p.student)+'</b></td><td style="font-size:11.5px;">'+esc(p.batchName||'—')+'</td><td>'+esc(p.course)+'</td><td class="mono">'+esc(p.month)+'</td><td class="mono">'+esc(p.paymentDate||'—')+'</td><td class="mono">'+inr(p.totalFee)+'</td><td class="mono">'+inr(p.paid)+'</td><td class="mono">'+inr(p.dues)+'</td><td>'+esc(p.mode)+'</td><td>'+statusTag(p)+'</td><td style="max-width:180px;font-size:11.5px;">'+esc(p.remarks||'')+'</td><td class="p-editFees"><div class="row-actions">'+(ed?'<button class="icon-btn" onclick="openPayModal(\''+p.id+'\')">Edit</button>':'')+(del?'<button class="icon-btn del" onclick="deletePayment(\''+p.id+'\')">Del</button>':'')+'</div></td></tr>').join('')+'</tbody></table>';
   }
   const tt=payTotalsOf(rows);
+  renderStudentPay();renderPayVerify();
   gid('payTotals').innerHTML='<div>Payments received<b>'+tt.n+'</b></div><div>Total amount collected<b>'+inr(tt.collected)+'</b></div><div>Students who paid<b>'+tt.students+'</b></div><div>Pending amount<b style="color:var(--terracotta);">'+inr(tt.pending)+'</b></div><div>Total billed<b>'+inr(tt.billed)+'</b></div>';
 }
 function payOpenMonth(m){gid('payFrom').value=m;gid('payTo').value=m;gid('payView').value='list';renderPayments();}
@@ -2827,7 +2914,10 @@ function saveCollegeProfile(){
   const em=gid('cpEmail').value.trim();if(em&&!validEmail(em)){er.textContent='Enter a valid email address.';return;}
   const gsRaw=gid('cpGroup').value;const gs=Number(gsRaw);
   if(!gsRaw||!(gs>=1)||gs>50){er.textContent='Students per Batch must be between 1 and 50.';return;}
-  college.name=gid('cpName').value.trim();college.affiliation=gid('cpAffil').value.trim();
+  const nm=gid('cpName').value.trim();if(!nm){er.textContent='Enter the college name.';return;}
+  const dup=colleges.find(c=>c.id!==curCID&&normName(c.name)===normName(nm));if(dup){er.textContent='Another college ('+dup.code+') is already registered as "'+dup.name+'". Add your branch or city to make the name unique.';return;}
+  college.approveSignups=gid('cpApprove').value==='1';college.requireGmail=gid('cpGmail').value==='1';college.reminderDays=Number(gid('cpRemDays').value);college.reminderExternal=gid('cpRemExt').value==='1';
+  college.name=nm;college.affiliation=gid('cpAffil').value.trim();
   college.location=gid('cpCity').value.trim();college.country=gid('cpCountry').value.trim();
   college.youtube=gid('cpYt').value.trim();college.instagram=gid('cpIg').value.trim();college.facebook=gid('cpFb').value.trim();
   college.address=gid('cpAddress').value.trim();college.phone=gid('cpPhone').value.trim();college.email=em;
@@ -2835,62 +2925,12 @@ function saveCollegeProfile(){
   syncBatches();persistAll();updateCollegeStrips();renderSocialPills();renderCollegeCap();renderBatchGrid();
   if(gid('socYt'))gid('socYt').value=college.youtube;if(gid('socIg'))gid('socIg').value=college.instagram;if(gid('socFb'))gid('socFb').value=college.facebook;
   const over=batches.filter(b=>b.classType==='Group'&&b.mode==='Online'&&students.filter(s=>s.batchId===b.id).length>college.groupSize);
+  runAutoReminders();
   showToast(over.length?'Saved. '+over.length+' Online batch'+(over.length===1?' is':'es are')+' now over the limit — current students stay, new enrolments are blocked until there is room.':'College profile saved');
 }
 
 /* ---------- USERS + ROLES ---------- */
 let editUserId=null;
-function renderUsers(){
-  const tbody=gid('usersT');if(!tbody)return;
-  const rf=gid('usrRoleF').value,sf=gid('usrStatusF').value,q=(gid('usrSearch').value||'').toLowerCase();
-  const adm=currentUser&&currentUser.role==='admin';const del=can('deleteRecords');
-  const rows=users.filter(u=>(!rf||u.role===rf)&&(!sf||(sf==='active')===(u.active!==false))&&(!q||[u.firstName,u.lastName,u.username,u.email].join(' ').toLowerCase().includes(q)));
-  tbody.innerHTML=rows.length?rows.map(u=>{const act=u.active!==false;const lock=!adm&&u.role==='admin';
-    return '<tr'+(act?'':' style="opacity:.6;"')+'><td><b>'+esc((u.firstName||'')+' '+(u.lastName||''))+'</b></td><td>'+esc(u.username)+'</td><td><span class="role-chip '+esc(u.role)+'">'+esc(u.role)+'</span></td><td><span class="tag '+(act?'active':'inactive')+'">'+(act?'Active':'Inactive')+'</span></td><td>'+esc(u.email)+'</td><td>'+esc(u.mobile)+'</td><td>'+esc(u.city)+'</td><td class="mono">'+esc(u.password)+'</td><td><div class="row-actions">'+(lock?'<span style="font-size:11px;color:var(--muted);">admin only</span>':'<button class="icon-btn" onclick="openUserModal(\''+u.id+'\')">Edit</button><button class="icon-btn" onclick="toggleUserActive(\''+u.id+'\')">'+(act?'Deactivate':'Activate')+'</button>'+(del?'<button class="icon-btn del" onclick="deleteUser(\''+u.id+'\')">Del</button>':''))+'</div></td></tr>';}).join(''):'<tr class="empty-row"><td colspan="9">No users match.</td></tr>';
-}
-function activeAdmins(){return users.filter(x=>x.role==='admin'&&x.active!==false);}
-function openUserModal(id){
-  if(!need('manageUsers'))return;
-  const u=id?users.find(x=>x.id===id):null;if(id&&!u)return;
-  if(u&&u.role==='admin'&&currentUser.role!=='admin'){showToast('Access denied — only an Admin can edit Admin accounts.');return;}
-  editUserId=u?u.id:null;
-  gid('usrModalTitle').textContent=u?'Edit User':'Add User';gid('usrModalSub').textContent=u?'Changes apply the next time this user signs in.':'The user signs in with this username (not case-sensitive) and password.';
-  const set=(k,v)=>{gid(k).value=v||'';};
-  set('usrFirst',u&&u.firstName);set('usrLast',u&&u.lastName);set('usrName',u&&u.username);set('usrEmail',u&&u.email);set('usrMobile',u&&u.mobile);set('usrPass',u&&u.password);
-  gid('usrRole').value=u?u.role:'faculty';gid('usrStatus').value=u&&u.active===false?'inactive':'active';
-  [...gid('usrRole').options].forEach(o=>o.disabled=o.value==='admin'&&currentUser.role!=='admin');
-  gid('usrPassHint').textContent=u?'Leave as is to keep the current password. A new password needs 8+ characters with upper, lower, number and symbol.':'8+ characters with upper, lower, number and symbol.';
-  gid('usrErr').textContent='';openModal('userModal');
-}
-function saveUser(){
-  if(!need('manageUsers'))return;
-  const er=gid('usrErr');const u=editUserId?users.find(x=>x.id===editUserId):null;
-  const g=k=>gid(k).value.trim();
-  const first=g('usrFirst'),uname=g('usrName'),email=g('usrEmail'),mob=g('usrMobile'),pass=gid('usrPass').value,role=g('usrRole'),active=gid('usrStatus').value==='active';
-  if(!first||!uname||!email||!pass){er.textContent='First name, username, email and password are required.';return;}
-  if(!validEmail(email)){er.textContent='Enter a valid email address.';return;}
-  if(mob&&!validMobile(mob)){er.textContent='Mobile must be exactly 10 digits.';return;}
-  if(users.some(x=>x!==u&&x.username.toLowerCase()===uname.toLowerCase())){er.textContent='That username is already taken.';return;}
-  if(users.some(x=>x!==u&&x.email&&x.email.toLowerCase()===email.toLowerCase())){er.textContent='Another user already has this email.';return;}
-  if(mob&&users.some(x=>x!==u&&x.mobile===mob)){er.textContent='Another user already has this mobile number.';return;}
-  if((!u||pass!==u.password)&&!passOk(pass)){er.textContent='Password needs 8+ characters with an uppercase letter, a lowercase letter, a number and a symbol.';return;}
-  if(role==='admin'&&currentUser.role!=='admin'){er.textContent='Only an Admin can create or promote Admin accounts.';return;}
-  if(u&&u.role==='admin'&&(role!=='admin'||!active)&&activeAdmins().filter(x=>x!==u).length<1){er.textContent='There must be at least one active Admin.';return;}
-  if(u&&currentUser.id===u.id&&!active){er.textContent='You cannot deactivate your own account.';return;}
-  if(u){Object.assign(u,{firstName:first,lastName:g('usrLast'),username:uname,email,mobile:mob,password:pass,role,active,updatedBy:userLabel(),updatedAt:new Date().toISOString()});if(currentUser.id===u.id)currentUser=u;}
-  else users.push({id:nid('u'),firstName:first,lastName:g('usrLast'),email,username:uname,password:pass,role,active,countryCode:'',mobile:mob,fullMobile:'',altContact:'',city:'',country:'',collegeName:'',affiliation:'',createdBy:userLabel(),createdAt:new Date().toISOString()});
-  persistAll();closeModal('userModal');renderUsers();showToast(u?'User updated':'User created — '+uname+' can now sign in as '+role);
-  if(u&&currentUser.id===u.id)applyPerms();
-}
-async function toggleUserActive(id){
-  if(!need('manageUsers'))return;const u=users.find(x=>x.id===id);if(!u)return;
-  if(u.role==='admin'&&currentUser.role!=='admin'){showToast('Access denied — only an Admin can change Admin accounts.');return;}
-  const act=u.active!==false;
-  if(act&&currentUser.id===u.id){showToast('You cannot deactivate your own account');return;}
-  if(act&&u.role==='admin'&&activeAdmins().length<=1){showToast('There must be at least one active Admin');return;}
-  if(!await ask((act?'Deactivate ':'Activate ')+(u.firstName||u.username)+'? '+(act?'They will not be able to sign in. Their records stay.':'They will be able to sign in again.')))return;
-  u.active=!act;u.updatedBy=userLabel();u.updatedAt=new Date().toISOString();persistAll();renderUsers();showToast(u.active?'User activated':'User deactivated — history kept');
-}
 async function deleteUser(id){
   if(!need('manageUsers')||!need('deleteRecords'))return;const u=users.find(x=>x.id===id);if(!u)return;
   if(currentUser.id===id){showToast('Cannot delete your own account');return;}
@@ -3328,7 +3368,6 @@ function impRenderPreview(){
 function impEdit(ri,k,val){imp.edits[ri]=imp.edits[ri]||{};imp.edits[ri][k]=val;impValidate();}
 
 /* ---------- import ---------- */
-function newStudentId(code){let mx=0;students.forEach(s=>{const m=String(s.id).match(/^STU(\d+)/);if(m)mx=Math.max(mx,+m[1]);});return 'STU'+String(mx+1).padStart(4,'0')+'-'+code;}
 async function impRun(){
   const t=gid('impTarget').value;const T=IMP_TARGETS[t];
   if(!need('importData')||!need(T.perm))return;
@@ -3385,7 +3424,7 @@ function impApply(t,r,by,at,log){
   if(t==='users'){
     if(upd){const u=r.ex;if(u.role==='admin'&&currentUser.role!=='admin')return {err:'Only an Admin can change Admin accounts'};['firstName','lastName','email','mobile','password','role'].forEach(k=>{if(v[k])u[k]=v[k];});if(v.status)u.active=v.status!=='Inactive';u.updatedBy=by+' (import)';u.updatedAt=at;log.updated++;return;}
     const u={id:nid('u'),firstName:v.firstName,lastName:v.lastName||'',username:v.username,email:v.email,mobile:v.mobile||'',password:v.password,role:v.role,active:v.status!=='Inactive',countryCode:'',fullMobile:'',altContact:'',city:'',country:'',collegeName:'',affiliation:'',createdBy:by+' (import)',createdAt:at};
-    users.push(u);log.added++;log.addedIds.push('users:'+u.id);return;
+    u.collegeId=curCID;u.status=u.active?'active':'inactive';u.mustChange=true;users.push(u);log.added++;log.addedIds.push('users:'+u.id);return;
   }
 }
 async function undoImport(id){
@@ -3451,7 +3490,7 @@ function expSets(){
     {k:'calendar',l:'College calendar',p:'viewCalendar',f:()=>calendarEvents.map(e=>({'Title':e.title,'Type':e.type,'Start date':e.start,'End date':e.end||e.start,'Applies to':appliesLabel(e),'Description':e.desc||''}))},
     {k:'classes',l:'Classes',p:'viewClasses',f:()=>classLogs.map(c=>({'Date':c.date,'Batch':c.batchName||'Selected students','What was taught':c.topic,'Notes':c.notes||'','Audio':(c.audio||[]).map(a=>a.title+' '+a.url).join(' | '),'Sharing':c.shareLevel||'none','Expires':c.shareExpiry||''}))},
     {k:'events',l:'Events & recitals',p:'viewEvents',f:()=>announcements.map(a=>({'Title':a.title,'Date':a.date,'Description':a.desc||'','YouTube':a.youtube||''}))},
-    {k:'users',l:'User logins (no passwords)',p:'manageUsers',f:()=>users.map(u=>({'First name':u.firstName,'Last name':u.lastName||'','Username':u.username,'Email':u.email||'','Mobile':u.mobile||'','Role':u.role,'Status':u.active===false?'Inactive':'Active'}))}
+    {k:'users',l:'User logins (no passwords)',p:'manageUsers',f:()=>collegeUsers().map(u=>({'First name':u.firstName,'Last name':u.lastName||'','Username':u.username,'Email':u.email||'','Mobile':u.mobile||'','Role':u.role,'Status':u.active===false?'Inactive':'Active'}))}
   ];
   if(currentUser&&currentUser.role==='student')return [];
   return S.filter(s=>can(s.p));
@@ -3494,15 +3533,764 @@ function dlErrorRows(){
   saveFile('rows_to_fix_'+todayStr()+'.csv',toCSV(rows),'text/csv;charset=utf-8');
 }
 
+/* ═══════════════════════════════════════════════════
+   V8 — many colleges on one link, accounts & security
+═══════════════════════════════════════════════════ */
+const SCOPED=['students','courses','timetable','attendance','payments','notifLog','announcements','facultySlots','batches','classLogs','academic','calendarEvents','ttSessions','importLog','inbox','absenceNotices','payClaims'];
+let colleges=[],curCID=null,OTHERS={},legacyCollege=null,platform={};
+let inbox=[],absenceNotices=[],payClaims=[];
+function blankCollege(){return {id:'',code:'',name:'',location:'',country:'',affiliation:'',affiliationDetails:'',youtube:'',instagram:'',facebook:'',workingHours:{start:'09:00',end:'18:00'},workingDays:['Mon','Tue','Wed','Thu','Fri'],holidays:[],groupSize:6};}
+function wget(c){switch(c){case 'students':return students;case 'courses':return courses;case 'timetable':return timetable;case 'attendance':return attendance;case 'payments':return payments;case 'notifLog':return notifLog;case 'announcements':return announcements;case 'facultySlots':return facultySlots;case 'batches':return batches;case 'classLogs':return classLogs;case 'academic':return academic;case 'calendarEvents':return calendarEvents;case 'ttSessions':return ttSessions;case 'importLog':return importLog;case 'inbox':return inbox;case 'absenceNotices':return absenceNotices;case 'payClaims':return payClaims;}return [];}
+function wset(c,v){switch(c){case 'students':students=v;break;case 'courses':courses=v;break;case 'timetable':timetable=v;break;case 'attendance':attendance=v;break;case 'payments':payments=v;break;case 'notifLog':notifLog=v;break;case 'announcements':announcements=v;break;case 'facultySlots':facultySlots=v;break;case 'batches':batches=v;break;case 'classLogs':classLogs=v;break;case 'academic':academic=v;break;case 'calendarEvents':calendarEvents=v;break;case 'ttSessions':ttSessions=v;break;case 'importLog':importLog=v;break;case 'inbox':inbox=v;break;case 'absenceNotices':absenceNotices=v;break;case 'payClaims':payClaims=v;break;}}
+function allRows(c){const w=(wget(c)||[]);if(curCID)w.forEach(r=>{if(r&&!r.collegeId)r.collegeId=curCID;});return (OTHERS[c]||[]).concat(w);}
+function splitScope(all){
+  SCOPED.forEach(c=>{const rows=all[c]||[];OTHERS[c]=curCID?rows.filter(r=>r.collegeId!==curCID):rows.slice();wset(c,curCID?rows.filter(r=>r.collegeId===curCID):[]);});
+  college=(curCID&&colleges.find(x=>x.id===curCID))||blankCollege();
+  calendarEvents.sort((a,b)=>String(a.start).localeCompare(String(b.start)));importLog.sort((a,b)=>String(b.at).localeCompare(String(a.at)));notifLog.sort((a,b)=>String(b.time||'').localeCompare(String(a.time||'')));
+  inbox.sort((a,b)=>String(b.at).localeCompare(String(a.at)));students.sort((a,b)=>String(a.id).localeCompare(String(b.id)));
+  stuSeq=students.length;
+}
+function rescope(cid){const all={};SCOPED.forEach(c=>all[c]=allRows(c));curCID=cid||null;splitScope(all);}
+function collegeUsers(){return users.filter(u=>u.collegeId===curCID);}
+function collegeById(id){return colleges.find(c=>c.id===id)||null;}
+function normName(s){return String(s||'').toLowerCase().replace(/^the\s+/,'').replace(/[^a-z0-9]/g,'');}
+function genCollegeCode(name){
+  const ini=String(name||'').split(/[^A-Za-z]+/).filter(w=>w&&!/^(of|the|and|for|de|di)$/i.test(w)).map(w=>w[0].toUpperCase()).join('').slice(0,3).padEnd(3,'X');
+  const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let code;
+  do{const r=crypto.getRandomValues(new Uint8Array(4));code=ini+'-'+Array.from(r,b=>A[b%A.length]).join('');}while(colleges.some(c=>c.code===code));
+  return code;
+}
+function findCollegeByCode(code){const k=String(code||'').trim().toUpperCase();return k?colleges.find(c=>c.code===k)||null:null;}
+function collegeLabel(c){return c?c.name+(c.location?' — '+c.location:'')+' ('+c.code+')':'';}
+function ensureMT(){
+  // Move the single-college data (v7 and earlier) into its own college with a unique code.
+  let ch=false;
+  const legacy=legacyCollege&&legacyCollege.name?legacyCollege:(!colleges.length&&college&&college.name&&!college.id?college:null);
+  const all={};SCOPED.forEach(c=>all[c]=allRows(c));
+  const orphan=SCOPED.some(c=>all[c].some(r=>!r.collegeId))||users.some(u=>!u.collegeId);
+  if(legacy||(!colleges.length&&orphan)){
+    let target=legacy&&colleges.find(c=>normName(c.name)===normName(legacy.name));
+    if(!target){const base=legacy?{...legacy}:{...blankCollege(),name:'My Music College'};target={...base,id:'',code:''};target.code=genCollegeCode(target.name);target.id=target.code;target.createdAt=new Date().toISOString();target.createdBy='Moved from the single-college version';delete target.holidays;colleges.push(target);}
+    SCOPED.forEach(c=>all[c].forEach(r=>{if(!r.collegeId)r.collegeId=target.id;}));
+    users.forEach(u=>{if(!u.collegeId)u.collegeId=target.id;});
+    legacyCollege=null;ch=true;
+  }
+  users.forEach(u=>{if(!u.status){u.status=u.active===false?'inactive':'active';ch=true;}});
+  colleges.forEach(c=>{if(!c.code){c.code=genCollegeCode(c.name);ch=true;}if(!c.id){c.id=c.code;ch=true;}if(c.approveSignups===undefined){c.approveSignups=true;ch=true;}if(c.reminderDays===undefined){c.reminderDays=1;ch=true;}});
+  if(!platform.mt){platform.mt=true;platform.version='v8';ch=true;}
+  splitScope(all);
+  return ch;
+}
+
+/* ---------- passwords (PBKDF2, never stored in plain text) ---------- */
+const PW_ITER=100000;
+function b64e(u8){let s='';u8.forEach(b=>s+=String.fromCharCode(b));return btoa(s);}
+function b64d(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
+async function pbkdf2(pw,salt){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:b64d(salt),iterations:PW_ITER,hash:'SHA-256'},k,256);return b64e(new Uint8Array(bits));}
+async function setPassword(u,pw){u.pwSalt=b64e(crypto.getRandomValues(new Uint8Array(16)));u.pwHash=await pbkdf2(pw,u.pwSalt);delete u.password;u.pwSetAt=new Date().toISOString();}
+async function verifyPw(u,pw){if(!u||!pw)return false;if(u.pwHash){try{return (await pbkdf2(pw,u.pwSalt))===u.pwHash;}catch(e){return false;}}return u.password!=null&&u.password===pw;}
+let _securing=null;
+function secureUsers(){if(_securing)return _securing;if(!users.some(u=>u.password!=null))return Promise.resolve();_securing=(async()=>{try{for(const u of users){if(u.password!=null)await setPassword(u,u.password);}persistAll();}catch(e){console.warn('hash failed',e);}finally{_securing=null;}})();return _securing;}
+function stripSecrets(d){if(d&&d.users)d={...d,users:d.users.map(u=>{if(u.password==null&&!u.otp)return u;const c={...u};delete c.password;return c;})};return d;}
+async function sha(s){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return b64e(new Uint8Array(h));}
+function genTempPassword(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ',a='abcdefghijkmnpqrstuvwxyz',n='23456789',s='@#$%&*!';const r=crypto.getRandomValues(new Uint8Array(12));const pick=(set,i)=>set[r[i]%set.length];let p=pick(A,0)+pick(a,1)+pick(a,2)+pick(n,3)+pick(s,4)+pick(A,5)+pick(a,6)+pick(n,7)+pick(a,8)+pick(n,9);return p;}
+
+/* ---------- identifiers: username can be a name, a mobile number or an email ---------- */
+const EMAIL_TYPOS={'gmial.com':'gmail.com','gmal.com':'gmail.com','gamil.com':'gmail.com','gmai.com':'gmail.com','gmail.co':'gmail.com','gmail.con':'gmail.com','gmail.cm':'gmail.com','gmaill.com':'gmail.com','gnail.com':'gmail.com','gmail.in':'gmail.com','gmsil.com':'gmail.com','yaho.com':'yahoo.com','yahoo.co':'yahoo.com','hotmial.com':'hotmail.com','outlok.com':'outlook.com','rediffmal.com':'rediffmail.com'};
+function emailCheck(e,requireGmail){
+  const s=String(e||'').trim().toLowerCase();
+  if(!validEmail(s))return {e:'Enter a valid email address, like name@gmail.com.'};
+  const dom=s.split('@')[1];
+  if(EMAIL_TYPOS[dom])return {e:'Did you mean '+s.split('@')[0]+'@'+EMAIL_TYPOS[dom]+'?',fix:s.split('@')[0]+'@'+EMAIL_TYPOS[dom]};
+  if(/^gmail\./.test(dom)&&dom!=='gmail.com')return {e:'Gmail addresses end in @gmail.com.',fix:s.split('@')[0]+'@gmail.com'};
+  if(dom==='gmail.com'){const local=s.split('@')[0];if(local.length<6||local.length>30||!/^[a-z0-9.]+$/.test(local)||/^\.|\.\.|\.$/.test(local))return {e:'That is not a valid Gmail address. Gmail names have 6–30 letters, numbers or dots.'};}
+  if(requireGmail&&!/@(gmail|googlemail)\.com$/.test(s))return {e:'This college asks for a Gmail address (name@gmail.com).'};
+  return {v:s};
+}
+function mobileCheck(m,cc){
+  const d=String(m||'').replace(/\D/g,'');cc=cc||'+91';
+  if(cc==='+91'){
+    if(d.length!==10)return {e:'Mobile number must be exactly 10 digits.'};
+    if(!/^[6-9]/.test(d))return {e:'Indian mobile numbers start with 6, 7, 8 or 9.'};
+  }else if(d.length<7||d.length>12)return {e:'Enter a mobile number of 7–12 digits.'};
+  if(/^(\d)\1+$/.test(d)||['0123456789','1234567890','9876543210'].includes(d))return {e:'That does not look like a real mobile number.'};
+  return {v:d};
+}
+function identTaken(val,exceptUser){
+  const s=String(val||'').trim().toLowerCase();if(!s)return false;const dg=s.replace(/\D/g,'');
+  return users.some(u=>u!==exceptUser&&((u.username||'').toLowerCase()===s||(u.email||'').toLowerCase()===s||(dg.length>=7&&dg===s&&u.mobile===dg)));
+}
+function usernameCheck(un,email,mobile,exceptUser){
+  const s=String(un||'').trim();
+  if(s.length<3||s.length>60)return {e:'Username must be 3–60 characters.'};
+  if(/\s/.test(s))return {e:'Username cannot contain spaces.'};
+  if(s.includes('@')){if(s.toLowerCase()!==String(email||'').toLowerCase())return {e:'If your username is an email, it must be the same as your email above.'};}
+  else if(/^\+?\d+$/.test(s)){if(s.replace(/\D/g,'').slice(-10)!==String(mobile||'')){return {e:'If your username is a mobile number, it must be the same as your mobile above.'};}}
+  else if(!/^[A-Za-z0-9._-]+$/.test(s))return {e:'Username can use letters, numbers, dots, dashes and underscores.'};
+  if(identTaken(s,exceptUser))return {e:'This username is already in use. Try another.'};
+  return {v:s};
+}
+function findLoginUser(id){
+  const s=String(id||'').trim().toLowerCase();if(!s)return null;const dg=s.replace(/\D/g,'');
+  return users.find(u=>(u.username||'').toLowerCase()===s)||users.find(u=>u.email&&u.email.toLowerCase()===s)||(dg.length>=7&&/^[\d\s+()-]+$/.test(s)?users.find(u=>u.mobile&&u.mobile===dg.slice(-10)):null)||null;
+}
+function maskEmail(e){if(!e)return '';const [a,b]=e.split('@');return a.slice(0,2)+'•••@'+b;}
+function maskMobile(m){return m?'••••••'+String(m).slice(-4):'';}
+
+/* ---------- verification codes (sending is simulated) ---------- */
+let otpCtx=null;
+function newCode(){const r=crypto.getRandomValues(new Uint32Array(1))[0];return String(100000+r%900000);}
+function otpStart(opts){
+  // opts: {title, sub, targets:[{key,label,dest}], onOk}
+  return new Promise(res=>{
+    otpCtx={...opts,res,codes:{},tries:0,exp:Date.now()+10*60*1000};
+    opts.targets.forEach(t=>otpCtx.codes[t.key]=newCode());
+    gid('otpTitle').textContent=opts.title||'Verify';gid('otpSub').textContent=opts.sub||'';gid('otpErr').textContent='';
+    gid('otpFields').innerHTML=opts.targets.map(t=>'<div class="field"><label for="otp_'+t.key+'">Code sent to '+esc(t.label)+' '+esc(t.dest)+'</label><input id="otp_'+t.key+'" maxlength="6" inputmode="numeric" autocomplete="one-time-code"></div>').join('');
+    otpShowSim();openModal('otpModal');
+  });
+}
+function otpShowSim(){gid('otpSim').innerHTML='<b>Simulated sending.</b> This prototype has no SMS or email service connected, so the codes are shown here. In a live app they would arrive by SMS and email only.<br>'+otpCtx.targets.map(t=>esc(t.label)+': <b class="mono">'+otpCtx.codes[t.key]+'</b>').join(' · ');}
+function otpResend(){if(!otpCtx)return;otpCtx.targets.forEach(t=>otpCtx.codes[t.key]=newCode());otpCtx.tries=0;otpCtx.exp=Date.now()+10*60*1000;otpShowSim();gid('otpErr').textContent='New codes sent.';}
+function otpSubmit(){
+  if(!otpCtx)return;const er=gid('otpErr');
+  if(Date.now()>otpCtx.exp){er.textContent='These codes have expired. Press "Send new codes".';return;}
+  if(otpCtx.tries>=5){er.textContent='Too many wrong attempts. Press "Send new codes".';return;}
+  const bad=otpCtx.targets.filter(t=>gid('otp_'+t.key).value.trim()!==otpCtx.codes[t.key]);
+  if(bad.length){otpCtx.tries++;er.textContent='The code for '+bad.map(t=>t.label).join(' and ')+' is not right.';return;}
+  otpDone(true);
+}
+function otpDone(ok){closeModal('otpModal');const c=otpCtx;otpCtx=null;if(c&&c.res)c.res(!!ok);}
+
+/* ---------- password re-entry ---------- */
+let reauthRes=null;
+function reauth(sub){return new Promise(r=>{reauthRes=r;gid('reauthSub').textContent=sub||'Enter your password to continue.';gid('reauthPass').value='';gid('reauthErr').textContent='';openModal('reauthModal');setTimeout(()=>{try{gid('reauthPass').focus();}catch(e){}},30);});}
+async function reauthDone(ok){
+  if(!ok){closeModal('reauthModal');const r=reauthRes;reauthRes=null;if(r)r(false);return;}
+  const good=await verifyPw(currentUser,gid('reauthPass').value);
+  if(!good){gid('reauthErr').textContent='That password is not right.';return;}
+  closeModal('reauthModal');const r=reauthRes;reauthRes=null;if(r)r(true);
+}
+let textRes=null;
+function askText(title,label,sub,okLbl){return new Promise(r=>{textRes=r;gid('textTitle').textContent=title;gid('textLbl').textContent=label;gid('textSub').textContent=sub||'';gid('textVal').value='';gid('textOk').textContent=okLbl||'OK';openModal('textModal');});}
+function textDone(ok){closeModal('textModal');const r=textRes;textRes=null;if(r)r(ok?gid('textVal').value.trim():null);}
+function showInfo(title,html){gid('infoTitle').textContent=title;gid('infoBody').innerHTML=html;openModal('infoModal');}
+
+/* ---------- sign in ---------- */
+const LOCK_AFTER=5,LOCK_MIN=15;
+async function handleLogin(){
+  const id=gid('loginUser').value.trim(),pw=gid('loginPass').value,err=gid('loginErr');
+  if(!id||!pw){err.textContent='Enter your username, email or mobile, and your password.';return;}
+  err.textContent='Checking…';
+  const u=findLoginUser(id);
+  if(u&&u.lockUntil&&Date.now()<Date.parse(u.lockUntil)){err.textContent='Too many wrong passwords. This account is locked until '+new Date(u.lockUntil).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+'. Use "Forgot password" to reset it now.';return;}
+  const ok=await verifyPw(u,pw);
+  if(!ok){
+    if(u){u.failCount=(u.failCount||0)+1;if(u.failCount>=LOCK_AFTER){u.lockUntil=new Date(Date.now()+LOCK_MIN*60000).toISOString();u.failCount=0;addInbox(u.collegeId,null,'Account locked after wrong passwords',(u.firstName||u.username)+"'s account was locked for "+LOCK_MIN+' minutes after '+LOCK_AFTER+' wrong passwords.','security','users','lock_'+u.id+'_'+u.lockUntil,'admin');}persistAll();}
+    err.textContent='Incorrect username or password.';return;
+  }
+  if(u.status==='pending'){const c=collegeById(u.collegeId);err.textContent='Your request to join '+(c?c.name:'the college')+' is waiting for the college Admin to approve it.';return;}
+  if(u.status==='rejected'){err.textContent='Your request to join was not approved'+(u.rejectReason?': '+u.rejectReason:'')+'. Contact the college office.';return;}
+  if(u.active===false||u.status==='inactive'){err.textContent='This account is deactivated. Please contact the college admin.';return;}
+  if(!collegeById(u.collegeId)){err.textContent='This account is not linked to a college. Contact your college admin.';return;}
+  u.failCount=0;delete u.lockUntil;u.prevLogin=u.lastLogin||'';u.lastLogin=new Date().toISOString();
+  err.textContent='';enterApp(u);
+  if(u.password!=null)secureUsers();
+  if(u.mustChange)setTimeout(()=>openPwModal(true),300);
+}
+
+/* ---------- registration ---------- */
+function fillCollegeSelects(){const opts='<option value="">Choose your college…</option>'+colleges.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(c=>'<option value="'+esc(c.id)+'">'+esc(collegeLabel(c))+'</option>').join('');['rfCollegeSel','rsCollegeSel'].forEach(id=>{const el=gid(id);if(el){const v=el.value;el.innerHTML=opts;el.value=v;}});}
+function codeToSel(pre){const c=findCollegeByCode(gid(pre+'Code').value);if(c)gid(pre+'CollegeSel').value=c.id;}
+function raNameCheck(){const n=gid('raCollege').value;const hit=n.trim()&&colleges.find(c=>normName(c.name)===normName(n));gid('raColCheck').innerHTML=hit?'<span style="color:var(--terracotta);font-weight:600;">'+esc(hit.name)+' ('+esc(hit.code)+') is already registered. Join it instead, or add your branch or city to the name.</span>':'Each college name can be registered only once.';}
+function goReg(role){const m={admin:'regAdmin',faculty:'regFaculty',student:'regStudent'};showScreen(m[role]||'loginScreen');populateCCDropdowns();fillCollegeSelects();}
+async function handleSignup(role){
+  const pfx={admin:'ra',faculty:'rf',student:'rs'}[role];const v=k=>(gid(pfx+k)?gid(pfx+k).value.trim():'');const err=gid(pfx+'Err');
+  const fail=(m,fix)=>{err.innerHTML=esc(m)+(fix?' <button class="btn-link" type="button" onclick="gid(\''+pfx+'Email\').value=\''+esc(fix)+'\';this.parentNode.textContent=\'\';">Use '+esc(fix)+'</button>':'');};
+  let col=null;
+  if(role==='admin'){
+    const cn=v('College');if(!cn)return fail('Enter the college name.');
+    if(colleges.some(c=>normName(c.name)===normName(cn))){const h=colleges.find(c=>normName(c.name)===normName(cn));return fail(h.name+' ('+h.code+') is already registered. Ask its Admin to add you, or join it as Faculty. If you are a different branch, add the branch or city to the name.');}
+    if(!v('ColCity')||!v('ColCountry'))return fail('Enter the college city and country.');
+  }else{
+    col=collegeById(gid(pfx+'CollegeSel').value)||findCollegeByCode(v('Code'));
+    if(!col)return fail(v('Code')?'No college has the code '+v('Code').toUpperCase()+'. Check it with your college office.':'Choose your college, or enter its code.');
+  }
+  const first=v('First');if(!first)return fail('Enter your first name.');
+  const em=emailCheck(v('Email'),col&&col.requireGmail);if(em.e)return fail(em.e,em.fix);
+  const cc=gid(pfx+'CC')?gid(pfx+'CC').value:'+91';const mo=mobileCheck(v('Mobile'),cc);if(mo.e)return fail(mo.e);
+  if(identTaken(em.v))return fail('An account with this email already exists. Use "Forgot password" on the sign-in page.');
+  if(users.some(u=>u.mobile===mo.v))return fail('An account with this mobile number already exists. Use "Forgot password" on the sign-in page.');
+  const un=usernameCheck(v('User'),em.v,mo.v);if(un.e)return fail(un.e);
+  if(v('User')!==v('UserC'))return fail('The two usernames do not match.');
+  const pass=gid(pfx+'Pass').value;if(!passOk(pass))return fail('The password does not meet all the rules shown.');
+  if(pass!==gid(pfx+'PassC').value)return fail('The two passwords do not match.');
+  err.textContent='';
+  const ok=await otpStart({title:'Verify your email and mobile',sub:'We sent a 6-digit code to each. Enter both to finish.',targets:[{key:'e',label:'email',dest:maskEmail(em.v)},{key:'m',label:'mobile',dest:maskMobile(mo.v)}]});
+  if(!ok){fail('Verification was cancelled. Press the button again when you are ready.');return;}
+  const now=new Date().toISOString();
+  if(role==='admin'){
+    if(colleges.some(c=>normName(c.name)===normName(v('College'))))return fail('That college was registered a moment ago by someone else.');
+    const code=genCollegeCode(v('College'));
+    col={...blankCollege(),id:code,code,name:v('College'),affiliation:v('Affil'),location:v('ColCity'),country:v('ColCountry'),approveSignups:true,reminderDays:1,createdAt:now};
+    colleges.push(col);
+  }
+  const autoOk=role==='student'&&col.approveSignups===false;
+  const u={id:nid('u'),collegeId:col.id,firstName:first,lastName:v('Last'),email:em.v,username:un.v,role,status:role==='admin'||autoOk?'active':'pending',active:role==='admin'||autoOk,countryCode:cc,mobile:mo.v,fullMobile:cc+mo.v,altContact:v('AltContact'),city:v('City'),country:v('Country'),emailVerified:now,mobileVerified:now,createdAt:now,requestedAt:now};
+  if(role==='admin'){u.createdBy='Registered the college';col.createdBy=u.id;}
+  await setPassword(u,pass);users.push(u);
+  if(role!=='admin')addInbox(col.id,null,'New join request',(first+' '+v('Last')).trim()+' asked to join as '+role+'.','join','users','join_'+u.id,'manageUsers');
+  persistAll();
+  if(role==='admin'){
+    enterApp(u);
+    showInfo('Your college is registered','<p><b>'+esc(col.name)+'</b> has the college code <b class="mono" style="font-size:18px;">'+esc(col.code)+'</b>.</p><p>Share this code with your faculty and students. They open the same link, choose <b>Join my college</b>, and pick your college or enter the code. You approve them in <b>User Management</b>.</p><p>Next: fill in the College Profile (address, payment details), then add courses and students. <b>Help &amp; FAQ</b> has step-by-step guides.</p>');
+  }else{
+    showScreen('loginScreen');setLoginTab('ex');
+    gid('loginErr').textContent='';
+    showInfo(autoOk?'You can sign in now':'Request sent','<p>'+(autoOk?'Your account at <b>'+esc(col.name)+'</b> is ready. Sign in with your username, email or mobile.':'Your request to join <b>'+esc(col.name)+'</b> as '+esc(role)+' was sent to the college Admin. You can sign in once it is approved.')+'</p>');
+  }
+}
+
+/* ---------- forgot password ---------- */
+let resetCtx=null;
+function sendReset(){
+  const id=gid('fgEmail').value.trim();const err=gid('fgErr');
+  if(!id){err.textContent='Enter your username, email or mobile number.';return;}
+  const u=findLoginUser(id);
+  err.textContent='';
+  resetCtx={uid:u?u.id:null,code:newCode(),exp:Date.now()+10*60*1000,tries:0};
+  gid('fgOtp').innerHTML=u?'If this account exists, a 6-digit code was sent to its email '+esc(maskEmail(u.email))+(u.mobile?' and mobile '+esc(maskMobile(u.mobile)):'')+'.<div class="otp-sim" style="margin-top:8px;"><b>Simulated sending.</b> No SMS or email service is connected in this prototype, so the code is shown here: <b class="mono">'+resetCtx.code+'</b></div>':'If this account exists, a 6-digit code was sent to its email and mobile.';
+  gid('fgS1').style.display='none';gid('fgS2').style.display='block';gid('fgCode').value='';gid('fgCodeErr').textContent='';
+}
+function verifyReset(){
+  const er=gid('fgCodeErr');if(!resetCtx){er.textContent='Start again.';return;}
+  if(Date.now()>resetCtx.exp){er.textContent='This code has expired. Go back and send a new one.';return;}
+  if(resetCtx.tries>=5){er.textContent='Too many wrong codes. Go back and send a new one.';return;}
+  if(!resetCtx.uid||gid('fgCode').value.trim()!==resetCtx.code){resetCtx.tries++;er.textContent='That code is not right.';return;}
+  er.textContent='';gid('fgS2').style.display='none';gid('fgS3').style.display='block';
+}
+async function finishReset(){
+  const p1=gid('fgNew').value,p2=gid('fgConf').value,err=gid('fgResetErr');
+  if(!passOk(p1)){err.textContent='The password does not meet all the rules.';return;}
+  if(p1!==p2){err.textContent='The passwords do not match.';return;}
+  const u=resetCtx&&users.find(x=>x.id===resetCtx.uid);if(!u){err.textContent='Start again.';return;}
+  await setPassword(u,p1);u.failCount=0;delete u.lockUntil;delete u.mustChange;resetCtx=null;
+  addInbox(u.collegeId,u.id,'Your password was reset','Your password was changed using a reset code on '+fmtStamp(new Date().toISOString())+'. If this was not you, contact the college admin.','security','profile','pwreset_'+u.id+'_'+Date.now());
+  persistAll();showToast('Password reset. Sign in with your new password.');
+  ['fgS3','fgS2'].forEach(x=>gid(x).style.display='none');gid('fgS1').style.display='block';['fgNew','fgConf','fgEmail'].forEach(x=>gid(x).value='');err.textContent='';showScreen('loginScreen');
+}
+
+/* ---------- change password ---------- */
+let pwForced=false;
+function openPwModal(forced){
+  pwForced=!!forced;gid('pwTitle').textContent=forced?'Set a new password':'Change password';
+  gid('pwSub').textContent=forced?'Your password was set by an Admin. Choose your own before you continue.':'';
+  gid('pwCurWrap').style.display=forced?'none':'';gid('pwCancel').style.display=forced?'none':'';
+  ['pwCur','pwNew','pwConf'].forEach(x=>gid(x).value='');gid('pwErr').textContent='';chkP('pwNew','pwBar','pw');openModal('pwModal');
+}
+async function savePw(){
+  const er=gid('pwErr');const n=gid('pwNew').value;
+  if(!pwForced&&!await verifyPw(currentUser,gid('pwCur').value)){er.textContent='Your current password is not right.';return;}
+  if(!passOk(n)){er.textContent='The new password does not meet all the rules.';return;}
+  if(n!==gid('pwConf').value){er.textContent='The new passwords do not match.';return;}
+  if(await verifyPw(currentUser,n)){er.textContent='Choose a password different from the current one.';return;}
+  await setPassword(currentUser,n);delete currentUser.mustChange;persistAll();closeModal('pwModal');showToast('Password changed');renderProfile();
+}
+
+/* ---------- idle sign-out ---------- */
+const IDLE_MIN=30;let lastAct=Date.now();
+['click','keydown','mousemove','touchstart','scroll'].forEach(ev=>document.addEventListener(ev,()=>{lastAct=Date.now();},{passive:true}));
+setInterval(()=>{if(currentUser&&Date.now()-lastAct>IDLE_MIN*60000){handleLogout();gid('loginErr').textContent='You were signed out after '+IDLE_MIN+' minutes without activity.';}},60000);
+
+/* ---------- role checks for other people ---------- */
+function roleCan(role,perm,col){
+  col=col||college;if(role==='admin')return true;if(role==='student'&&!PERM_STUDENT_OK[perm])return false;
+  const p=(col.permissions||{})[role];const v=p&&Object.prototype.hasOwnProperty.call(p,perm)?p[perm]:(DEFAULT_PERMS[role]||{})[perm];return !!v;
+}
+
+/* ---------- inbox ---------- */
+function addInbox(cid,uid,title,body,kind,link,key,audience){
+  if(!cid)return 0;
+  const col=collegeById(cid)||college;
+  const pool=users.filter(u=>u.collegeId===cid&&u.status!=='pending'&&u.status!=='rejected'&&u.active!==false);
+  const targets=uid?[uid]:pool.filter(u=>audience==='admin'?u.role==='admin':audience?roleCan(u.role,audience,col):true).map(u=>u.id);
+  const all=cid===curCID?inbox:(OTHERS.inbox=OTHERS.inbox||[]);
+  let n=0;targets.forEach(t=>{const id=dbId(key?key+'_'+t:nid('in'));if(all.some(x=>x.id===id)||(cid!==curCID&&inbox.some(x=>x.id===id)))return;all.unshift({id,collegeId:cid,userId:t,title,body,kind:kind||'system',link:link||'',at:new Date().toISOString(),read:false});n++;});
+  return n;
+}
+function myInbox(){return currentUser?inbox.filter(m=>m.userId===currentUser.id):[];}
+function updateBell(){const n=myInbox().filter(m=>!m.read).length;const b=gid('bellN');if(b){b.textContent=n;b.style.display=n?'':'none';}}
+const INB_ICON={holiday:'🗓',absence:'🙋',payment:'₹',join:'👤',security:'🔒',system:'•'};
+function renderInbox(){
+  const host=gid('inbHost');if(!host||!currentUser)return;
+  const f=gid('inbF').value;const list=myInbox().filter(m=>f==='all'||!m.read);
+  host.innerHTML=list.length?list.slice(0,200).map(m=>'<div class="inb '+(m.read?'read':'unread')+'"><span class="dotu"></span><div style="flex:1;"><h4>'+(INB_ICON[m.kind]||'•')+' '+esc(m.title)+'</h4><p>'+esc(m.body)+'</p><div style="font-size:11px;color:var(--muted);margin-top:3px;">'+esc(fmtStamp(m.at))+'</div></div><div class="row-actions" style="flex-wrap:wrap;">'+(m.link&&pageAllowed(m.link)?'<button class="icon-btn" onclick="inboxOpen(\''+m.id+'\')">Open</button>':'')+(m.read?'':'<button class="icon-btn" onclick="inboxRead(\''+m.id+'\')">Mark read</button>')+'</div></div>').join(''):'<p class="io-hint" style="padding:14px 4px;">'+(f==='all'?'No messages yet.':'You are all caught up.')+'</p>';
+  updateBell();
+}
+function inboxRead(id){const m=inbox.find(x=>x.id===id);if(m&&!m.read){m.read=true;persistAll();}renderInbox();}
+function inboxOpen(id){const m=inbox.find(x=>x.id===id);if(!m)return;if(!m.read){m.read=true;persistAll();}showPage(m.link);}
+function inboxReadAll(){let n=0;myInbox().forEach(m=>{if(!m.read){m.read=true;n++;}});if(n)persistAll();renderInbox();showToast(n?n+' marked as read':'Nothing unread');}
+
+/* ---------- automatic holiday & vacation reminders ---------- */
+function runAutoReminders(){
+  if(!currentUser||!curCID)return 0;
+  const lead=Number(college.reminderDays==null?1:college.reminderDays);if(!lead)return 0;
+  const today=todayStr();let made=0;
+  calendarEvents.filter(e=>(e.type==='Holiday'||e.type==='Vacation')&&e.start>=today&&addDays(e.start,-lead)<=today).forEach(e=>{
+    const when=e.start===today?'today':e.start===addDays(today,1)?'tomorrow':'on '+fmtLong(e.start);
+    const span=(e.end&&e.end!==e.start)?' until '+fmtLong(e.end):'';
+    const body=e.title+' ('+e.type.toLowerCase()+') starts '+when+span+'. Classes on these days are off'+(e.appliesTo&&e.appliesTo!=='all'?' for the batches or students it applies to':'')+'.'+(e.desc?' '+e.desc:'');
+    users.filter(u=>u.collegeId===curCID&&u.status==='active'&&u.active!==false).forEach(u=>{
+      if(u.role==='student'){const s=findStuByUser(u);if(!evApplies(e,s?{studentId:s.id,batchId:s.batchId}:null))return;}
+      made+=addInbox(curCID,u.id,'Reminder: '+e.title+' '+when,body,'holiday','calendar','rem_'+e.id+'_'+e.start);
+    });
+    if(college.reminderExternal&&!notifLog.some(n=>n.id==='remlog_'+dbId(e.id))){
+      const to=students.filter(s=>s.status!=='Inactive'&&evApplies(e,{studentId:s.id,batchId:s.batchId}));
+      notifLog.unshift({id:'remlog_'+dbId(e.id),time:new Date().toISOString(),course:'All affected students',type:'Holiday reminder (SMS/email simulated)',recipients:to.map(s=>stuName(s)),message:body});made++;
+    }
+  });
+  if(made){persistAll();updateBell();}
+  return made;
+}
+setInterval(()=>{try{runAutoReminders();}catch(e){}},30*60000);
+
+/* ---------- absence notices (student tells teacher in advance) ---------- */
+function upcomingClassDates(s,days){
+  const out=[];const now=new Date();const t0=todayStr();
+  for(let i=0;i<days;i++){const d=addDays(t0,i);if(!(s.weekdays||[]).includes(wdOf(d))||!s.timing)continue;
+    if(holidayFor(d,{studentId:s.id,batchId:s.batchId}))continue;
+    const ov=ttSessions.find(x=>x.id===sessKey(s.batchId,d)&&!x.extra);if(ov&&ov.status==='Cancelled')continue;
+    const tm=(ov&&ov.timing)||s.timing;const start=new Date(d+'T'+tm+':00');if(start<=now)continue;
+    out.push({d,tm});}
+  return out;
+}
+function renderAbsenceStudent(){
+  const me=myStudent();const sel=gid('anDate');if(!sel)return;
+  if(!me){sel.innerHTML='<option value="">No enrolment linked</option>';gid('anMine').innerHTML='<p class="io-hint">Your account is not linked to a student enrolment yet. Ask the college office.</p>';return;}
+  const mine=absenceNotices.filter(n=>n.studentId===me.id&&n.status!=='cancelled');
+  const opts=upcomingClassDates(me,35).filter(o=>!mine.some(n=>n.date===o.d));
+  sel.innerHTML=opts.length?opts.map(o=>'<option value="'+o.d+'">'+esc(fmtLong(o.d))+' · '+fmtT(o.tm)+'</option>').join(''):'<option value="">No upcoming classes</option>';
+  const list=absenceNotices.filter(n=>n.studentId===me.id).sort((a,b)=>b.date.localeCompare(a.date));
+  gid('anMine').innerHTML=list.length?'<div style="overflow-x:auto;margin-top:8px;"><table><thead><tr><th>Class</th><th>Reason</th><th>Sent</th><th>Status</th><th></th></tr></thead><tbody>'+list.slice(0,20).map(n=>'<tr><td class="mono">'+esc(n.date)+'</td><td>'+esc(n.reason)+(n.note?' — '+esc(n.note):'')+'</td><td class="mono">'+esc(fmtStamp(n.at))+'</td><td>'+anBadge(n)+'</td><td>'+(n.status==='sent'&&n.date>=todayStr()?'<button class="icon-btn" onclick="cancelAbsence(\''+n.id+'\')">Cancel</button>':'')+'</td></tr>').join('')+'</tbody></table></div>':'';
+}
+function anBadge(n){return {sent:'<span class="io-c upd">Sent to teacher</span>',seen:'<span class="io-c new">Seen by teacher</span>',marked:'<span class="io-c new">Marked as leave</span>',cancelled:'<span class="io-c skip">Cancelled</span>'}[n.status]||esc(n.status);}
+function sendAbsence(){
+  const me=myStudent();const er=gid('anErr');if(!me){er.textContent='Your account is not linked to an enrolment yet.';return;}
+  const d=gid('anDate').value;if(!d){er.textContent='Choose a class.';return;}
+  const ok=upcomingClassDates(me,35).some(o=>o.d===d);if(!ok){er.textContent='That class has already started or is not on your schedule.';return;}
+  if(absenceNotices.some(n=>n.studentId===me.id&&n.date===d&&n.status!=='cancelled')){er.textContent='You already sent a notice for that class.';return;}
+  const n={id:nid('abs'),collegeId:curCID,studentId:me.id,student:stuName(me),batchId:me.batchId||'',batchName:me.batchName||'',date:d,reason:gid('anReason').value,note:gid('anNote').value.trim().slice(0,200),at:new Date().toISOString(),by:currentUser.id,status:'sent'};
+  absenceNotices.push(n);er.textContent='';gid('anNote').value='';
+  addInbox(curCID,null,stuName(me)+' cannot attend on '+fmtLong(d),(me.batchName||me.courseName||'')+' · Reason: '+n.reason+(n.note?' — '+n.note:''),'absence','attendance','abs_'+n.id,'editAttendance');
+  persistAll();renderAbsenceStudent();showToast('Your teacher has been notified');
+}
+async function cancelAbsence(id){const n=absenceNotices.find(x=>x.id===id);if(!n)return;if(!await ask('Cancel your notice for '+fmtLong(n.date)+'? Your teacher will expect you in class.','Cancel notice'))return;n.status='cancelled';n.cancelledAt=new Date().toISOString();addInbox(curCID,null,n.student+' will attend on '+fmtLong(n.date)+' after all','The absence notice was cancelled.','absence','attendance','abscx_'+n.id,'editAttendance');persistAll();renderAbsenceStudent();}
+function renderAbsenceStaff(){
+  const host=gid('anStaff');if(!host)return;
+  const list=absenceNotices.filter(n=>n.status!=='cancelled'&&n.date>=addDays(todayStr(),-14)).sort((a,b)=>a.date.localeCompare(b.date));
+  const ed=can('editAttendance');
+  host.innerHTML=list.length?'<table><thead><tr><th>Class date</th><th>Student</th><th>Batch</th><th>Reason</th><th>Sent</th><th>Status</th><th class="p-editAttendance"></th></tr></thead><tbody>'+list.map(n=>'<tr><td class="mono">'+esc(n.date)+' <small>'+wdOf(n.date)+'</small></td><td><b>'+esc(n.student)+'</b></td><td style="font-size:11.5px;">'+esc(n.batchName)+'</td><td>'+esc(n.reason)+(n.note?'<div style="font-size:11px;color:var(--muted);">'+esc(n.note)+'</div>':'')+'</td><td class="mono">'+esc(fmtStamp(n.at))+'</td><td>'+anBadge(n)+'</td><td class="p-editAttendance">'+(ed&&n.status!=='marked'?'<div class="row-actions"><button class="icon-btn" onclick="markNoticeLeave(\''+n.id+'\')">Mark as leave</button>'+(n.status==='sent'?'<button class="icon-btn" onclick="seeNotice(\''+n.id+'\')">Seen</button>':'')+'</div>':'')+'</td></tr>').join('')+'</tbody></table>':'<p class="io-hint">No notices in the last two weeks or coming up.</p>';
+}
+function seeNotice(id){const n=absenceNotices.find(x=>x.id===id);if(!n||!need('editAttendance'))return;n.status='seen';n.seenBy=userLabel();n.seenAt=new Date().toISOString();notifyStudentUser(n.studentId,'Your teacher saw your notice','Absence on '+fmtLong(n.date)+' — seen by '+userLabel()+'.','absence','attendance','absseen_'+n.id);persistAll();renderAbsenceStaff();}
+function markNoticeLeave(id){
+  const n=absenceNotices.find(x=>x.id===id);if(!n||!need('editAttendance'))return;
+  setAtt(n.studentId,n.date,'V',userLabel()+' (from notice)',new Date().toISOString());
+  n.status='marked';n.markedBy=userLabel();n.markedAt=new Date().toISOString();
+  notifyStudentUser(n.studentId,'Leave recorded for '+fmtLong(n.date),'Your teacher marked the class as leave (V).','absence','attendance','absmk_'+n.id);
+  persistAll();renderAbsenceStaff();renderRegister();showToast('Marked as leave (V) for '+n.student);
+}
+function notifyStudentUser(sid,title,body,kind,link,key){const s=students.find(x=>x.id===sid);if(!s)return;users.filter(u=>u.collegeId===curCID&&u.role==='student'&&(u.studentId===sid||(!u.studentId&&findStuByUser(u)===s))).forEach(u=>addInbox(curCID,u.id,title,body,kind,link,key));}
+function noticeFor(sid,d){return absenceNotices.find(n=>n.studentId===sid&&n.date===d&&n.status!=='cancelled');}
+
+/* ---------- fee payment details (college) ---------- */
+const LIB_QRGEN='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
+const LIB_QRREAD='https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
+const UPI_RE=/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/;
+const IFSC_RE=/^[A-Z]{4}0[A-Z0-9]{6}$/;
+function upiUrl(p,amount,note){const q=['pa='+encodeURIComponent(p.upi),'pn='+encodeURIComponent(p.payee),'cu=INR'];if(amount)q.push('am='+Number(amount).toFixed(2));if(note)q.push('tn='+encodeURIComponent(note.slice(0,60)));return 'upi://pay?'+q.join('&');}
+async function qrSvg(text){if(!window.qrcode)await loadScript(LIB_QRGEN);const q=window.qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:4,margin:2,scalable:true});}
+function maskAcct(a){return a?'•••• '+String(a).slice(-4):'';}
+let ppQrDraft=null;
+function renderPayDetails(){
+  const p=college.pay||{};const v=gid('cpPayView');if(!v)return;
+  const has=p.payee&&(p.upi||p.acct);
+  v.innerHTML=has?'<div class="kv"><span>Payee</span><b>'+esc(p.payee)+'</b><i></i><span>UPI ID</span><code>'+esc(p.upi||'—')+'</code><i></i><span>Payment apps</span><div>'+esc((p.apps||[]).join(', ')||'—')+(p.upiMobile?' · mobile '+esc(maskMobile(p.upiMobile)):'')+'</div><i></i><span>Bank</span><div>'+esc([p.bank,p.branch].filter(Boolean).join(', ')||'—')+'</div><i></i><span>Account</span><code>'+esc(maskAcct(p.acct))+(p.ifsc?' · IFSC '+esc(p.ifsc):'')+'</code><i></i><span>QR shown</span><div>'+(p.qrMode==='upload'&&p.qrImg?'College scanner (checked against UPI ID)':'Created from the UPI ID')+'</div><i></i></div>':'<p class="io-hint">No payment details yet. Students will be told to pay at the college office.</p>';
+  if(currentUser&&currentUser.role==='admin'){
+    gid('ppPayee').value=p.payee||'';gid('ppUpi').value=p.upi||'';gid('ppUpiMob').value=p.upiMobile||'';gid('ppBank').value=p.bank||'';gid('ppBranch').value=p.branch||'';gid('ppAcct').value=p.acct||'';gid('ppAcct2').value=p.acct||'';gid('ppIfsc').value=p.ifsc||'';gid('ppQrMode').value=p.qrMode||'gen';
+    document.querySelectorAll('#ppApps input').forEach(c=>c.checked=(p.apps||[]).includes(c.value));
+    ppQrDraft=p.qrImg?{img:p.qrImg,vpa:p.qrVpa}:null;ppPreview();
+  }
+  const au=(college.payAudit||[]).slice(-5).reverse();
+  gid('cpPayAudit').innerHTML=au.length?'<b>Change log:</b><br>'+au.map(a=>esc(fmtStamp(a.at))+' — '+esc(a.by)+' changed '+esc(a.fields.join(', '))).join('<br>'):'';
+}
+async function ppPreview(){
+  const el=gid('ppQrPrev');if(!el)return;const upi=gid('ppUpi').value.trim(),payee=gid('ppPayee').value.trim();
+  if(gid('ppQrMode').value==='upload'){el.innerHTML=ppQrDraft?'<img src="'+esc(ppQrDraft.img)+'" alt="College payment scanner"><div class="io-hint">Reads as UPI ID <b>'+esc(ppQrDraft.vpa)+'</b></div>':'<span class="io-hint">No scanner uploaded yet.</span>';return;}
+  if(!UPI_RE.test(upi)||!payee){el.innerHTML='<span class="io-hint">Enter the payee name and a UPI ID to see the QR code.</span>';return;}
+  try{el.innerHTML=await qrSvg(upiUrl({upi,payee}))+'<div class="io-hint">Preview of the QR students will scan.</div>';}catch(e){el.innerHTML='<span class="io-hint">QR preview needs an internet connection.</span>';}
+}
+async function ppQrPicked(file){
+  const er=gid('ppErr');er.textContent='';if(!file)return;
+  if(file.size>5*1024*1024){er.textContent='That image is over 5 MB.';return;}
+  try{
+    if(!window.jsQR)await loadScript(LIB_QRREAD);
+    const bmp=await createImageBitmap(file);const c=document.createElement('canvas');const k=Math.min(1,1400/Math.max(bmp.width,bmp.height));c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);const g=c.getContext('2d');g.drawImage(bmp,0,0,c.width,c.height);
+    const res=window.jsQR(g.getImageData(0,0,c.width,c.height).data,c.width,c.height);
+    if(!res||!res.data){er.textContent='No QR code could be read in this image. Upload a clear, straight picture of the scanner.';return;}
+    const m=/^upi:\/\/pay\?(.*)$/i.exec(res.data.trim());if(!m){er.textContent='This QR code is not a UPI payment code, so it was refused.';return;}
+    const vpa=decodeURIComponent((new URLSearchParams(m[1]).get('pa')||'')).trim();
+    if(!UPI_RE.test(vpa)){er.textContent='The QR code has no valid UPI ID.';return;}
+    const out=document.createElement('canvas');const s=Math.min(520,Math.max(c.width,c.height));const kk=s/Math.max(c.width,c.height);out.width=Math.round(c.width*kk);out.height=Math.round(c.height*kk);out.getContext('2d').drawImage(c,0,0,out.width,out.height);
+    ppQrDraft={img:out.toDataURL('image/png'),vpa};
+    if(!gid('ppUpi').value.trim())gid('ppUpi').value=vpa;
+    gid('ppQrMode').value='upload';ppPreview();
+    if(gid('ppUpi').value.trim().toLowerCase()!==vpa.toLowerCase())er.textContent='This scanner pays '+vpa+', but the UPI ID above is '+gid('ppUpi').value.trim()+'. They must match before you can save.';
+  }catch(e){er.textContent='Could not check the QR image ('+(e.message||e)+'). Try again when you are online.';}
+}
+async function savePayDetails(){
+  if(!currentUser||currentUser.role!=='admin'){showToast('Access denied — only an Admin can change payment details.');return;}
+  const er=gid('ppErr');const g=k=>gid(k).value.trim();
+  const d={payee:g('ppPayee'),upi:g('ppUpi'),upiMobile:g('ppUpiMob').replace(/\D/g,''),bank:g('ppBank'),branch:g('ppBranch'),acct:g('ppAcct').replace(/\s/g,''),ifsc:g('ppIfsc').toUpperCase(),qrMode:gid('ppQrMode').value,apps:[...document.querySelectorAll('#ppApps input:checked')].map(c=>c.value)};
+  if(!d.payee){er.textContent='Enter the payee name exactly as it appears on the bank account.';return;}
+  if(!d.upi&&!d.acct){er.textContent='Enter a UPI ID or bank account details.';return;}
+  if(d.upi&&!UPI_RE.test(d.upi)){er.textContent='The UPI ID should look like name@bankhandle.';return;}
+  if(d.upiMobile){const mc=mobileCheck(d.upiMobile,'+91');if(mc.e){er.textContent='Payment app mobile: '+mc.e;return;}}
+  if(d.acct){if(!/^\d{9,18}$/.test(d.acct)){er.textContent='Account number should be 9–18 digits.';return;}if(d.acct!==g('ppAcct2').replace(/\s/g,'')){er.textContent='The two account numbers do not match.';return;}if(!IFSC_RE.test(d.ifsc)){er.textContent='Enter a valid IFSC code, like HDFC0001234.';return;}if(!d.bank){er.textContent='Enter the bank name.';return;}}
+  if(d.qrMode==='upload'){if(!ppQrDraft){er.textContent='Upload the college scanner, or choose "Create a QR from the UPI ID".';return;}if(!d.upi||ppQrDraft.vpa.toLowerCase()!==d.upi.toLowerCase()){er.textContent='The uploaded scanner pays '+ppQrDraft.vpa+', which is not the UPI ID entered. Fix one of them.';return;}d.qrImg=ppQrDraft.img;d.qrVpa=ppQrDraft.vpa;}
+  const old=college.pay||{};const fields=['payee','upi','upiMobile','bank','branch','acct','ifsc','qrMode','apps','qrImg'].filter(k=>JSON.stringify(old[k]||'')!==JSON.stringify(d[k]||''));
+  if(!fields.length){er.textContent='Nothing has changed.';return;}
+  er.textContent='';
+  if(!await reauth('Changing where students send money. Enter your password to confirm.'))return;
+  const names={payee:'payee name',upi:'UPI ID',upiMobile:'payment app mobile',bank:'bank',branch:'branch',acct:'account number',ifsc:'IFSC',qrMode:'QR type',apps:'payment apps',qrImg:'scanner image'};
+  college.pay={...d,changedAt:new Date().toISOString(),changedBy:userLabel()};
+  college.payAudit=(college.payAudit||[]).concat([{at:college.pay.changedAt,by:userLabel(),fields:fields.map(f=>names[f]),oldUpi:old.upi||'',oldAcct:maskAcct(old.acct)}]).slice(-50);
+  addInbox(curCID,null,'Fee payment details were changed',userLabel()+' changed: '+fields.map(f=>names[f]).join(', ')+'. If you did not expect this, check the College Profile now.','security','college','paychg_'+Date.now(),'admin');
+  persistAll();renderPayDetails();showToast('Payment details saved. All Admins were notified.');
+}
+
+/* ---------- students pay; staff verify ---------- */
+function studentDues(me){return payments.filter(p=>p.studentId===me.id&&Number(p.dues||0)>0).sort((a,b)=>String(a.month).localeCompare(String(b.month)));}
+const claimBadge=c=>({pending:'<span class="io-c upd">Waiting for verification</span>',verified:'<span class="io-c new">Verified</span>',rejected:'<span class="io-c err">Not verified</span>'}[c.status]||esc(c.status));
+async function renderStudentPay(){
+  const host=gid('payStuArea');if(!host)return;
+  const isStu=currentUser&&currentUser.role==='student';host.style.display=isStu?'':'none';if(!isStu)return;
+  const me=myStudent();const p=college.pay||{};
+  if(!me){host.innerHTML='<div class="card"><p class="io-hint">Your account is not linked to an enrolment yet, so fees cannot be shown. Ask the college office.</p></div>';return;}
+  const dues=studentDues(me);const totalDue=dues.reduce((a,x)=>a+Number(x.dues||0),0);
+  const has=p.payee&&(p.upi||p.acct);
+  const recent=p.changedAt&&(Date.now()-Date.parse(p.changedAt))<14*864e5;
+  let h='<div class="card"><h3 style="font-size:15px;margin-bottom:6px;">Pay your fees</h3>';
+  h+='<p style="font-size:13px;margin-bottom:8px;">'+(totalDue?'You owe <b>'+inr(totalDue)+'</b> for '+dues.map(d=>esc(d.month)).join(', ')+'.':'You have no pending dues.')+'</p>';
+  if(!has){h+='<p class="io-hint">Your college has not added online payment details yet. Please pay at the college office.</p></div>';}
+  else{
+    if(recent)h+='<div class="warn"><b>Payment details were changed on '+esc(fmtStamp(p.changedAt))+'.</b> If you did not expect this, confirm with the college office before you pay.</div>';
+    h+='<div class="toolbar lab"><div class="flt"><label for="spMonth">Paying for</label><select id="spMonth" onchange="spAmtFromMonth()">'+(dues.length?dues.map(d=>'<option value="'+esc(d.month)+'" data-due="'+Number(d.dues||0)+'">'+esc(d.month)+' — '+inr(d.dues)+' due</option>').join(''):'')+'<option value="other">Advance / other</option></select></div><div class="flt"><label for="spAmt">Amount (₹)</label><input id="spAmt" type="number" min="1" step="1" value="'+(dues[0]?Number(dues[0].dues):'')+'" oninput="spRenderQr()"></div></div>';
+    h+='<div class="pay-grid"><div class="qr" id="spQr"></div><div><div class="io-hint" style="margin:0;">Pay to</div><div class="payee">'+esc(p.payee)+'</div><div class="kv">'+(p.upi?'<span>UPI ID</span><code>'+esc(p.upi)+'</code><button class="icon-btn" onclick="copyText(\''+esc(p.upi)+'\',\'UPI ID copied\')">Copy</button>':'')+((p.apps||[]).length?'<span>Apps</span><div>'+esc(p.apps.join(', '))+'</div><i></i>':'')+(p.acct?'<span>Account no.</span><code>'+esc(p.acct)+'</code><button class="icon-btn" onclick="copyText(\''+esc(p.acct)+'\',\'Account number copied\')">Copy</button><span>IFSC</span><code>'+esc(p.ifsc)+'</code><button class="icon-btn" onclick="copyText(\''+esc(p.ifsc)+'\',\'IFSC copied\')">Copy</button><span>Bank</span><div>'+esc([p.bank,p.branch].filter(Boolean).join(', '))+'</div><i></i>':'')+'</div>'+(p.upi?'<p style="margin-top:8px;font-size:12.5px;"><a id="spUpiLink" href="#">Open in a UPI app</a> <span class="io-hint">(on a phone with Google Pay, PhonePe, Paytm or BHIM)</span></p>':'')+'</div></div>';
+    h+='<div class="safe">Before you pay, check that your UPI app shows the name <b>'+esc(p.payee)+'</b>. Swarsetu and your college will never ask for your UPI PIN, OTP or card details.</div>';
+    h+='<h4 style="font-size:13.5px;margin:12px 0 6px;">After paying, send the transaction reference</h4><div class="toolbar lab"><div class="flt"><label for="spMethod">Paid by</label><select id="spMethod"><option>UPI</option><option>Bank transfer</option></select></div><div class="flt"><label for="spRef">Transaction reference (UTR)</label><input id="spRef" maxlength="22" placeholder="12-digit UPI reference" autocomplete="off"></div><div class="flt"><label for="spDate">Paid on</label><input id="spDate" type="date" value="'+todayStr()+'" max="'+todayStr()+'"></div><div class="flt"><label>&nbsp;</label><button class="btn btn-brass btn-sm" onclick="submitClaim()">Send for verification</button></div></div><div class="inline-err" id="spErr"></div></div>';
+  }
+  const mine=payClaims.filter(c=>c.studentId===me.id).sort((a,b)=>b.at.localeCompare(a.at));
+  if(mine.length)h+='<div class="card"><h3 style="font-size:14px;margin-bottom:6px;">My payment submissions</h3><div style="overflow-x:auto;"><table><thead><tr><th>Sent</th><th>For</th><th>Amount</th><th>Method</th><th>Reference</th><th>Status</th></tr></thead><tbody>'+mine.map(c=>'<tr><td class="mono">'+esc(fmtStamp(c.at))+'</td><td class="mono">'+esc(c.month)+'</td><td class="mono">'+inr(c.amount)+'</td><td>'+esc(c.method)+'</td><td class="mono">'+esc(c.ref)+'</td><td>'+claimBadge(c)+(c.status==='rejected'&&c.note?'<div style="font-size:11px;color:var(--terracotta);">'+esc(c.note)+'</div>':'')+'</td></tr>').join('')+'</tbody></table></div></div>';
+  host.innerHTML=h;
+  if(has)spRenderQr();
+}
+function spAmtFromMonth(){const o=gid('spMonth').selectedOptions[0];if(o&&o.dataset.due)gid('spAmt').value=o.dataset.due;spRenderQr();}
+async function spRenderQr(){
+  const p=college.pay||{};const el=gid('spQr');if(!el)return;const me=myStudent();const amt=Number(gid('spAmt').value)||0;const mon=gid('spMonth').value;
+  const note=(me?me.id:'')+' '+(mon==='other'?'fee':mon+' fee');
+  const url=p.upi?upiUrl(p,amt>0?amt:null,note):'';const a=gid('spUpiLink');if(a&&url)a.href=url;
+  if(p.qrMode==='upload'&&p.qrImg){el.innerHTML='<img src="'+esc(p.qrImg)+'" alt="College payment scanner"><div class="io-hint">College scanner — enter '+(amt?inr(amt):'the amount')+' in your app</div>';return;}
+  if(!p.upi){el.innerHTML='<div class="io-hint">Pay by bank transfer using the details shown.</div>';return;}
+  try{el.innerHTML=await qrSvg(url)+'<div class="io-hint">Scan with any UPI app'+(amt?' · '+inr(amt)+' filled in':'')+'</div>';}catch(e){el.innerHTML='<div class="io-hint">QR needs an internet connection. Use the UPI ID instead.</div>';}
+}
+function refTaken(ref){const r=String(ref).toUpperCase();return allRows('payClaims').some(c=>String(c.ref).toUpperCase()===r&&c.status!=='rejected')||allRows('payments').some(p=>(p.refs||[]).map(x=>String(x).toUpperCase()).includes(r));}
+function submitClaim(){
+  const me=myStudent();const er=gid('spErr');if(!me)return;
+  const amt=Number(gid('spAmt').value);const ref=gid('spRef').value.trim().replace(/\s/g,'').toUpperCase();const method=gid('spMethod').value;const date=gid('spDate').value;const mon=gid('spMonth').value;
+  if(!(amt>0)){er.textContent='Enter the amount you paid.';return;}
+  if(amt>200000){er.textContent='That amount looks too large. Check it.';return;}
+  if(method==='UPI'&&!/^\d{12}$/.test(ref)){er.textContent='A UPI transaction reference (UTR) is 12 digits. You can find it in your UPI app under the payment.';return;}
+  if(method!=='UPI'&&!/^[A-Z0-9]{6,22}$/.test(ref)){er.textContent='Enter the bank transfer reference (6–22 letters and numbers).';return;}
+  if(!date||date>todayStr()){er.textContent='Choose the date you paid (not in the future).';return;}
+  if(refTaken(ref)){er.textContent='This transaction reference has already been submitted. Each payment can be sent only once.';return;}
+  const c={id:nid('pc'),collegeId:curCID,studentId:me.id,student:stuName(me),batchId:me.batchId||'',month:mon==='other'?ym():mon,amount:amt,method,ref,paidOn:date,at:new Date().toISOString(),by:currentUser.id,status:'pending'};
+  payClaims.push(c);
+  addInbox(curCID,null,'Payment to verify: '+c.student+' '+inr(amt),method+' reference '+ref+' paid on '+date+' for '+c.month+'.','payment','payments','pc_'+c.id,'editFees');
+  persistAll();renderStudentPay();showToast('Sent. The college will verify your payment.');
+}
+function renderPayVerify(){
+  const card=gid('payVerifyCard');if(!card)return;
+  const show=currentUser&&currentUser.role!=='student'&&can('editFees');card.style.display=show?'':'none';if(!show)return;
+  const list=payClaims.filter(c=>c.status==='pending').sort((a,b)=>a.at.localeCompare(b.at));gid('payVerifyN').textContent=list.length;
+  const recent=payClaims.filter(c=>c.status!=='pending').sort((a,b)=>(b.reviewAt||'').localeCompare(a.reviewAt||'')).slice(0,5);
+  gid('payVerifyHost').innerHTML=(list.length?'<table><thead><tr><th>Student</th><th>For</th><th>Amount</th><th>Method</th><th>Reference</th><th>Paid on</th><th>Sent</th><th></th></tr></thead><tbody>'+list.map(c=>'<tr><td><b>'+esc(c.student)+'</b></td><td class="mono">'+esc(c.month)+'</td><td class="mono">'+inr(c.amount)+'</td><td>'+esc(c.method)+'</td><td class="mono">'+esc(c.ref)+'</td><td class="mono">'+esc(c.paidOn)+'</td><td class="mono">'+esc(fmtStamp(c.at))+'</td><td><div class="row-actions"><button class="icon-btn" onclick="verifyClaim(\''+c.id+'\')">Verify</button><button class="icon-btn del" onclick="rejectClaim(\''+c.id+'\')">Reject</button></div></td></tr>').join('')+'</tbody></table>':'<p class="io-hint">Nothing waiting.</p>')+(recent.length?'<p class="io-hint" style="margin-top:8px;">Recently reviewed: '+recent.map(c=>esc(c.student)+' '+inr(c.amount)+' '+(c.status==='verified'?'verified':'rejected')+' by '+esc(c.reviewBy||'')).join(' · ')+'</p>':'');
+}
+async function verifyClaim(id){
+  if(!need('editFees'))return;const c=payClaims.find(x=>x.id===id);if(!c||c.status!=='pending')return;
+  if(!await ask('Have you checked that '+inr(c.amount)+' with reference '+c.ref+' reached the college account? Verifying adds it to '+c.student+"'s payments.",'Verify payment'))return;
+  const s=students.find(x=>x.id===c.studentId);const now=new Date().toISOString();
+  let p=payments.filter(x=>x.studentId===c.studentId&&x.month===c.month).sort((a,b)=>Number(b.dues||0)-Number(a.dues||0))[0];
+  if(p){p.paid=Number(p.paid||0)+Number(c.amount);p.dues=Math.max(0,Number(p.totalFee||0)-p.paid);p.status=payStatusOf(p);p.mode=c.method==='UPI'?'UPI':'Bank Transfer';p.paymentDate=c.paidOn;p.refs=(p.refs||[]).concat([c.ref]);p.remarks=((p.remarks||'')+' '+c.method+' '+c.ref).trim();p.updatedBy=userLabel();p.updatedAt=now;}
+  else{const b=batches.find(x=>x.id===(s&&s.batchId));const tot=Math.max(Number(c.amount),Number(s&&s.monthlyFee||0));p={id:nid('pay'),collegeId:curCID,studentId:c.studentId,student:c.student,batchId:(s&&s.batchId)||'',batchName:b?b.name:'',course:s?s.courseName||'':'',month:c.month,paymentDate:c.paidOn,totalFee:tot,paid:Number(c.amount),dues:Math.max(0,tot-Number(c.amount)),mode:c.method==='UPI'?'UPI':'Bank Transfer',remarks:c.method+' '+c.ref,refs:[c.ref],updatedBy:userLabel(),updatedAt:now};p.status=payStatusOf(p);payments.push(p);}
+  c.status='verified';c.reviewBy=userLabel();c.reviewAt=now;c.paymentId=p.id;
+  notifyStudentUser(c.studentId,'Payment verified: '+inr(c.amount),'Your '+c.method+' payment (ref '+c.ref+') for '+c.month+' was received. Pending dues for that month: '+inr(p.dues)+'.','payment','payments','pcv_'+c.id);
+  persistAll();renderPayments();renderDashboard();showToast('Verified and added to payments');
+}
+async function rejectClaim(id){
+  if(!need('editFees'))return;const c=payClaims.find(x=>x.id===id);if(!c||c.status!=='pending')return;
+  const why=await askText('Reject this payment?','Reason the student will see','For example: no payment with this reference reached the account.','Reject');if(why===null)return;
+  c.status='rejected';c.note=why||'Payment not found in the college account';c.reviewBy=userLabel();c.reviewAt=new Date().toISOString();
+  notifyStudentUser(c.studentId,'Payment not verified',inr(c.amount)+' ref '+c.ref+': '+c.note+'. Contact the college office if you have paid.','payment','payments','pcr_'+c.id);
+  persistAll();renderPayVerify();showToast('Marked as not verified');
+}
+
+/* ---------- join requests ---------- */
+function renderJoinRequests(){
+  const card=gid('joinCard');if(!card)return;const list=collegeUsers().filter(u=>u.status==='pending');card.style.display=list.length&&can('manageUsers')?'':'none';gid('joinN').textContent=list.length;
+  gid('joinHost').innerHTML=list.length?'<table><thead><tr><th>Name</th><th>Asked to join as</th><th>Email</th><th>Mobile</th><th>Sent</th><th>Approve as</th><th>Link to enrolment</th><th></th></tr></thead><tbody>'+list.map(u=>{
+    const guess=students.find(s=>(s.email&&u.email&&s.email.toLowerCase()===u.email.toLowerCase())||(s.mobile&&s.mobile===u.mobile));
+    const taken=new Set(users.filter(x=>x.studentId).map(x=>x.studentId));
+    return '<tr><td><b>'+esc((u.firstName+' '+(u.lastName||'')).trim())+'</b><div style="font-size:11px;color:var(--muted);">'+esc(u.username)+'</div></td><td>'+esc(u.role)+'</td><td>'+esc(u.email)+' <span class="io-c new" title="Checked with a code">✓</span></td><td>'+esc(u.mobile)+' <span class="io-c new" title="Checked with a code">✓</span></td><td class="mono">'+esc(fmtStamp(u.requestedAt||u.createdAt))+'</td><td><select id="jr_role_'+u.id+'" onchange="renderJoinRequests()">'+['student','faculty'].concat(currentUser.role==='admin'?['admin']:[]).map(r=>'<option'+(r===(gid('jr_role_'+u.id)?gid('jr_role_'+u.id).value:u.role)?' selected':'')+'>'+r+'</option>').join('')+'</select></td><td>'+(((gid('jr_role_'+u.id)?gid('jr_role_'+u.id).value:u.role)==='student')?'<select id="jr_stu_'+u.id+'"><option value="">— not linked yet —</option>'+students.filter(s=>!taken.has(s.id)).map(s=>'<option value="'+esc(s.id)+'"'+(guess&&guess.id===s.id?' selected':'')+'>'+esc(stuName(s)+' · '+s.id)+'</option>').join('')+'</select>':'—')+'</td><td><div class="row-actions"><button class="icon-btn" onclick="approveJoin(\''+u.id+'\')">Approve</button><button class="icon-btn del" onclick="rejectJoin(\''+u.id+'\')">Reject</button></div></td></tr>';}).join('')+'</tbody></table>':'';
+}
+async function approveJoin(id){
+  if(!need('manageUsers'))return;const u=users.find(x=>x.id===id&&x.collegeId===curCID);if(!u)return;
+  const role=gid('jr_role_'+id).value;const sid=gid('jr_stu_'+id)?gid('jr_stu_'+id).value:'';
+  if(role==='admin'&&currentUser.role!=='admin'){showToast('Only an Admin can approve someone as Admin');return;}
+  if(role==='student'&&!sid&&!await ask('This student is not linked to an enrolment, so they will not see a schedule or fees yet. Approve anyway?','Approve'))return;
+  u.role=role;u.status='active';u.active=true;u.approvedBy=userLabel();u.approvedAt=new Date().toISOString();if(sid)u.studentId=sid;
+  addInbox(curCID,u.id,'Welcome to '+college.name,'Your account was approved as '+role+'. Open Help & FAQ for a quick tour.','join','help','welcome_'+u.id);
+  persistAll();renderUsers();showToast((u.firstName||u.username)+' approved as '+role);
+}
+async function rejectJoin(id){
+  if(!need('manageUsers'))return;const u=users.find(x=>x.id===id&&x.collegeId===curCID);if(!u)return;
+  const why=await askText('Reject join request','Reason (shown when they try to sign in)','','Reject');if(why===null)return;
+  u.status='rejected';u.active=false;u.rejectReason=why;u.reviewBy=userLabel();u.reviewAt=new Date().toISOString();persistAll();renderUsers();showToast('Request rejected');
+}
+async function resetUserPassword(id){
+  if(!need('manageUsers'))return;const u=users.find(x=>x.id===id&&x.collegeId===curCID);if(!u)return;
+  if(u.role==='admin'&&currentUser.role!=='admin'){showToast('Only an Admin can reset an Admin password');return;}
+  if(!await reauth('Resetting '+(u.firstName||u.username)+"'s password. Enter your own password to confirm."))return;
+  const tmp=genTempPassword();await setPassword(u,tmp);u.mustChange=true;u.failCount=0;delete u.lockUntil;
+  addInbox(curCID,u.id,'Your password was reset by '+userLabel(),'Sign in with the temporary password you were given. You will be asked to choose your own.','security','profile','adminreset_'+u.id+'_'+Date.now());
+  persistAll();renderUsers();
+  showInfo('Temporary password','<p>Give this to <b>'+esc((u.firstName+' '+(u.lastName||'')).trim())+'</b> in person or by phone. It is shown only once.</p><p style="font-size:20px;" class="mono"><b>'+esc(tmp)+'</b> <button class="icon-btn" onclick="copyText(\''+esc(tmp)+'\',\'Copied\')">Copy</button></p><p class="io-hint">They must choose a new password when they sign in.</p>');
+}
+
+/* ---------- my profile ---------- */
+function renderProfile(){
+  if(!currentUser||!gid('pfSummary'))return;const u=currentUser;const c=college;
+  gid('pfSummary').innerHTML='<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;"><div style="width:52px;height:52px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Fraunces,serif;font-size:22px;">'+esc((u.firstName||u.username||'?')[0].toUpperCase())+'</div><div><div style="font-family:Fraunces,serif;font-size:19px;">'+esc((u.firstName+' '+(u.lastName||'')).trim())+'</div><div style="font-size:12.5px;color:var(--muted);"><span class="role-chip '+esc(u.role)+'">'+esc(u.role)+'</span> at <b>'+esc(c.name)+'</b> · college code <b class="mono">'+esc(c.code)+'</b>'+(u.role==='student'&&myStudent()?' · student ID <b class="mono">'+esc(myStudent().id)+'</b>':'')+'</div></div></div>';
+  const set=(k,v)=>{gid(k).value=v||'';};set('pfFirst',u.firstName);set('pfLast',u.lastName);set('pfUser',u.username);set('pfEmail',u.email);set('pfMobile',u.mobile);set('pfAlt',u.altContact);set('pfCity',u.city);set('pfCountry',u.country);
+  gid('pfErr').textContent='';
+  gid('pfCollege').innerHTML='<b>'+esc(c.name)+'</b>'+(c.location?', '+esc(c.location):'')+'<br>College code: <b class="mono">'+esc(c.code)+'</b>';
+  gid('pfCollegeSel').innerHTML=colleges.filter(x=>x.id!==curCID).sort((a,b)=>a.name.localeCompare(b.name)).map(x=>'<option value="'+esc(x.id)+'">'+esc(collegeLabel(x))+'</option>').join('')||'<option value="">No other colleges</option>';
+  gid('pfSec').innerHTML='Password last changed: '+esc(u.pwSetAt?fmtStamp(u.pwSetAt):'not recorded')+'<br>Previous sign-in: '+esc(u.prevLogin?fmtStamp(u.prevLogin):'—')+'<br>Email verified: '+(u.emailVerified?'yes':'not yet')+' · Mobile verified: '+(u.mobileVerified?'yes':'not yet')+'<br>You are signed out after '+IDLE_MIN+' minutes without activity.';
+}
+async function saveProfile(){
+  const u=currentUser;const er=gid('pfErr');const g=k=>gid(k).value.trim();
+  const first=g('pfFirst');if(!first){er.textContent='Enter your first name.';return;}
+  const em=emailCheck(g('pfEmail'),college.requireGmail&&u.role!=='admin');if(em.e){er.textContent=em.e;return;}
+  const mo=mobileCheck(g('pfMobile'),u.countryCode||'+91');if(mo.e){er.textContent=mo.e;return;}
+  if(em.v!==String(u.email||'').toLowerCase()&&identTaken(em.v,u)){er.textContent='Another account already uses this email.';return;}
+  if(mo.v!==u.mobile&&users.some(x=>x!==u&&x.mobile===mo.v)){er.textContent='Another account already uses this mobile number.';return;}
+  const un=g('pfUser')===u.username?{v:u.username}:usernameCheck(g('pfUser'),em.v,mo.v,u);if(un.e){er.textContent=un.e;return;}
+  const tg=[];if(em.v!==String(u.email||'').toLowerCase())tg.push({key:'e',label:'new email',dest:maskEmail(em.v)});if(mo.v!==u.mobile)tg.push({key:'m',label:'new mobile',dest:maskMobile(mo.v)});
+  er.textContent='';
+  if(tg.length&&!await otpStart({title:'Verify your new contact details',sub:'Enter the code we sent to confirm the change.',targets:tg}))return;
+  const s=u.role==='student'?myStudent():null;
+  const oldEmail=u.email;
+  Object.assign(u,{firstName:first,lastName:g('pfLast'),username:un.v,email:em.v,mobile:mo.v,fullMobile:(u.countryCode||'+91')+mo.v,altContact:g('pfAlt'),city:g('pfCity'),country:g('pfCountry'),updatedAt:new Date().toISOString()});
+  if(tg.some(t=>t.key==='e'))u.emailVerified=new Date().toISOString();if(tg.some(t=>t.key==='m'))u.mobileVerified=new Date().toISOString();
+  if(s){if(!u.studentId)u.studentId=s.id;s.email=em.v;s.mobile=mo.v;s.firstName=first;s.lastName=g('pfLast');}
+  if(tg.length)addInbox(curCID,u.id,'Your contact details changed','Email/mobile on your account changed on '+fmtStamp(u.updatedAt)+(oldEmail&&oldEmail!==em.v?' (old email '+maskEmail(oldEmail)+')':'')+'. If this was not you, contact the college admin.','security','profile','pfchg_'+u.id+'_'+Date.now());
+  persistAll();gid('sideUser').textContent=(u.firstName||u.username)+' '+(u.lastName||'');renderProfile();showToast('Your details were saved');
+}
+async function requestCollegeMove(){
+  const to=collegeById(gid('pfCollegeSel').value);if(!to){showToast('Choose a college');return;}
+  if(currentUser.role==='admin'&&collegeUsers().filter(u=>u.role==='admin'&&u.status==='active'&&u.id!==currentUser.id).length<1){showToast('You are the only Admin here. Make someone else an Admin first.');return;}
+  if(!await ask('Move your account to '+to.name+'? You will be signed out until its Admin approves you. Your records stay with '+college.name+'.','Request to move'))return;
+  if(!await reauth('Enter your password to move your account.'))return;
+  const u=currentUser;const from=college.name;
+  u.collegeId=to.id;u.status='pending';u.active=false;u.requestedAt=new Date().toISOString();u.movedFrom=from;delete u.studentId;if(u.role==='admin')u.role='faculty';
+  addInbox(to.id,null,'New join request',(u.firstName+' '+(u.lastName||'')).trim()+' (moving from '+from+') asked to join.','join','users','join_'+u.id+'_'+Date.now(),'manageUsers');
+  persistAll();handleLogout();showInfo('Request sent','<p>Your request to join <b>'+esc(to.name)+'</b> was sent to its Admin. You can sign in once it is approved.</p>');
+}
+
+/* ---------- help & FAQ ---------- */
+const HELP_GUIDES=[
+ {t:'Start: one link for everyone',r:['all'],s:['Open the Swarsetu link.','To start a new college, choose New User → Register a new college. You become its Admin and get a college code (for example RAM-7K2Q).','Faculty and students choose New User → Join my college, pick the college from the list or type the code, and send a join request.','Everyone checks their email and mobile with a 6-digit code.','The Admin approves join requests in User Management. Approved people sign in with their username, email or mobile and the app opens their own college with the right screens for their role.']},
+ {t:'Set up your college (Admin)',r:['admin'],s:['Open College Profile. Add the address, phone, email and the number of students per Online batch.','Choose whether sign-ups need your approval, whether a Gmail address is required, and when holiday reminders go out.','Add fee payment details: payee name, UPI ID, mobile linked to payment apps, bank account and IFSC. Upload your college scanner if you have one — the app checks it pays your UPI ID.','Open Roles & Permissions to decide what Faculty and Students can do.','Add courses, then students (or load them in Import & Export).']},
+ {t:'Approve faculty and students',r:['admin'],s:['Open User Management. Join requests are at the top.','Check the name, email and mobile (both were verified with a code).','Choose the role to approve them as. For students, pick their enrolment from the list — the app suggests one when the email or mobile matches.','Press Approve. They get a welcome message and can sign in.','Press Reject if you do not know them; they see your reason when they try to sign in.']},
+ {t:'Reset someone\'s password (Admin)',r:['admin'],s:['Open User Management and press Reset password on their row.','Enter your own password to confirm.','Give them the temporary password in person or by phone. They must choose their own when they sign in.']},
+ {t:'Forgot my password',r:['all'],s:['On the sign-in page, press "Forgot username or password?".','Enter your username, email or mobile number.','Enter the 6-digit code sent to your email and mobile. Codes last 10 minutes.','Choose a new password with 8+ characters, upper and lower case, a number and a symbol.']},
+ {t:'Edit my profile',r:['all'],s:['Press your name at the bottom of the menu (or open My Profile).','Change your name, username, email, mobile, city or country, then press Save my details.','If you changed your email or mobile, enter the code sent to the new one.','To change your password, press Change password and enter your current one first.']},
+ {t:'Mark attendance (Faculty)',r:['admin','faculty'],s:['Open Attendance → Mark Attendance. The Attendance menu opens when you click it.','Choose the batch and month (or a month range).','Pick the status to apply (Present, Late, Absent, Leave, Holiday…), then tap the cells.','Press Save attendance. Saved entries can be corrected later; each change records who made it.','Check "Absence notices from students" below the register and press Mark as leave for students who told you in advance.']},
+ {t:'Tell my teacher I can\'t attend (Student)',r:['student'],s:['Open My Attendance.','Under "Can\'t attend a class?", choose the class and a reason.','Press Notify teacher before the class starts. Your teacher gets a message and can mark it as leave.','You can cancel the notice before the class if your plans change.']},
+ {t:'Pay fees (Student)',r:['student'],s:['Open My Fees. Your pending dues are shown at the top.','Choose the month and amount. Scan the QR code with Google Pay, PhonePe, Paytm or BHIM, or copy the UPI ID or bank details.','Before paying, check that your app shows the college\'s payee name.','After paying, enter the 12-digit UPI transaction reference (UTR) and press Send for verification.','When the college verifies it, your dues update and you get a message in your Inbox.']},
+ {t:'Verify student payments (Faculty / Admin)',r:['admin','faculty'],s:['Open Fee Payments. "Payments waiting for verification" lists what students sent.','Check your bank or UPI app that the amount with that reference arrived.','Press Verify to add it to the student\'s payments, or Reject with a reason.']},
+ {t:'Holidays and automatic reminders',r:['admin','faculty','student'],s:['Admins add holidays and vacations in the College Calendar.','Before each one starts (1 day before by default — change it in College Profile), everyone it applies to gets a reminder in their Inbox.','If SMS/email reminders are switched on, they are listed in Notifications (sending is simulated in this prototype).']},
+ {t:'Load existing data (Import)',r:['admin'],s:['Open Import & Export → Upload & import.','Choose the data type and upload Excel, CSV, text, a PDF or a photo.','Check what was read, match each field to a column, review the rows, then press Import. Undo is in Import history.']}
+];
+const HELP_FAQ=[
+ {q:'Who is the Admin?',a:'The person who registers a college is its first Admin. An Admin can make others Admins when approving a join request or in User Management. Every college always keeps at least one active Admin.',r:['all']},
+ {q:'How does the app know which college I belong to?',a:'Your account belongs to one college. When you sign in, the app opens that college and only its data. Faculty and students choose their college (or enter its code) when they sign up.',r:['all']},
+ {q:'What is the college code?',a:'A unique code for each college, such as RAM-7K2Q. It is shown on the College Profile and in My Profile. Share it with faculty and students so they join the right college. Two colleges cannot register the same name.',r:['all']},
+ {q:'Can I sign in with my mobile number or Gmail?',a:'Yes. Sign in with your username, your email or your 10-digit mobile number. Your username itself can also be a name, your mobile or your Gmail.',r:['all']},
+ {q:'Why can\'t I sign in after registering?',a:'Your college Admin has to approve your join request first. You will see a message saying it is waiting. Ask your college office if it takes long.',r:['faculty','student']},
+ {q:'My account is locked',a:'After 5 wrong passwords an account is locked for 15 minutes. Use "Forgot password" to reset it straight away, or ask your Admin.',r:['all']},
+ {q:'I changed my phone number',a:'Open My Profile, enter the new number and save. A code is sent to the new number to confirm it.',r:['all']},
+ {q:'Can I move to a different college?',a:'Yes. In My Profile choose the college and press Request to join. You are signed out until its Admin approves you. Your old records stay with your old college.',r:['faculty','student']},
+ {q:'Is it safe to pay through the app?',a:'The app never takes card details, UPI PINs or OTPs. You pay in your own UPI or banking app. Always check that the payee name in your app matches the one shown. If the college changed its payment details recently, the app warns you for 14 days.',r:['all']},
+ {q:'I paid but my dues did not change',a:'Payments are added once the college checks the money arrived. Your submission shows "Waiting for verification" until then. If it is rejected, the reason is shown.',r:['student']},
+ {q:'Why was my transaction reference refused?',a:'A UPI reference (UTR) is 12 digits. Each reference can be sent only once, to stop duplicates.',r:['student']},
+ {q:'Who can change the college bank or UPI details?',a:'Only Admins, and only after re-entering their password. Every change is logged and all Admins are notified.',r:['admin']},
+ {q:'When do holiday reminders go out?',a:'By default one day before each holiday or vacation. Admins can change this to 2, 3 or 7 days, or turn it off, in College Profile. Reminders are created when anyone from the college opens the app on or after that day.',r:['all']},
+ {q:'Why can\'t I see a screen?',a:'Screens follow your role\'s permissions. Ask your Admin to enable it in Roles & Permissions.',r:['faculty','student']},
+ {q:'What is simulated in this version?',a:'Sending SMS and email (verification codes, reminders, notifications) is simulated: the codes are shown on screen. Real sending needs an SMS/email service. Full protection between colleges also needs a server; see the Security notes.',r:['all']},
+ {q:'Security notes',a:'Passwords are stored only as salted hashes. Accounts lock after repeated wrong passwords and sign out after 30 minutes idle. New sign-ups verify email and mobile and need approval. Payment details need a password to change and are checked against the uploaded scanner. Limits of this prototype: data lives in the artifact\'s shared database, which every signed-in viewer of the link can read, and checks run in the browser. A production version needs a server that enforces college separation and sends real codes.',r:['admin']}
+];
+function helpVisible(){const sel=gid('helpRole')?gid('helpRole').value:'me';const role=sel==='me'?(currentUser?currentUser.role:'all'):sel;const q=(gid('helpQ')?gid('helpQ').value:'').toLowerCase().trim();
+  const okR=r=>role==='all'||r.includes('all')||r.includes(role);const okQ=txt=>!q||txt.toLowerCase().includes(q);
+  return {g:HELP_GUIDES.filter(x=>okR(x.r)&&okQ(x.t+' '+x.s.join(' '))),f:HELP_FAQ.filter(x=>okR(x.r)&&okQ(x.q+' '+x.a))};}
+function renderHelp(){
+  const host=gid('helpHost');if(!host)return;const v=helpVisible();
+  host.innerHTML='<div class="help-h">Step-by-step guides</div>'+(v.g.length?v.g.map(x=>'<details class="help-g"><summary>'+esc(x.t)+'</summary><ol>'+x.s.map(s=>'<li>'+esc(s)+'</li>').join('')+'</ol></details>').join(''):'<p class="io-hint">No guides match.</p>')+'<div class="help-h">Frequently asked questions</div>'+(v.f.length?v.f.map(x=>'<details class="help-g"><summary>'+esc(x.q)+'</summary><div class="ans">'+esc(x.a)+'</div></details>').join(''):'<p class="io-hint">No questions match.</p>');
+}
+function guideMarkdown(){let m='# Swarsetu — User Guide\n\n';HELP_GUIDES.forEach(x=>{m+='## '+x.t+'\n\n'+x.s.map((s,i)=>(i+1)+'. '+s).join('\n')+'\n\n';});m+='# Frequently asked questions\n\n';HELP_FAQ.forEach(x=>{m+='### '+x.q+'\n\n'+x.a+'\n\n';});return m;}
+function dlGuide(){saveFile('Swarsetu_User_Guide.md',guideMarkdown(),'text/markdown');}
+
+/* ---------- attendance menu always starts collapsed ---------- */
+let navAttOpen=false;
+function toggleNavGrp(){navAttOpen=!navAttOpen;buildNav(currentUser.role);}
+
+
+function loadAll(){
+  migrateV3();
+  const d=readStore();
+  colleges=d.colleges||[];users=d.users||[];platform=d.platform||{};
+  if(d.college&&d.college.name&&!colleges.length)legacyCollege=d.college;
+  const all={};SCOPED.forEach(c=>all[c]=d[c]||[]);splitScope(all);
+}
+function snapshot(){const o={colleges,users,platform};SCOPED.forEach(c=>o[c]=allRows(c));return o;}
+function currentState(){const s=stripSecrets(snapshot());const o={};DB_COLS.forEach(c=>{const arr=s[c]||[];arr.forEach(r=>{if(r.id==null)r.id=nid('x');});o[c]=Object.fromEntries(arr.map(r=>[dbId(r.id),jstr(r)]));});o.meta={platform:jstr(platform)};return o;}
+function applyRemote(snapByCol){
+  const g=c=>Object.values(snapByCol[c]||{});
+  users=g('users');colleges=g('colleges');
+  const meta=snapByCol.meta||{};if(meta.college&&meta.college.name&&!colleges.length)legacyCollege=meta.college;if(meta.platform)platform=meta.platform;
+  const all={};SCOPED.forEach(c=>all[c]=g(c));splitScope(all);
+  writeStore(snapshot());
+}
+function refreshAfterRemote(){
+  if(!currentUser)return;
+  const me=users.find(u=>u.id===currentUser.id);
+  if(!me||me.active===false||(me.status&&me.status!=='active')||me.collegeId!==curCID){handleLogout();gid('loginErr').textContent='Your account was deactivated, moved or removed. Contact the college admin.';return;}
+  currentUser=me;
+  try{applyPerms();populateAll();updateBell();const cur=document.querySelector('.page.active');if(cur&&!pageAllowed(cur.id.replace('page-','')))showPage(firstPage());}catch(e){console.warn(e);}
+}
+function enterApp(user){
+  currentUser=user;rescope(user.collegeId);
+  SCREENS.forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});
+  document.getElementById('app').style.display='block';
+  document.body.className='role-'+user.role;
+  document.getElementById('sideUser').textContent=(user.firstName||user.username)+' '+(user.lastName||'');
+  const chip=document.getElementById('sideChip');chip.className='role-chip '+user.role;chip.textContent=user.role.charAt(0).toUpperCase()+user.role.slice(1);
+  attDraft={};navAttOpen=false;lastAct=Date.now();applyPerms();updateCollegeStrips();populateAll();
+  try{runAutoReminders();}catch(e){console.warn(e);}updateBell();
+  showPage(user.role==='student'?(pageAllowed('announcements')?'announcements':firstPage()):(pageAllowed('dashboard')?'dashboard':firstPage()));
+  if(pendingClassTok){const tk=pendingClassTok;pendingClassTok=null;openSharedClass(tk);}
+}
+function findStuByUser(u){if(!u)return null;if(u.studentId){const s=students.find(x=>x.id===u.studentId);if(s)return s;}return students.find(s=>s.email&&u.email&&s.email.toLowerCase()===u.email.toLowerCase())||null;}
+function newStudentId(code){let mx=0;allRows('students').forEach(s=>{const m=String(s.id).match(/^STU(\d+)/);if(m)mx=Math.max(mx,+m[1]);});return 'STU'+String(mx+1).padStart(4,'0')+'-'+code;}
+function exportBackup(){
+  if(!currentUser||currentUser.role!=='admin'){showToast('Access denied — only an Admin can download a backup.');return;}
+  const o={format:'swarsetu-college-backup',version:'v8',exportedAt:new Date().toISOString(),exportedBy:userLabel(),college:{...college,pay:undefined,payAudit:undefined},users:collegeUsers().map(u=>({id:u.id,firstName:u.firstName,lastName:u.lastName,username:u.username,email:u.email,mobile:u.mobile,role:u.role,status:u.status}))};
+  SCOPED.forEach(c=>o[c]=wget(c));
+  return saveFile('swarsetu_'+(college.code||'college')+'_backup_'+todayStr()+'.json',JSON.stringify(o,null,1),'application/json');
+}
+function importBackup(input){
+  if(!currentUser||currentUser.role!=='admin'){showToast('Access denied — only an Admin can restore a backup.');input.value='';return;}
+  const file=input.files[0];input.value='';if(!file)return;
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    let d;try{d=JSON.parse(e.target.result);}catch(err){showToast('This is not a valid backup file.');return;}
+    if(!d||typeof d!=='object'||!Array.isArray(d.students)){showToast('This is not a Swarsetu backup.');return;}
+    if(d.colleges&&d.colleges.length>1){showToast('This file holds several colleges. Only a single-college backup can be restored here.');return;}
+    if(!await ask('Replace all of '+college.name+"'s records (students, courses, attendance, fees, classes, calendar…) with the backup from "+(d.exportedAt?fmtStamp(d.exportedAt):'this file')+'? User accounts and payment details are not changed. Other colleges are not affected.','Restore backup'))return;
+    if(!await reauth('Restoring a backup replaces this college\'s data. Enter your password to confirm.'))return;
+    SCOPED.forEach(c=>{const rows=(d[c]||[]).filter(r=>r&&typeof r==='object');rows.forEach(r=>{r.collegeId=curCID;if(r.id==null)r.id=nid('x');});wset(c,rows);});
+    const keep={id:college.id,code:college.code,pay:college.pay,payAudit:college.payAudit,permissions:college.permissions,createdAt:college.createdAt,createdBy:college.createdBy};
+    if(d.college&&typeof d.college==='object'){const nm=d.college.name;Object.assign(college,d.college,keep);if(nm&&colleges.some(c=>c.id!==curCID&&normName(c.name)===normName(nm)))college.name=keep.name||college.name;}
+    persistAll();populateAll();showToast('Backup restored for '+college.name);
+  };
+  reader.readAsText(file);
+}
+function activeAdmins(){return collegeUsers().filter(x=>x.role==='admin'&&x.active!==false&&x.status!=='pending');}
+function renderUsers(){
+  const tbody=gid('usersT');if(!tbody)return;
+  renderJoinRequests();
+  const rf=gid('usrRoleF').value,sf=gid('usrStatusF').value,q=(gid('usrSearch').value||'').toLowerCase();
+  const adm=currentUser&&currentUser.role==='admin';const del=can('deleteRecords');
+  const st=u=>u.status==='pending'?'pending':u.status==='rejected'?'rejected':u.active===false?'inactive':'active';
+  const rows=collegeUsers().filter(u=>(!rf||u.role===rf)&&(!sf||st(u)===sf)&&(!q||[u.firstName,u.lastName,u.username,u.email,u.mobile].join(' ').toLowerCase().includes(q)));
+  const lbl={active:'Active',inactive:'Inactive',pending:'Waiting for approval',rejected:'Rejected'};
+  tbody.innerHTML=rows.length?rows.map(u=>{const s=st(u);const lock=!adm&&u.role==='admin';const locked=u.lockUntil&&Date.now()<Date.parse(u.lockUntil);
+    return '<tr'+(s==='active'?'':' style="opacity:.65;"')+'><td><b>'+esc((u.firstName||'')+' '+(u.lastName||''))+'</b>'+(u.mustChange?'<div style="font-size:10.5px;color:#8a6a14;">must set new password</div>':'')+'</td><td>'+esc(u.username)+'</td><td><span class="role-chip '+esc(u.role)+'">'+esc(u.role)+'</span></td><td><span class="tag '+(s==='active'?'active':'inactive')+'">'+lbl[s]+'</span>'+(locked?'<div style="font-size:10.5px;color:var(--terracotta);">locked</div>':'')+'</td><td>'+esc(u.email)+'</td><td>'+esc(u.mobile)+'</td><td class="mono">'+esc(u.lastLogin?fmtStamp(u.lastLogin):'—')+'</td><td><div class="row-actions" style="flex-wrap:wrap;">'+(lock||s==='pending'?'<span style="font-size:11px;color:var(--muted);">'+(lock?'admin only':'see join requests')+'</span>':'<button class="icon-btn" onclick="openUserModal(\''+u.id+'\')">Edit</button><button class="icon-btn" onclick="resetUserPassword(\''+u.id+'\')">Reset password</button><button class="icon-btn" onclick="toggleUserActive(\''+u.id+'\')">'+(s==='active'?'Deactivate':'Activate')+'</button>'+(del&&u.id!==currentUser.id?'<button class="icon-btn del" onclick="deleteUser(\''+u.id+'\')">Del</button>':''))+'</div></td></tr>';}).join(''):'<tr class="empty-row"><td colspan="8">No users match.</td></tr>';
+}
+function openUserModal(id){
+  if(!need('manageUsers'))return;
+  const u=id?users.find(x=>x.id===id&&x.collegeId===curCID):null;if(id&&!u)return;
+  if(u&&u.role==='admin'&&currentUser.role!=='admin'){showToast('Access denied — only an Admin can edit Admin accounts.');return;}
+  editUserId=u?u.id:null;
+  gid('usrModalTitle').textContent=u?'Edit User':'Add User';gid('usrModalSub').textContent=u?'Changes apply the next time this user signs in.':'The user signs in with their username, email or mobile. They must set their own password at first sign-in.';
+  const set=(k,v)=>{gid(k).value=v||'';};
+  set('usrFirst',u&&u.firstName);set('usrLast',u&&u.lastName);set('usrName',u&&u.username);set('usrEmail',u&&u.email);set('usrMobile',u&&u.mobile);set('usrPass','');
+  gid('usrRole').value=u?u.role:'faculty';gid('usrStatus').value=u&&(u.active===false||u.status==='inactive')?'inactive':'active';
+  [...gid('usrRole').options].forEach(o=>o.disabled=o.value==='admin'&&currentUser.role!=='admin');
+  gid('usrPassHint').textContent=u?'Leave blank to keep the current password. Use Reset password to give a temporary one.':'A starting password: 8+ characters with upper, lower, number and symbol. They change it at first sign-in.';
+  gid('usrErr').textContent='';openModal('userModal');
+}
+async function saveUser(){
+  if(!need('manageUsers'))return;
+  const er=gid('usrErr');const u=editUserId?users.find(x=>x.id===editUserId):null;
+  const g=k=>gid(k).value.trim();
+  const first=g('usrFirst'),pass=gid('usrPass').value,role=g('usrRole'),active=gid('usrStatus').value==='active';
+  if(!first){er.textContent='Enter the first name.';return;}
+  const em=emailCheck(g('usrEmail'));if(em.e){er.textContent=em.e;return;}
+  const mob=g('usrMobile');let mv='';if(mob){const mc=mobileCheck(mob,(u&&u.countryCode)||'+91');if(mc.e){er.textContent=mc.e;return;}mv=mc.v;}
+  if(em.v!==String(u&&u.email||'').toLowerCase()&&identTaken(em.v,u)){er.textContent='Another account already uses this email.';return;}
+  if(mv&&users.some(x=>x!==u&&x.mobile===mv)){er.textContent='Another account already uses this mobile number.';return;}
+  const un=u&&g('usrName')===u.username?{v:u.username}:usernameCheck(g('usrName'),em.v,mv,u);if(un.e){er.textContent=un.e;return;}
+  if(!u&&!pass){er.textContent='Enter a starting password.';return;}
+  if(pass&&!passOk(pass)){er.textContent='Password needs 8+ characters with an uppercase letter, a lowercase letter, a number and a symbol.';return;}
+  if(role==='admin'&&currentUser.role!=='admin'){er.textContent='Only an Admin can create or promote Admin accounts.';return;}
+  if(u&&u.role==='admin'&&(role!=='admin'||!active)&&activeAdmins().filter(x=>x!==u).length<1){er.textContent='There must be at least one active Admin.';return;}
+  if(u&&currentUser.id===u.id&&!active){er.textContent='You cannot deactivate your own account.';return;}
+  const now=new Date().toISOString();
+  if(u){if(u.role!==role)addInbox(curCID,null,'Role changed: '+(u.firstName||u.username),userLabel()+' changed '+(u.firstName||u.username)+' from '+u.role+' to '+role+'.','security','users','role_'+u.id+'_'+Date.now(),'admin');Object.assign(u,{firstName:first,lastName:g('usrLast'),username:un.v,email:em.v,mobile:mv,role,active,status:active?'active':'inactive',updatedBy:userLabel(),updatedAt:now});if(pass){await setPassword(u,pass);u.mustChange=u.id!==currentUser.id;}if(currentUser.id===u.id)currentUser=u;}
+  else{const nu={id:nid('u'),collegeId:curCID,firstName:first,lastName:g('usrLast'),email:em.v,username:un.v,role,active,status:active?'active':'inactive',countryCode:'+91',mobile:mv,fullMobile:mv?'+91'+mv:'',altContact:'',city:'',country:'',createdBy:userLabel(),createdAt:now,mustChange:true};await setPassword(nu,pass);users.push(nu);}
+  persistAll();closeModal('userModal');renderUsers();showToast(u?'User updated':'User created — '+un.v+' can now sign in as '+role);
+  if(u&&currentUser.id===u.id)applyPerms();
+}
+async function toggleUserActive(id){
+  if(!need('manageUsers'))return;const u=users.find(x=>x.id===id&&x.collegeId===curCID);if(!u)return;
+  if(u.role==='admin'&&currentUser.role!=='admin'){showToast('Access denied — only an Admin can change Admin accounts.');return;}
+  const act=u.active!==false&&u.status!=='inactive';
+  if(act&&currentUser.id===u.id){showToast('You cannot deactivate your own account');return;}
+  if(act&&u.role==='admin'&&activeAdmins().length<=1){showToast('There must be at least one active Admin');return;}
+  if(!await ask((act?'Deactivate ':'Activate ')+(u.firstName||u.username)+'? '+(act?'They will not be able to sign in. Their records stay.':'They will be able to sign in again.')))return;
+  u.active=!act;u.status=u.active?'active':'inactive';u.updatedBy=userLabel();u.updatedAt=new Date().toISOString();persistAll();renderUsers();showToast(u.active?'User activated':'User deactivated — history kept');
+}
+
 /* ---------- NAVIGATION ---------- */
-const NAV_ALL=[{id:'dashboard',l:'Dashboard'},{id:'students',l:'Students'},{id:'courses',l:'Courses'},{id:'academic',l:'Academic Structure'},{id:'faculty',l:'Faculty Mgmt'},{id:'timetable',l:'Timetable',ls:'My Schedule'},{id:'calendar',l:'College Calendar'},{grp:'Attendance'},{id:'attendance',l:'Mark Attendance',ls:'My Attendance',sub:1},{id:'attsummary',l:'Summary',sub:1},{id:'classes',l:'Classes',ls:'My Classes'},{id:'payments',l:'Fee Payments',ls:'My Fees'},{id:'notifications',l:'Notifications'},{id:'announcements',l:'Events &amp; Recitals'},{id:'dataio',l:'Import &amp; Export'},{id:'college',l:'College Profile'},{id:'users',l:'User Management'},{id:'roles',l:'Roles &amp; Permissions'}];
+const NAV_ALL=[{id:'dashboard',l:'Dashboard'},{id:'students',l:'Students'},{id:'courses',l:'Courses'},{id:'academic',l:'Academic Structure'},{id:'faculty',l:'Faculty Mgmt'},{id:'timetable',l:'Timetable',ls:'My Schedule'},{id:'calendar',l:'College Calendar'},{grp:'Attendance'},{id:'attendance',l:'Mark Attendance',ls:'My Attendance',sub:1},{id:'attsummary',l:'Summary',sub:1},{id:'classes',l:'Classes',ls:'My Classes'},{id:'payments',l:'Fee Payments',ls:'My Fees'},{id:'notifications',l:'Notifications'},{id:'announcements',l:'Events &amp; Recitals'},{id:'dataio',l:'Import &amp; Export'},{id:'college',l:'College Profile'},{id:'users',l:'User Management'},{id:'roles',l:'Roles &amp; Permissions'},{id:'profile',l:'My Profile'},{id:'help',l:'Help &amp; FAQ'}];
 const PAGE_PERM={dashboard:'viewDashboard',students:'viewStudents',courses:'viewCourses',academic:'viewCourses',faculty:'viewFaculty',timetable:'viewTimetable',calendar:'viewCalendar',attendance:'viewAttendance',attsummary:'viewAttendance',classes:'viewClasses',payments:'viewFees',notifications:'sendNotifications',announcements:'viewEvents',college:'viewCollege',users:'manageUsers',roles:'manageUsers'};
 function pageAllowed(id){if(!currentUser)return false;if(id==='denied')return true;if(id==='dataio')return currentUser.role!=='student'&&(can('importData')||can('exportData'));if(id==='attsummary'&&currentUser.role==='student')return false;const p=PAGE_PERM[id];return p?can(p):true;}
 function buildNav(role){
   const stu=role==='student';const out=[];
   NAV_ALL.forEach((n,i)=>{
-    if(n.grp){if(stu)return;const kids=[];for(let j=i+1;j<NAV_ALL.length&&NAV_ALL[j].sub;j++)kids.push(NAV_ALL[j]);if(kids.some(k=>pageAllowed(k.id)))out.push('<div class="nav-grp">'+n.grp+'</div>');return;}
+    if(n.grp){if(stu)return;const kids=[];for(let j=i+1;j<NAV_ALL.length&&NAV_ALL[j].sub;j++)kids.push(NAV_ALL[j]);const cur=document.querySelector('.page.active');const onKid=cur&&kids.some(k=>'page-'+k.id===cur.id);if(kids.some(k=>pageAllowed(k.id)))out.push('<button class="nav-grp tog'+(navAttOpen?' open':'')+(onKid?' has-active':'')+'" onclick="toggleNavGrp()" aria-expanded="'+navAttOpen+'">'+n.grp+' <span class="car" aria-hidden="true">▸</span></button>');return;}
     if(!pageAllowed(n.id))return;
+    if(n.sub&&!stu&&!navAttOpen)return;
     out.push('<button class="navlink'+(n.sub&&!stu?' sub':'')+'" data-page="'+n.id+'" onclick="showPage(\''+n.id+'\')"><span class="dot"></span>'+(stu&&n.ls?n.ls:n.l)+'</button>');
   });
   gid('sideNav').innerHTML=out.join('')||'<div class="nav-grp">No screens enabled for your role</div>';
@@ -3535,6 +4323,12 @@ function showPage(name){
   if(name==='users')renderUsers();
   if(name==='roles')renderPerms();
   if(name==='dataio')setupDataIO();
+  if(name==='profile')renderProfile();
+  if(name==='inbox')renderInbox();
+  if(name==='help')renderHelp();
+  if(name==='college')renderPayDetails();
+  if(navAttOpen&&name!=='attendance'&&name!=='attsummary'){navAttOpen=false;}
+  if(currentUser)buildNav(currentUser.role);
   if(name==='announcements')renderAnnouncements();
 }
 document.addEventListener('click',e=>{const el=e.target;if(el&&el.matches&&el.matches('input[type=date],input[type=month]')&&!el.disabled&&!el.readOnly&&typeof el.showPicker==='function'){try{el.showPicker();}catch(_){}}});
@@ -3667,7 +4461,7 @@ function saveStudent(){
   const stuMobile=document.getElementById('smobile').value.trim();
   if(stuMobile&&!validMobile(stuMobile)){showToast('Mobile number must be exactly 10 digits');return;}
   const stuCC=document.getElementById('stuCC')?.value||'+91';
-  const id=editStuId||(()=>{stuSeq++;const code=((crsObj?crsObj.name:level)||'STU').replace(/[^A-Z0-9]/gi,'').slice(0,3).toUpperCase()||'STU';return 'STU'+String(stuSeq).padStart(4,'0')+'-'+code;})();
+  const id=editStuId||newStudentId(((crsObj?crsObj.name:level)||'STU').replace(/[^A-Z0-9]/gi,'').slice(0,3).toUpperCase()||'STU');
   const item={id,firstName:first,lastName:document.getElementById('slast').value.trim(),email:document.getElementById('semail').value.trim(),countryCode:stuCC,mobile:stuMobile,fullMobile:stuMobile?stuCC+stuMobile:'',altContact:document.getElementById('saltcontact').value.trim(),parent:document.getElementById('sparent').value.trim(),ageGroup:document.getElementById('sage').value,country:document.getElementById('scountry').value,city:document.getElementById('scity').value,level,levelOther:level==='Other'?levelOther:'',courseId:crsId,courseName:crsObj?crsObj.name:'',classType:document.getElementById('sclasstype').value,frequency:document.getElementById('sfreq').value,weekdays,timing:document.getElementById('stiming').value,interval:document.getElementById('sinterval').value,mode:document.getElementById('smode').value,monthlyFee:document.getElementById('sfee').value,joiningFee:document.getElementById('sjoinfee').value,joiningDate:document.getElementById('sjoindate').value,totalClassesPerMonth:calcTotal(weekdays,ym()),pendingClasses:0,status:'Active'};
   if(!item.courseId||!weekdays.length||!item.timing){showToast('Choose a course, weekdays and timing so the student can be placed in a batch');return;}
   {const bk=ensureBatch(item,editStuId,true);if(bk.err){showToast(bk.err);return;}item.batchId=bk.batch.id;item.batchName=bk.batch.name;}
@@ -3867,7 +4661,7 @@ function exportTable(type){
     timetable:()=>timetable.map(t=>({'Student':t.studentName,'Course':t.courseName,'Days':(t.weekdays||[]).join(';'),'Timing':t.timing,'Interval':t.interval+'min','Mode':t.mode})),
     attendance:()=>attendance.map(a=>{const s=students.find(x=>x.id===a.studentId);const st=s?attStats(s,a.yearMonth):{};return{'Student':s?stuName(s):'','Course':a.batch||'','Month':a.yearMonth,'Total Monthly':st.total||0,'Present':st.present||0,'Late':st.late||0,'Absent':st.absent||0,'Leave':st.v||0,'Holiday':st.hol||0,'Faculty Leave':st.dh||0,'Compensation':st.c||0,'Pending':st.pending||0,'Last updated by':a.updatedBy||'','Last updated at':a.updatedAt||''};}),
     payments:()=>payRows().map(p=>({'Student':p.student,'Batch':p.batchName||'','Course':p.course,'Month':p.month,'Payment Date':p.paymentDate||'','Total Fee':p.totalFee||0,'Paid':p.paid||0,'Dues':p.dues||0,'Method':p.mode,'Status':payStatusOf(p),'Remarks':p.remarks||''})),
-    users:()=>users.map(u=>({'Username':u.username,'Role':u.role,'Status':u.active===false?'Inactive':'Active','First Name':u.firstName,'Last Name':u.lastName||'','Email':u.email,'Mobile':u.mobile,'City':u.city,'Country':u.country}))
+    users:()=>collegeUsers().map(u=>({'Username':u.username,'Role':u.role,'Status':u.active===false?'Inactive':'Active','First Name':u.firstName,'Last Name':u.lastName||'','Email':u.email,'Mobile':u.mobile,'City':u.city,'Country':u.country}))
   };
   const fn=ex[type];if(!fn){showToast('Unknown type');return;}exportCSVFile(fn(),type+'_'+ym()+'.csv');
 }
