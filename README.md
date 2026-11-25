@@ -1,59 +1,64 @@
-# Swarsetu — Music College Management App (Prototype)
+# Swarsetu — Music College Manager (v6)
 
-A click-through prototype of a music college management system, built from
-[`docs/requirements.md`](docs/requirements.md). It covers all 10 requirement
-areas — student management, courses, timetable, fees, attendance, exams,
-faculty, events, and reports — behind a role-based login for Admin, Faculty,
-Student, Parent, and Front Desk.
+A single-file web app (HTML, CSS and vanilla JavaScript) for running a music college:
+students, batches, timetable, college calendar, attendance, classes with shared audio,
+fee payments, events, and user roles with configurable permissions.
 
-This is a **front-end-only demo**: there is no backend, database, or real
-authentication. All data lives in memory in `app.js` and resets on reload.
-It exists to validate screens and workflows before building the real backend
-and porting the UI into an installable Android app — see
-[`docs/summary.md`](docs/summary.md) for that roadmap.
+- **Live test link:** https://claude.ai/artifact/PR1cMZBjS2hc13YcXh9b5m
+- **Code:** everything is in [`index.html`](index.html).
+- **Docs:** [requirements](docs/requirements.md) · [data model](docs/data_model.md) ·
+  [project prompt](docs/project_prompt.md) · [changelog](CHANGELOG.md)
 
-## Run it
+## Sign in (sample data)
 
-No build step or install required.
+| Role | Username | Password |
+|---|---|---|
+| Admin | `Admin` | `Admin` |
+| Faculty | `Faculty` | `Faculty` |
+| Student | `Student` | `Student` |
+
+Usernames are not case-sensitive. You can also sign in with a 10-digit mobile number.
+Deactivated accounts can't sign in.
+
+## Roles
+
+| Role | Default access |
+|---|---|
+| Admin | Everything, always. Only an Admin can change Roles & Permissions or restore a backup. |
+| Faculty | Add and edit students, courses, timetable, attendance, classes, class share links, fees and events. Faculty can delete classes. By default they can't open the College Profile, manage the College Calendar, manage users or delete other records. |
+| Student | Read-only: their own schedule, attendance, classes shared with them, fees, the College Calendar and Events. |
+
+Admins can change Faculty and Student permissions under **Roles & Permissions**. Some
+permissions are never available to students, for example viewing other students or managing users.
+
+## Screens
+
+Dashboard · Students · Courses · Academic Structure · Faculty Mgmt · Timetable ·
+College Calendar · Attendance (Mark Attendance, Summary) · Classes · Fee Payments ·
+Notifications · Events & Recitals · College Profile · User Management · Roles & Permissions
+
+## Data storage
+
+When the page runs as a Claude artifact, data is saved to a shared database (the artifact
+`db` capability). Each record is stored as its own document, and `persistAll()` sends only
+what changed. Changes from other users arrive live. `localStorage` keeps an offline copy.
+Opened as a plain file, the app works from `localStorage` only.
+
+## Run locally
 
 ```bash
-git clone <this-repo-url>
-cd music-college-app
-# then just open index.html in a browser, e.g.:
-python3 -m http.server 8000
-# visit http://localhost:8000
+python3 -m http.server 8000   # then open http://localhost:8000
 ```
 
-Or open `index.html` directly by double-clicking it.
+## Simulated or not yet working
 
-## Try it live
-
-If GitHub Pages is enabled for this repo (Settings → Pages → Deploy from
-branch `main` / root), it will be reachable at:
-
-```
-https://srirangamvamsi1579-hub.github.io/Swarsetu/
-```
-
-## What to test
-- Sign in as each role (top of the login screen) and click through every
-  item in the sidebar.
-- As **Admin**: add a student, record a fee payment, enter an exam grade.
-- As **Faculty**: mark attendance for "my students," enter a grade.
-- As **Student/Parent**: check fees, attendance, exam/report card, and
-  register for an event.
-- As **Front Desk**: record a pending payment.
-
-## Project structure
-```
-index.html          the app shell + all styling
-app.js               sample data, state, and all screen rendering/logic
-docs/requirements.md  full requirements doc (source: uploaded PDF)
-docs/summary.md        project status + path to the Android app
-```
-
-## Status
-Prototype v0.1 — see [`docs/summary.md`](docs/summary.md) for what's built,
-what's intentionally left out, and the recommended next steps toward a real
-backend and an Android build (React Native/Flutter rewrite, or a
-Capacitor/Cordova wrapper around this same web app).
+- SMS, email and WhatsApp sending (notifications, password reset links, sending class
+  share links) is simulated. Messages are recorded in the Sent history.
+- Passwords are stored in plain text. This is a prototype; a real deployment needs hashed
+  passwords and server-side authorisation.
+- Permission checks run in the browser. A production build must check them on the server too.
+- CSV export and JSON backup downloads don't work inside the claude.ai viewer, which blocks
+  downloads. They do work when the file is opened locally.
+- A class share link opens the class only after sign-in, and only for the people it was
+  shared with. In claude.ai, the address bar may not pass the link code to the app in
+  every view.
