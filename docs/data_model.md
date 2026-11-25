@@ -1,4 +1,4 @@
-# Swarsetu — Data model (v6)
+# Swarsetu — Data model (v7)
 
 The app keeps one list per record type. Each list is a collection in the shared database
 (the artifact `db` capability). Each record is a document with the same id as the record.
@@ -17,6 +17,7 @@ To add a new list, add it to: the state variables, `snapshot()` (used by
 | youtube, instagram, facebook | string | |
 | workingHours {start,end}, workingDays [Mon…Sun] | | |
 | permissions {faculty:{perm:bool}, student:{perm:bool}} | object | **v6.** Admin always has every permission |
+| importMaps {target:{normalisedHeading:fieldKey}} | object | **v7.** Remembered column matching |
 | calMigrated, v5seeded | bool | migration flags |
 | holidays | [] | legacy; moved into calendarEvents in v6 |
 
@@ -73,6 +74,12 @@ students[]` (attendees when there's no batch), and sharing (v6): `shareLevel
 (none|batch|students), shareStudents[], shareExpiry, shareAccess (view|download),
 shareToken, sharedWith[]` (a snapshot of the audience at save time). Share link:
 `<appUrl>#class-<shareToken>`.
+
+## importLog (new in v7)
+`id, at, by, target (students|courses|payments|attendance|calendar|users), file, kind,
+added, updated, skipped, errors, addedIds[] ("collection:id", or "attendance:studentId|date"),
+newCourses[], undone, undoneBy, undoneAt`. The newest 100 entries are kept.
+Records created by an import get `createdBy` or `updatedBy` of "<name> (import)".
 
 ## Other lists (unchanged)
 - **courses:** `id, name, description, level, instructor, duration, status`.

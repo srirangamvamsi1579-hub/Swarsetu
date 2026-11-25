@@ -1,4 +1,4 @@
-# Swarsetu — Requirements (current build, v6)
+# Swarsetu — Requirements (current build, v7)
 
 Last updated: 24 Nov 2026. The original v1.0 requirement list (Sept 2026) is kept below
 this section for reference.
@@ -92,7 +92,33 @@ this section for reference.
   blocked. Overlaps ask for confirmation.
 - Add, edit and delete need Manage College Calendar (Admin by default).
 
-## 8. Rules carried over
+## 8. Data Import & Export
+- Accepted files: Excel (.xlsx, .xls, .ods), CSV, TSV and TXT, PDF, and JPG, PNG or WEBP
+  images, up to 25 MB. Pasted rows are also accepted.
+- Data types: Students, Courses, Fee payments, Attendance (row or register layout),
+  College calendar, User logins. A type is offered only if the user has the matching edit
+  permission. Import also needs **Import data**.
+- Flow:
+  1. Choose the type and the file.
+  2. Check what was read (sheet, header row, separator, layout).
+  3. Match each field to a column or a default value.
+  4. Review rows (New / Update / Skip / Error, inline edit), then confirm the import.
+- Required fields must be matched or given a default before import is allowed. Rows with
+  errors are not imported and can be downloaded to fix.
+- Existing records are found by: student email, mobile or full name; course name; payment
+  student + month + batch; attendance student + date; calendar title + start date;
+  username. The choice is skip, update or add.
+- Validation uses the same rules as the forms: email format, 10-digit mobile, Online batch
+  limit, paid ≤ total, no future payment dates, attendance on class days only (except C),
+  end date not before start, password strength, and only Admins import Admin accounts.
+- Photos and scanned PDFs are read by Claude. The values are labelled and must be checked
+  before importing.
+- Each import is recorded with who, when, file, type and counts. Undo removes the records
+  it added; updates are not reverted.
+- Downloads: any list as Excel or CSV, all lists in one workbook, templates, rows with
+  errors, and a JSON backup (Admin only). They need **Download / export data**.
+
+## 9. Rules carried over
 - Batch = course + weekdays + timing + mode for group classes, with a private batch for
   each one-to-one student. Empty batches are removed automatically.
 - Dues = Total fee − Paid. Every record gets a unique id before saving.

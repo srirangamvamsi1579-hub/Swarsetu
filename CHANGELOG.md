@@ -1,5 +1,39 @@
 # Changelog
 
+## v7 — 2026-11-25
+
+### Data Import & Export (new screen)
+- Upload Excel (.xlsx, .xls, .ods), CSV or text (.csv, .tsv, .txt), PDF, or a photo
+  (.jpg, .png). You can also paste rows.
+- Data types: students, courses, fee payments, attendance (row or register layout),
+  college calendar, user logins.
+- **Check what was read:** choose the sheet and the header row (found automatically, even
+  below a title row). For text files you can change the column separator.
+- **Match columns to fields:** columns are matched automatically by heading, and the
+  matching is remembered for next time. You can set a default value for any field, choose
+  day-first or month-first dates, and choose what to do with existing records (skip,
+  update or add). For students, you can choose to create missing courses.
+- **Review:** each row is shown as New, Update, Skip or Error, with the reason. Values can
+  be edited inline. Rows with errors are never imported.
+- **Conversions:** Excel date and time cells; dates like 24/11/2026, 2026-11-24 and
+  24 Nov 2026; months like Nov 2026; times like 5 PM; weekdays like "Mon, Thu"; Indian
+  mobile numbers given with +91; ₹ amounts; attendance words such as Present and Late;
+  payment methods such as GPay and NEFT.
+- Students are placed in batches, and the Online seat limit is checked, including rows
+  earlier in the same file.
+- **PDFs:** text PDFs are split into table rows in the page. Scanned PDFs and photos are
+  read by Claude and labelled "read by Claude — check every value".
+- **Import history:** who imported what and when, with counts, and Undo for the records an
+  import added.
+- **Downloads:** any list as Excel or CSV, everything in one workbook, blank Excel
+  templates with a "How to fill" sheet, rows with errors, and a full JSON backup (Admin).
+  These use the downloads capability, so they now work inside claude.ai.
+- New permissions: **Import data** (Admin by default) and **Download / export data**
+  (Admin and Faculty by default).
+- The Students screen's Import button now opens this screen. The old CSV-only dialog has
+  been removed. This completes the pending "CSV mapping approval screen".
+
+
 ## v6 — 2026-11-24
 
 ### College Profile

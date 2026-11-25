@@ -1,4 +1,4 @@
-PROJECT: Swarsetu — Music College Manager (v6)
+PROJECT: Swarsetu — Music College Manager (v7)
 Single-file HTML/CSS/vanilla JS app for music college teachers. Shared database via
 the artifact db capability (one document per record, diff sync from persistAll()),
 localStorage as offline copy. Web link for testing, Android/iOS app later.
@@ -17,7 +17,9 @@ all, selected batches or selected students), Attendance > Mark Attendance (statu
 buttons, draft then Save, audit by/at/was, month or month range) and Summary (month
 range), Classes (labelled filters, share levels, expiry, Copy link), Fee Payments
 (labelled filters, multi-month, list/month-wise/student-wise views, totals), Notifications,
-Events & Recitals, College Profile (Online seat limit, batch capacity table, App link),
+Events & Recitals, Import & Export (upload Excel/CSV/text/PDF/photo → check read →
+match columns to fields with defaults → review/fix rows → import; history with undo;
+downloads as Excel/CSV, templates, error rows, backup), College Profile (Online seat limit, batch capacity table, App link),
 User Management, Roles & Permissions.
 
 RULES
@@ -35,7 +37,11 @@ RULES
   DB_COLS and applyRemote.
 - Give every record a unique id before saving.
 - Label anything simulated. Audio, meeting, Drive and app links must be https.
-- Inside the claude.ai viewer: no confirm/alert/prompt (use ask()), no downloads, and a
+- Imports reuse the form rules (validation, batches, ids) and never save rows with errors.
+  Photos and scanned PDFs are read by Claude (sample capability) and labelled. Excel/PDF
+  readers load from cdnjs (SheetJS 0.18.5, pdf.js 3.11.174).
+- Inside the claude.ai viewer: no confirm/alert/prompt (use ask()), downloads only via the
+  downloads capability (saveFile()), and a
   link can only pass a plain #name (share links use #class-<code>).
 
 ENGINEERING GATES: node --check on the script, every getElementById/gid has a matching id,
@@ -47,6 +53,5 @@ docs/data_model.md, docs/project_prompt.md (this prompt), a shareable link, and 
 summary of what changed, what is pending and what is simulated. Commit to GitHub only
 when the push has succeeded.
 
-PENDING: mobile login, Gmail and phone validation everywhere, CSV mapping approval screen,
-automatic vacation reminders one day before, file downloads via the downloads capability
-(CSV export and backup), server-side auth with hashed passwords.
+PENDING: mobile login, Gmail and phone validation everywhere, automatic vacation reminders
+one day before, server-side auth with hashed passwords, importing classes and events.

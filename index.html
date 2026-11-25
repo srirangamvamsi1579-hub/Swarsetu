@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swarsetu — Music College Manager v6</title>
+<title>Swarsetu — Music College Manager v7</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -304,6 +304,40 @@ td>.reg-cell.dirty{outline:2px dashed var(--brass);outline-offset:-3px;}
 .perm-t tr.grp td{background:#FAF7EF;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;text-align:left;}
 .denied{max-width:520px;margin:40px auto;text-align:center;}
 td.mono{white-space:nowrap;}
+/* v7 import/export */
+.io-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.io-tab{border:1.5px solid var(--line);background:#FCFAF5;border-radius:8px;padding:8px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink);min-height:40px;}
+.io-tab.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+.io-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.io-h h3{font-size:15px;}
+.io-n{width:26px;height:26px;border-radius:50%;background:var(--brass);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none;}
+.io-hint{font-size:12px;color:var(--muted);margin:4px 0 8px;line-height:1.5;}
+.io-drop{display:flex;flex-direction:column;align-items:center;gap:4px;border:2px dashed var(--line);border-radius:12px;padding:26px 14px;text-align:center;cursor:pointer;background:#FCFAF5;font-size:14px;}
+.io-drop span{font-size:12px;color:var(--muted);}
+.io-drop.over,.io-drop:hover{border-color:var(--brass);background:#FCF6E6;}
+.io-drop input{position:absolute;width:1px;height:1px;opacity:0;}
+.io-paste{margin-top:10px;font-size:12.5px;}
+.io-paste summary{cursor:pointer;color:var(--teal);font-weight:600;}
+.io-paste textarea{width:100%;margin:8px 0;font-family:'JetBrains Mono',monospace;font-size:12px;}
+.io-status{margin-top:10px;font-size:13px;}
+.io-status:empty{display:none;}
+.io-note{font-size:12px;color:#7a5c0e;background:#FCF6E6;border-radius:8px;padding:0 10px;margin:6px 0;line-height:1.5;}
+.io-note:not(:empty){padding:8px 10px;}
+.io-raw{overflow-x:auto;max-height:300px;overflow-y:auto;font-size:12px;}
+.io-map td{vertical-align:middle;}.io-map select,.io-map input{width:100%;min-width:150px;}
+.io-chk{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--ink);min-height:34px;}
+.io-counts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;}
+.io-c{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap;}
+.io-c.new{background:#E4F0EE;color:var(--teal);}.io-c.upd{background:#EAF0FB;color:#33548f;}.io-c.skip{background:#F1ECE0;color:var(--muted);}.io-c.err{background:#FBEBE5;color:var(--terracotta);}
+.io-bad{width:100%;background:#FBEBE5;color:var(--terracotta);border-radius:8px;padding:8px 10px;font-size:12.5px;font-weight:600;}
+.io-prev{font-size:12px;}.io-prev td{padding:4px 6px;}
+.io-cell{width:100%;min-width:90px;padding:4px 6px;font-size:12px;border:1px solid transparent;background:transparent;border-radius:5px;}
+.io-cell:hover,.io-cell:focus{border-color:var(--line);background:#fff;}
+tr.st-err td{background:#FFF8F5;}
+.io-done{background:#E4F0EE;border-radius:8px;padding:10px 12px;font-size:13px;margin-top:10px;line-height:1.6;}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--line);border-top-color:var(--teal);border-radius:50%;animation:spin 1s linear infinite;vertical-align:-1px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@media(prefers-reduced-motion:reduce){.spin{animation:none;}}
 @media(max-width:900px){.totals{grid-template-columns:1fr 1fr;}.ycal{grid-template-columns:1fr 1fr;}}
 @media(max-width:640px){
   .app-shell{flex-direction:column;}
@@ -528,7 +562,7 @@ td.mono{white-space:nowrap;}
       <div class="page-head"><div><h2>Dashboard</h2><p style="color:var(--muted);font-size:12.5px;">Live school snapshot &amp; available enrolment slots</p></div>
         <div class="hactions">
           <select id="dbMonthFilter" onchange="renderDashboard()"></select>
-          <button class="btn btn-ghost btn-sm" onclick="exportBackup()">⬇ Backup Data</button>
+          <button class="btn btn-ghost btn-sm admin-only" onclick="exportBackup()">⬇ Backup Data</button>
           <label class="btn btn-ghost btn-sm admin-only" style="cursor:pointer;">⬆ Restore <input type="file" accept=".json" style="display:none;" onchange="importBackup(this)"></label>
         </div>
       </div>
@@ -562,7 +596,7 @@ td.mono{white-space:nowrap;}
       <div class="college-strip">📍 <b id="stuCollege">—</b></div>
       <div class="page-head"><div><h2>Students</h2></div>
         <div class="hactions">
-          <label class="btn btn-ghost btn-sm p-editStudents" style="cursor:pointer;">⬆ Import CSV <input type="file" accept=".csv" style="display:none;" onchange="importStudentCSV(this)"></label>
+          <button class="btn btn-ghost btn-sm p-importData" onclick="showImport('students')">⬆ Import</button>
           <button class="btn btn-ghost btn-sm" onclick="exportTable('students')">⬇ Export CSV</button>
           <button class="btn btn-brass btn-sm p-editStudents" onclick="openStudentModal()">+ Enrol Student</button>
         </div>
@@ -879,6 +913,108 @@ td.mono{white-space:nowrap;}
         <h3 style="font-size:15px;margin-bottom:4px;">Batch capacity</h3>
         <p style="font-size:12px;color:var(--muted);margin-bottom:10px;" id="cpCapNote"></p>
         <div style="overflow-x:auto;"><table><thead><tr><th>Batch</th><th>Batch mode</th><th>Students</th><th>Limit</th><th>Remaining capacity</th></tr></thead><tbody id="cpCapT"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- DATA IMPORT & EXPORT -->
+    <div class="page" id="page-dataio">
+      <div class="college-strip">📍 <b id="dioCollege">—</b></div>
+      <div class="page-head"><div><h2>Data Import &amp; Export</h2><p style="color:var(--muted);font-size:12.5px;">Load existing records from Excel, CSV or text files, PDFs or photos, then match each column to a field before anything is saved. Download any list as Excel or CSV.</p></div></div>
+      <div class="io-tabs" role="tablist">
+        <button class="io-tab p-importData" id="ioTabImp" onclick="ioTab('imp')" role="tab">⬆ Upload &amp; import</button>
+        <button class="io-tab p-exportData" id="ioTabExp" onclick="ioTab('exp')" role="tab">⬇ Download &amp; export</button>
+        <button class="io-tab p-importData" id="ioTabLog" onclick="ioTab('log')" role="tab">Import history</button>
+      </div>
+
+      <div id="ioImp">
+        <!-- STEP 1 -->
+        <div class="card io-step">
+          <div class="io-h"><span class="io-n">1</span><h3>Choose what you are loading and the file</h3></div>
+          <div class="toolbar lab">
+            <div class="flt"><label for="impTarget">Select Data Type</label><select id="impTarget" onchange="impTargetChanged()" style="min-width:200px;"></select></div>
+            <div class="flt"><label>&nbsp;</label><button class="btn btn-ghost btn-sm" onclick="dlTemplate()">⬇ Blank Excel template</button></div>
+          </div>
+          <p class="io-hint" id="impTargetHint"></p>
+          <label class="io-drop" id="impDrop" for="impFile">
+            <input type="file" id="impFile" accept=".csv,.tsv,.txt,.xlsx,.xls,.xlsm,.ods,.pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf,text/plain,text/csv" onchange="impPick(this.files[0]);this.value='';">
+            <b>Choose a file</b> or drop it here
+            <span>Excel (.xlsx, .xls), CSV or text (.csv, .tsv, .txt), PDF, or a photo (.jpg, .png)</span>
+          </label>
+          <details class="io-paste"><summary>Or paste rows (from Excel, WhatsApp, email…)</summary>
+            <textarea id="impPaste" rows="5" placeholder="Name, Course, Days, Time&#10;Aarav Shah, Carnatic Vocal, Mon Wed, 5 PM"></textarea>
+            <button class="btn btn-ghost btn-sm" onclick="impFromPaste()">Read pasted rows</button>
+          </details>
+          <div id="impStatus" class="io-status" aria-live="polite"></div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="card io-step" id="impStep2" style="display:none;">
+          <div class="io-h"><span class="io-n">2</span><h3>Check what was read</h3></div>
+          <div class="toolbar lab">
+            <div class="flt" id="impSheetWrap"><label for="impSheet">Select Sheet</label><select id="impSheet" onchange="impSheetChanged()"></select></div>
+            <div class="flt"><label for="impHeaderRow">Header row</label><select id="impHeaderRow" onchange="impHeaderChanged()"></select></div>
+            <div class="flt" id="impDelimWrap"><label for="impDelim">Columns separated by</label><select id="impDelim" onchange="impReparseText()"><option value="auto">Detect automatically</option><option value=",">Comma ,</option><option value="&#9;">Tab</option><option value=";">Semicolon ;</option><option value="|">Bar |</option><option value="  ">Two or more spaces</option></select></div>
+            <div class="flt" id="impLayoutWrap"><label for="impLayout">Layout</label><select id="impLayout" onchange="impBuildMap()"><option value="rows">One row per record</option><option value="register">Register: one column per date</option></select></div>
+            <div class="flt" id="impAiWrap"><label>&nbsp;</label><button class="btn btn-ghost btn-sm" onclick="impReadWithClaude()">✦ Read with Claude instead</button></div>
+          </div>
+          <div id="impReadNote" class="io-note"></div>
+          <div class="io-raw" id="impRaw"></div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="card io-step" id="impStep3" style="display:none;">
+          <div class="io-h"><span class="io-n">3</span><h3>Match columns to fields</h3></div>
+          <p class="io-hint">Each app field on the left takes its value from the column you choose. Use <b>Default value</b> to fill a field the file doesn't have, or to fill blank cells. Fields marked * are required.</p>
+          <div class="toolbar lab">
+            <div class="flt"><label for="impDayFirst">Dates like 03/04/2026 mean</label><select id="impDayFirst" onchange="impValidate()"><option value="1">3 April (day first)</option><option value="0">March 4 (month first)</option></select></div>
+            <div class="flt"><label for="impDup">If a record already exists</label><select id="impDup" onchange="impValidate()"><option value="skip">Skip it</option><option value="update">Update it with the file's values</option><option value="add">Add it as a new record</option></select></div>
+            <div class="flt" id="impNewCrsWrap"><label for="impNewCrs">Course not found</label><select id="impNewCrs" onchange="impValidate()"><option value="0">Show as an error</option><option value="1">Create the course</option></select></div>
+            <div class="flt"><label>&nbsp;</label><div><label class="io-chk"><input type="checkbox" id="impRemember" checked> Remember this matching for next time</label></div></div>
+          </div>
+          <div style="overflow-x:auto;"><table class="io-map"><thead><tr><th>App field</th><th>Column in your file</th><th>Default value</th><th>First row will be saved as</th></tr></thead><tbody id="impMapT"></tbody></table></div>
+          <div id="impUnused" class="io-note"></div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="card io-step" id="impStep4" style="display:none;">
+          <div class="io-h"><span class="io-n">4</span><h3>Review and import</h3></div>
+          <div class="io-counts" id="impCounts"></div>
+          <div class="toolbar lab">
+            <div class="flt"><label for="impShow">Show</label><select id="impShow" onchange="impRenderPreview()"><option value="all">All rows</option><option value="err">Rows with errors</option><option value="new">New records</option><option value="upd">Updates</option><option value="skip">Skipped</option></select></div>
+            <div class="flt"><label>&nbsp;</label><button class="btn btn-ghost btn-sm" onclick="dlErrorRows()">⬇ Rows with errors</button></div>
+          </div>
+          <p class="io-hint">You can fix a value right here. Rows with errors are not imported.</p>
+          <div style="overflow-x:auto;" id="impPrevHost"></div>
+          <div id="impMore"></div>
+          <div class="savebar" style="margin-top:12px;"><span id="impGoTxt"></span><div class="spacer"></div><button class="btn btn-ghost btn-sm" onclick="impReset()">Start over</button><button class="btn btn-brass btn-sm" id="impGoBtn" onclick="impRun()">Import</button></div>
+          <div id="impResult"></div>
+        </div>
+      </div>
+
+      <div id="ioExp" style="display:none;">
+        <div class="card">
+          <h3 style="font-size:15px;margin-bottom:10px;">Download data</h3>
+          <div class="toolbar lab">
+            <div class="flt"><label for="expSet">Select Data</label><select id="expSet" onchange="expPreview()" style="min-width:220px;"></select></div>
+            <div class="flt"><label for="expFmt">Format</label><select id="expFmt"><option value="xlsx">Excel (.xlsx)</option><option value="csv">CSV (.csv)</option></select></div>
+            <div class="flt"><label>&nbsp;</label><div style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-brass btn-sm" onclick="expDownload()">⬇ Download</button><button class="btn btn-ghost btn-sm" onclick="expCopy()">Copy as text</button><button class="btn btn-ghost btn-sm" onclick="expAll()">⬇ Everything in one Excel file</button></div></div>
+          </div>
+          <p class="io-hint" id="expInfo"></p>
+          <div style="overflow-x:auto;" id="expPrev"></div>
+        </div>
+        <div class="card admin-only">
+          <h3 style="font-size:15px;margin-bottom:6px;">Full backup</h3>
+          <p class="io-hint">One JSON file with every record. Restore it from the Dashboard.</p>
+          <button class="btn btn-ghost btn-sm" onclick="exportBackup()">⬇ Download backup (.json)</button>
+        </div>
+      </div>
+
+      <div id="ioLog" style="display:none;">
+        <div class="card">
+          <h3 style="font-size:15px;margin-bottom:10px;">Import history</h3>
+          <div style="overflow-x:auto;"><table><thead><tr><th>When</th><th>By</th><th>Data</th><th>File</th><th>Added</th><th>Updated</th><th>Skipped</th><th>Errors</th><th></th></tr></thead><tbody id="impLogT"></tbody></table></div>
+          <p class="io-hint" style="margin-top:8px;">Undo removes the records an import added. Records it updated keep their new values.</p>
+        </div>
       </div>
     </div>
 
@@ -1241,22 +1377,6 @@ td.mono{white-space:nowrap;}
   </div>
 </div>
 
-<!-- CSV MAPPING + APPROVAL MODAL -->
-<div class="modal-overlay" id="csvMappingModal">
-  <div class="modal wide">
-    <h3>Map &amp; Approve CSV Import</h3>
-    <p class="modal-sub">Match your CSV columns to the app fields, preview the data, then click Approve to import</p>
-    <div id="csvMappingArea"></div>
-    <div class="section-label">Preview (first 5 rows)</div>
-    <div style="overflow-x:auto;"><table id="csvPreviewTable" style="font-size:12px;"></table></div>
-    <div id="csvApproveCount" style="margin-top:10px;font-size:13px;color:var(--teal);font-weight:600;"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('csvMappingModal')">Cancel</button>
-      <button class="btn btn-primary" style="width:auto;" onclick="approveCSVImport()">Approve &amp; Import</button>
-    </div>
-  </div>
-</div>
-
 <div class="modal-overlay" id="askModal" style="z-index:90;">
   <div class="modal" style="max-width:440px;">
     <h3>Please confirm</h3>
@@ -1305,7 +1425,7 @@ const CITIES = {
    STATE
 ═══════════════════════════════════════════════════ */
 let college={name:'',location:'',country:'',affiliation:'',affiliationDetails:'',youtube:'',instagram:'',facebook:'',workingHours:{start:'09:00',end:'18:00'},workingDays:['Mon','Tue','Wed','Thu','Fri'],holidays:[]};
-let users=[],students=[],courses=[],timetable=[],attendance=[],payments=[],notifLog=[],announcements=[],facultySlots=[],batches=[],classLogs=[],academic=[],calendarEvents=[],ttSessions=[];
+let users=[],students=[],courses=[],timetable=[],attendance=[],payments=[],notifLog=[],announcements=[],facultySlots=[],batches=[],classLogs=[],academic=[],calendarEvents=[],ttSessions=[],importLog=[];
 let currentUser=null;
 let pendingReset={email:null,code:null,userId:null};
 let editStuId=null,editCrsId=null,editPayId=null,editFSlotId=null;
@@ -1334,21 +1454,21 @@ function loadAll(){
   college=d.college||{name:'',location:'',country:'',affiliation:'',affiliationDetails:'',youtube:'',instagram:'',facebook:'',workingHours:{start:'09:00',end:'18:00'},workingDays:['Mon','Tue','Wed','Thu','Fri'],holidays:[]};
   users=d.users||[];students=d.students||[];courses=d.courses||[];timetable=d.timetable||[];
   attendance=d.attendance||[];payments=d.payments||[];notifLog=d.notifLog||[];
-  announcements=d.announcements||[];facultySlots=d.facultySlots||[];batches=d.batches||[];classLogs=d.classLogs||[];academic=d.academic||[];calendarEvents=d.calendarEvents||[];ttSessions=d.ttSessions||[];
+  announcements=d.announcements||[];facultySlots=d.facultySlots||[];batches=d.batches||[];classLogs=d.classLogs||[];academic=d.academic||[];calendarEvents=d.calendarEvents||[];ttSessions=d.ttSessions||[];importLog=d.importLog||[];
   if(!users.length){
     users=[{id:'u_admin',firstName:'Admin',lastName:'User',email:'admin@swarsetu.com',username:'Admin',password:'Admin',role:'admin',mobile:'',city:'',country:'',collegeName:'',affiliation:''},
            {id:'u_faculty',firstName:'Faculty',lastName:'User',email:'faculty@swarsetu.com',username:'Faculty',password:'Faculty',role:'faculty',mobile:'',city:'',country:'',collegeName:'',affiliation:''}];
     persistAll();
   }
 }
-function snapshot(){return {college,users,students,courses,timetable,attendance,payments,notifLog,announcements,facultySlots,batches,classLogs,academic,calendarEvents,ttSessions};}
+function snapshot(){return {college,users,students,courses,timetable,attendance,payments,notifLog,announcements,facultySlots,batches,classLogs,academic,calendarEvents,ttSessions,importLog};}
 function persistAll(){writeStore(snapshot());scheduleSync();}
 
 /* ═══════════════════════════════════════════════════
    DATABASE — shared store (artifact "db" capability)
    One document per record. localStorage stays as an offline cache.
 ═══════════════════════════════════════════════════ */
-const DB_COLS=['users','students','courses','timetable','attendance','payments','notifLog','announcements','facultySlots','batches','classLogs','academic','calendarEvents','ttSessions'];
+const DB_COLS=['users','students','courses','timetable','attendance','payments','notifLog','announcements','facultySlots','batches','classLogs','academic','calendarEvents','ttSessions','importLog'];
 let DBH=null,lastSnap={},syncTimer=null,syncing=false,dirty=false,dbUnsubs=[];
 function jstr(v){if(v===null||typeof v!=='object')return JSON.stringify(v);if(Array.isArray(v))return '['+v.map(jstr).join(',')+']';return '{'+Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>JSON.stringify(k)+':'+jstr(v[k])).join(',')+'}';}
 function dbId(id){return String(id).replace(/[^A-Za-z0-9_-]/g,'_');}
@@ -1377,7 +1497,7 @@ function applyRemote(snapByCol){
   // snapByCol: {col:{id:rowObj}}
   const g=c=>Object.values(snapByCol[c]||{});
   users=g('users');students=g('students');courses=g('courses');timetable=g('timetable');attendance=g('attendance');
-  payments=g('payments');notifLog=g('notifLog');announcements=g('announcements');facultySlots=g('facultySlots');batches=g('batches');classLogs=g('classLogs');academic=g('academic');calendarEvents=g('calendarEvents').sort((a,b)=>String(a.start).localeCompare(String(b.start)));ttSessions=g('ttSessions');notifLog.sort((a,b)=>String(b.time||'').localeCompare(String(a.time||'')));
+  payments=g('payments');notifLog=g('notifLog');announcements=g('announcements');facultySlots=g('facultySlots');batches=g('batches');classLogs=g('classLogs');academic=g('academic');calendarEvents=g('calendarEvents').sort((a,b)=>String(a.start).localeCompare(String(b.start)));ttSessions=g('ttSessions');importLog=g('importLog').sort((a,b)=>String(b.at).localeCompare(String(a.at)));notifLog.sort((a,b)=>String(b.time||'').localeCompare(String(a.time||'')));
   const m=(snapByCol.meta||{}).college;if(m)college=m;
   students.sort((a,b)=>String(a.id).localeCompare(String(b.id)));
   stuSeq=students.length;
@@ -1513,13 +1633,8 @@ function loadSampleData(){
 function nid(p){return p+'_'+Date.now()+'_'+Math.floor(Math.random()*9999);}
 
 /* BACKUP / RESTORE */
-function exportBackup(){
-  const data=localStorage.getItem(STORE)||'{}';
-  const blob=new Blob([data],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='swarsetu_backup_'+ym()+'.json';a.click();URL.revokeObjectURL(url);
-  showToast('Backup downloaded as JSON');
-}
+function exportCSVFile(data,filename){if(!data||!data.length){showToast('No data to export');return;}return saveFile(filename,toCSV(data),'text/csv;charset=utf-8');}
+function exportBackup(){if(!currentUser||currentUser.role!=='admin'){showToast('Access denied — only an Admin can download a full backup.');return;}return saveFile('swarsetu_backup_'+todayStr()+'.json',JSON.stringify(snapshot(),null,1),'application/json');}
 function importBackup(input){
   if(!currentUser||currentUser.role!=='admin'){showToast('Access denied — only an Admin can restore a backup.');input.value='';return;}
   const file=input.files[0];if(!file)return;
@@ -1560,7 +1675,7 @@ function updateCollegeStrips(){
   const name=college.name||'Music College';
   const di=document.getElementById('dbInfo');if(di)di.textContent=[college.address,college.phone,college.email].filter(Boolean).join('  ·  ');
   const aff=college.affiliation||'';
-  ['db','stu','crs','fac','tt','att','as','cls','aca','pay','notif','ann','col','usr','cal','rol'].forEach(p=>{
+  ['db','stu','crs','fac','tt','att','as','cls','aca','pay','notif','ann','col','usr','cal','rol','dio'].forEach(p=>{
     const el=document.getElementById(p+'College');if(el)el.textContent=name;
   });
   document.getElementById('sideCN').textContent=name;
@@ -1872,12 +1987,13 @@ const PERM_DEFS=[
   ['Classes',[['viewClasses','View Classes',1],['editClasses','Create/Edit Classes',0],['shareClasses','Share Class Links',0]]],
   ['Fee Payments',[['viewFees','View Fee Payments',1],['editFees','Add/Edit Fee Payments',0]]],
   ['Notifications & Events',[['sendNotifications','Send Notifications',0],['viewEvents','View Events & Recitals',1],['editEvents','Add/Edit Events & Recitals',0]]],
+  ['Data Import & Export',[['importData','Import data (uploads)',0],['exportData','Download / export data',0]]],
   ['Users & Records',[['manageUsers','Manage Users and Roles',0],['deleteRecords','Delete records',0]]]
 ];
 const PERM_LIST=[];const PERM_LABEL={};const PERM_STUDENT_OK={};
 PERM_DEFS.forEach(g=>g[1].forEach(p=>{PERM_LIST.push(p[0]);PERM_LABEL[p[0]]=p[1];PERM_STUDENT_OK[p[0]]=!!p[2];}));
 const DEFAULT_PERMS={
-  faculty:Object.fromEntries(PERM_LIST.map(k=>[k,!['viewCollege','editCollege','manageCalendar','manageUsers','deleteRecords'].includes(k)])),
+  faculty:Object.fromEntries(PERM_LIST.map(k=>[k,!['viewCollege','editCollege','manageCalendar','manageUsers','deleteRecords','importData'].includes(k)])),
   student:Object.fromEntries(PERM_LIST.map(k=>[k,['viewTimetable','viewCalendar','viewAttendance','viewClasses','viewFees','viewEvents'].includes(k)]))
 };
 function can(perm){
@@ -2800,10 +2916,588 @@ async function resetPerms(){
   college.permissions=JSON.parse(JSON.stringify(DEFAULT_PERMS));persistAll();applyPerms();renderPerms();showToast('Permissions reset to defaults');
 }
 
+/* ═══════════════════════════════════════════════════
+   DATA IMPORT & EXPORT (v7)
+═══════════════════════════════════════════════════ */
+const LIB_XLSX='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+const LIB_PDF='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+const LIB_PDFW='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const _libs={};
+function loadScript(src){if(!_libs[src])_libs[src]=new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=()=>res();s.onerror=()=>{delete _libs[src];rej(new Error('Could not load '+src.split('/').pop()));};document.head.appendChild(s);});return _libs[src];}
+async function needXLSX(){if(!window.XLSX)await loadScript(LIB_XLSX);if(!window.XLSX)throw new Error('Excel reader did not load');return window.XLSX;}
+async function needPDF(){if(!window.pdfjsLib){await loadScript(LIB_PDFW);await loadScript(LIB_PDF);}if(!window.pdfjsLib)throw new Error('PDF reader did not load');try{window.pdfjsLib.GlobalWorkerOptions.workerSrc=LIB_PDFW;}catch(e){}return window.pdfjsLib;}
+async function capUse(name){try{if(window.claude&&typeof window.claude.use==='function')return await window.claude.use(name);}catch(e){}return null;}
+
+/* ---------- field definitions ---------- */
+const IMP_TARGETS={
+  students:{label:'Students',perm:'editStudents',hint:'One row per student. Course, weekdays and time are needed so the student can be placed in a batch.',fields:[
+    {k:'firstName',l:'First name',req:1,al:['first name','firstname','fname','given name','name','student name','student','full name']},
+    {k:'lastName',l:'Last name',al:['last name','lastname','surname','lname','family name']},
+    {k:'email',l:'Email',t:'email',al:['email','e-mail','mail','gmail','email id','email address']},
+    {k:'mobile',l:'Mobile (10 digits)',t:'mobile',al:['mobile','phone','contact','cell','whatsapp','mobile number','phone number','contact number','mobile no']},
+    {k:'parent',l:'Parent / guardian',al:['parent','guardian','father','mother','parent name']},
+    {k:'ageGroup',l:'Age group',t:'age',al:['age','age group']},
+    {k:'city',l:'City',al:['city','town','place','location']},
+    {k:'country',l:'Country',al:['country']},
+    {k:'courseName',l:'Course',req:1,t:'course',al:['course','instrument','subject','class','program','course name']},
+    {k:'level',l:'Level',t:'level',al:['level','grade','stage']},
+    {k:'classType',l:'Class type (Group / One-to-One)',t:'classType',al:['class type','type','batch type','group or individual']},
+    {k:'mode',l:'Mode (Online / Offline)',t:'mode',al:['mode','online offline','class mode']},
+    {k:'weekdays',l:'Weekdays',req:1,t:'days',al:['weekdays','days','class days','day','week days','schedule days']},
+    {k:'timing',l:'Class time',req:1,t:'time',al:['time','timing','slot','start time','class time','timings']},
+    {k:'interval',l:'Class length (30 or 60 min)',t:'interval',al:['duration','length','interval','minutes','class length']},
+    {k:'monthlyFee',l:'Monthly fee',t:'num',al:['fee','monthly fee','fees','monthly fees','fee per month']},
+    {k:'joiningFee',l:'Joining fee',t:'num',al:['joining fee','admission fee','registration fee']},
+    {k:'joiningDate',l:'Joining date',t:'date',al:['joining date','join date','admission date','date of joining','doj','start date','joined']},
+    {k:'status',l:'Status (Active / Inactive)',t:'status',al:['status','active']}]},
+  courses:{label:'Courses',perm:'editCourses',hint:'One row per course.',fields:[
+    {k:'name',l:'Course name',req:1,al:['course','course name','name','instrument','subject','title']},
+    {k:'description',l:'Description',al:['description','details','about','desc']},
+    {k:'level',l:'Level',t:'level',al:['level','grade']},
+    {k:'instructor',l:'Faculty / instructor',al:['instructor','faculty','teacher','guru','trainer','tutor']},
+    {k:'duration',l:'Duration',al:['duration','length','course duration','months']},
+    {k:'status',l:'Status (Active / Inactive)',t:'status',al:['status']}]},
+  payments:{label:'Fee payments',perm:'editFees',hint:'One row per payment. Students are matched by ID, email, mobile or full name. If the batch is blank, the student\'s current batch is used.',fields:[
+    {k:'student',l:'Student',req:1,t:'student',al:['student','name','student name','student id','id','full name']},
+    {k:'batch',l:'Batch',t:'batch',al:['batch','batch name','batch id','group']},
+    {k:'month',l:'Fee month',req:1,t:'month',al:['month','fee month','for month','period','fee for']},
+    {k:'paymentDate',l:'Payment date',t:'date',al:['payment date','paid on','date','date paid','receipt date']},
+    {k:'totalFee',l:'Total fee',req:1,t:'num',al:['total fee','total','fee','amount due','fees','fee amount']},
+    {k:'paid',l:'Amount paid',t:'num',al:['paid','amount paid','received','amount','paid amount','amount received']},
+    {k:'mode',l:'Payment method',t:'payMode',al:['method','mode','payment mode','payment method','paid by','via']},
+    {k:'remarks',l:'Remarks',al:['remarks','notes','note','comment','comments']}]},
+  attendance:{label:'Attendance',perm:'editAttendance',hint:'Either one row per student per date (Student, Date, Status), or a register with one column per date. Codes: P, L, A, V, H, DH, C, or words like Present / Absent / Late / Leave.',fields:[
+    {k:'student',l:'Student',req:1,t:'student',al:['student','name','student name','student id','id','full name']},
+    {k:'date',l:'Date',req:1,t:'date',reg:0,al:['date','class date','day','session date']},
+    {k:'status',l:'Status / code',req:1,t:'att',reg:0,al:['status','attendance','code','present','mark','p/a']}]},
+  calendar:{label:'College calendar',perm:'manageCalendar',hint:'One row per holiday, vacation or event. If the end date is blank, the entry lasts one day. Entries apply to all batches.',fields:[
+    {k:'title',l:'Title',req:1,al:['title','name','holiday','occasion','event','description of holiday','festival']},
+    {k:'start',l:'Start date',req:1,t:'date',al:['start date','date','from','start','from date','begins']},
+    {k:'end',l:'End date',t:'date',al:['end date','to','end','to date','till','until']},
+    {k:'type',l:'Type (Holiday / Vacation / Event / Other)',t:'calType',al:['type','category','kind']},
+    {k:'desc',l:'Description',al:['description','details','remarks','notes']}]},
+  users:{label:'User logins',perm:'manageUsers',hint:'One row per login. Passwords need 8+ characters with upper and lower case, a number and a symbol.',fields:[
+    {k:'firstName',l:'First name',req:1,al:['first name','firstname','name','given name']},
+    {k:'lastName',l:'Last name',al:['last name','surname','lastname']},
+    {k:'username',l:'Username',req:1,al:['username','user name','login','user id','userid']},
+    {k:'email',l:'Email',req:1,t:'email',al:['email','e-mail','mail','gmail']},
+    {k:'mobile',l:'Mobile (10 digits)',t:'mobile',al:['mobile','phone','contact','cell']},
+    {k:'role',l:'Role (Admin / Faculty / Student)',req:1,t:'role',al:['role','user type','type','access']},
+    {k:'password',l:'Password',req:1,t:'password',al:['password','pass','pwd']},
+    {k:'status',l:'Status (Active / Inactive)',t:'status',al:['status','active']}]}
+};
+const MON3=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+const nrm=s=>String(s==null?'':s).toLowerCase().replace(/[^a-z0-9]/g,'');
+
+/* ---------- value converters: return {v} or {e} ---------- */
+function excelSerialToDate(n){const d=new Date(Math.round((n-25569)*864e5));return d.getUTCFullYear()+'-'+pad2(d.getUTCMonth()+1)+'-'+pad2(d.getUTCDate());}
+function okDate(y,m,d){if(!(y>1900&&y<2200&&m>=1&&m<=12&&d>=1&&d<=31))return null;const dt=new Date(y,m-1,d);if(dt.getMonth()!==m-1)return null;return y+'-'+pad2(m)+'-'+pad2(d);}
+function parseAnyDate(v,dayFirst){
+  if(v==null||v==='')return null;
+  if(typeof v==='number'){if(v>20000&&v<80000)return excelSerialToDate(v);return null;}
+  const s=String(v).trim();let m;
+  if(/^\d{5}(\.\d+)?$/.test(s)){const n=Number(s);if(n>20000&&n<80000)return excelSerialToDate(n);}
+  if((m=s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/)))return okDate(+m[1],+m[2],+m[3]);
+  if((m=s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})$/))){let y=+m[3];if(y<100)y+=2000;const a=+m[1],b=+m[2];if(a>12)return okDate(y,b,a);if(b>12)return okDate(y,a,b);return dayFirst?okDate(y,b,a):okDate(y,a,b);}
+  if((m=s.match(/^(\d{1,2})(?:st|nd|rd|th)?[\s\-\/.,]+([A-Za-z]{3,})[\s\-\/.,]+(\d{2,4})$/))){const mi=MON3.indexOf(m[2].slice(0,3).toLowerCase());let y=+m[3];if(y<100)y+=2000;return mi<0?null:okDate(y,mi+1,+m[1]);}
+  if((m=s.match(/^(?:[A-Za-z]+,?\s+)?([A-Za-z]{3,})\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})$/))){const mi=MON3.indexOf(m[1].slice(0,3).toLowerCase());return mi<0?null:okDate(+m[3],mi+1,+m[2]);}
+  return null;
+}
+function parseMonth(v,dayFirst){
+  if(v==null||v==='')return null;
+  if(typeof v==='number'){const d=parseAnyDate(v,dayFirst);return d?d.slice(0,7):null;}
+  const s=String(v).trim();let m;
+  if((m=s.match(/^(\d{4})[-\/.](\d{1,2})$/))&&+m[2]>=1&&+m[2]<=12)return m[1]+'-'+pad2(+m[2]);
+  if((m=s.match(/^(\d{1,2})[-\/.](\d{4})$/))&&+m[1]>=1&&+m[1]<=12)return m[2]+'-'+pad2(+m[1]);
+  if((m=s.match(/^([A-Za-z]{3,})[\s\-\/.,']+(\d{2,4})$/))){const mi=MON3.indexOf(m[1].slice(0,3).toLowerCase());let y=+m[2];if(y<100)y+=2000;if(mi>=0)return y+'-'+pad2(mi+1);}
+  if((m=s.match(/^(\d{4})[\s\-\/.,]+([A-Za-z]{3,})$/))){const mi=MON3.indexOf(m[2].slice(0,3).toLowerCase());if(mi>=0)return m[1]+'-'+pad2(mi+1);}
+  const d=parseAnyDate(s,dayFirst);return d?d.slice(0,7):null;
+}
+function parseTime(v){
+  if(v==null||v==='')return null;
+  if(typeof v==='number'){if(v>=0&&v<1){const mins=Math.round(v*1440);return pad2(Math.floor(mins/60)%24)+':'+pad2(mins%60);}if(v>=0&&v<24&&Number.isInteger(v))return pad2(v)+':00';return null;}
+  const s=String(v).trim().toLowerCase().replace(/\./g,':');let m=s.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm|a|p)?/);
+  if(!m)return null;let h=+m[1];const mi=m[2]?+m[2]:0;const ap=m[3];
+  if(ap){if(h<1||h>12)return null;if(ap[0]==='p'&&h<12)h+=12;if(ap[0]==='a'&&h===12)h=0;}
+  if(h>23||mi>59)return null;
+  if(!ap&&!m[2]&&!/^\d{1,2}$/.test(s))return null;
+  return pad2(h)+':'+pad2(mi);
+}
+function parseDays(v){
+  const s=String(v==null?'':v).toLowerCase();if(!s.trim())return [];
+  const map={mon:'Mon',tue:'Tue',tues:'Tue',wed:'Wed',thu:'Thu',thur:'Thu',thurs:'Thu',fri:'Fri',sat:'Sat',sun:'Sun'};
+  if(/weekend/.test(s))return ['Sat','Sun'];if(/weekday|mon\s*-\s*fri|mon\s*to\s*fri/.test(s))return ['Mon','Tue','Wed','Thu','Fri'];
+  const out=[];s.split(/[^a-z]+/).forEach(w=>{const k=w.slice(0,3);if(map[k]&&!out.includes(map[k]))out.push(map[k]);});
+  return DAYS.filter(d=>out.includes(d));
+}
+function numOf(v){if(v==null||v==='')return null;if(typeof v==='number')return v;const s=String(v).replace(/[₹$,\s]|rs\.?|inr/gi,'');if(!/^-?\d+(\.\d+)?$/.test(s))return NaN;return Number(s);}
+function findStudentRef(v){
+  const s=String(v==null?'':v).trim();if(!s)return {e:'Student is blank'};
+  const lo=s.toLowerCase();const dg=s.replace(/\D/g,'');
+  let hit=students.filter(x=>x.id.toLowerCase()===lo);
+  if(!hit.length)hit=students.filter(x=>x.email&&x.email.toLowerCase()===lo);
+  if(!hit.length&&dg.length>=10)hit=students.filter(x=>x.mobile&&x.mobile===dg.slice(-10));
+  if(!hit.length)hit=students.filter(x=>stuName(x).toLowerCase().replace(/\s+/g,' ')===lo.replace(/\s+/g,' '));
+  if(!hit.length)hit=students.filter(x=>(x.firstName||'').toLowerCase()===lo);
+  if(hit.length===1)return {v:hit[0].id,s:hit[0]};
+  if(hit.length>1)return {e:'"'+s+'" matches '+hit.length+' students — use the student ID, email or mobile'};
+  return {e:'No student called "'+s+'"'};
+}
+function conv(f,raw,ctx){
+  const t=f.t||'text';const blank=raw==null||String(raw).trim()==='';
+  if(blank)return f.req?{e:f.l+' is required'}:{v:''};
+  const s=String(raw).trim();
+  switch(t){
+    case 'email':return validEmail(s)?{v:s.toLowerCase()}:{e:'"'+s+'" is not a valid email'};
+    case 'mobile':{let d=s.replace(/\D/g,'');if(d.length===12&&d.startsWith('91'))d=d.slice(2);if(d.length===11&&d.startsWith('0'))d=d.slice(1);return validMobile(d)?{v:d}:{e:'Mobile "'+s+'" is not 10 digits'};}
+    case 'num':{const n=numOf(raw);return n==null||isNaN(n)||n<0?{e:f.l+' "'+s+'" is not a number'}:{v:n};}
+    case 'date':{const d=parseAnyDate(raw,ctx.dayFirst);return d?{v:d}:{e:f.l+' "'+s+'" is not a date I can read'};}
+    case 'month':{const m=parseMonth(raw,ctx.dayFirst);return m?{v:m}:{e:'Month "'+s+'" — use a form like 2026-11 or Nov 2026'};}
+    case 'time':{const tm=parseTime(raw);return tm?{v:tm}:{e:'Time "'+s+'" — use a form like 17:00 or 5 PM'};}
+    case 'days':{const d=parseDays(s);return d.length?{v:d}:{e:'No weekdays found in "'+s+'"'};}
+    case 'interval':{const n=parseInt(s,10);if(/1\s*h|hour/i.test(s)||n===60)return {v:'60'};if(n===30||/half|30/.test(s))return {v:'30'};return {e:'Class length "'+s+'" — use 30 or 60'};}
+    case 'course':{const c=courses.find(x=>x.name.toLowerCase().trim()===s.toLowerCase());if(c)return {v:c.id,name:c.name};return ctx.newCrs?{v:'NEW:'+s,name:s,note:'new course'}:{e:'No course called "'+s+'"'};}
+    case 'level':{const lo=s.toLowerCase();const L=['Beginner','Intermediate','Advanced'].find(x=>lo.startsWith(x.slice(0,3).toLowerCase()));return {v:L||s,other:!L};}
+    case 'classType':{const lo=s.toLowerCase();if(/group|batch/.test(lo))return {v:'Group'};if(/one|1\s*[:\-]\s*1|individual|private|solo|personal/.test(lo))return {v:'One-to-One'};return {e:'Class type "'+s+'" — use Group or One-to-One'};}
+    case 'mode':{const lo=s.toLowerCase();if(/on\s*line|zoom|meet|virtual/.test(lo))return {v:'Online'};if(/off\s*line|in\s*person|centre|center|studio|class\s*room/.test(lo))return {v:'Offline'};return {e:'Mode "'+s+'" — use Online or Offline'};}
+    case 'age':{const n=parseInt(s,10);const lo=s.toLowerCase();if(['under5','5to10','10to15','15plus'].includes(s))return {v:s};if(/adult|15\s*\+|above/.test(lo))return {v:'15plus'};if(isNaN(n))return {e:'Age "'+s+'" not understood'};return {v:n<5?'under5':n<10?'5to10':n<15?'10to15':'15plus'};}
+    case 'status':{const lo=s.toLowerCase();if(/^(in|de)active|^no$|^0$|left|inactive|discontinued/.test(lo))return {v:'Inactive'};return {v:'Active'};}
+    case 'role':{const lo=s.toLowerCase();const r=lo.startsWith('adm')?'admin':/fac|teach|guru|staff|instr/.test(lo)?'faculty':/stu|learn|pupil/.test(lo)?'student':'';return r?{v:r}:{e:'Role "'+s+'" — use Admin, Faculty or Student'};}
+    case 'password':return passOk(s)?{v:s}:{e:'Password is too weak (8+ chars, upper, lower, number, symbol)'};
+    case 'payMode':{const lo=s.toLowerCase();const M=[['UPI',/upi|gpay|google|phonepe|paytm/],['Cash',/cash/],['Bank Transfer',/bank|neft|imps|rtgs|transfer/],['Card',/card|debit|credit/],['Cheque',/cheque|check|chq/]].find(x=>x[1].test(lo));return {v:M?M[0]:s};}
+    case 'calType':{const lo=s.toLowerCase();return {v:/vac|break/.test(lo)?'Vacation':/holi|festival|closed/.test(lo)?'Holiday':/event|concert|recital|meeting|exam/.test(lo)?'Event':'Other'};}
+    case 'att':{const lo=s.toLowerCase().replace(/[^a-z0-9✓✔×✗]/g,'');const M={p:'P',present:'P','1':'P',y:'P',yes:'P','✓':'P','✔':'P',a:'A',absent:'A','0':'A',n:'A',no:'A','×':'A','✗':'A',l:'L',late:'L',v:'V',leave:'V',approvedleave:'V',vacation:'V',onleave:'V',h:'H',holiday:'H',dh:'DH',facultyleave:'DH',facultyonleave:'DH',teacherleave:'DH',c:'C',comp:'C',compensation:'C',compensationclass:'C'};return M[lo]?{v:M[lo]}:{e:'Status "'+s+'" — use P, L, A, V, H, DH or C'};}
+    case 'student':return findStudentRef(s);
+    case 'batch':{const b=batches.find(x=>x.id===s||x.name.toLowerCase()===s.toLowerCase());return b?{v:b.id,name:b.name}:{e:'No batch called "'+s+'"'};}
+    default:return {v:s};
+  }
+}
+
+/* ---------- reading files ---------- */
+let imp=null;
+function impNew(){return {fileName:'',kind:'',grid:[],sheets:null,sheet:'',text:'',headerRow:0,headers:[],rows:[],map:{},defs:{},edits:{},recs:[],ai:false,pdfPages:null,imgBlob:null,file:null,showN:100};}
+function impSetStatus(html,busy){const el=gid('impStatus');el.innerHTML=(busy?'<span class="spin"></span> ':'')+html;}
+function splitDelimited(text,delim){
+  const lines=text.replace(/\r\n?/g,'\n');
+  if(delim==='  ')return lines.split('\n').map(l=>l.trim().split(/\s{2,}|\t/));
+  const out=[];let row=[],cur='',q=false;
+  for(let i=0;i<lines.length;i++){const ch=lines[i];
+    if(q){if(ch==='"'){if(lines[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=ch;continue;}
+    if(ch==='"'&&cur.trim()===''){q=true;cur='';continue;}
+    if(ch===delim){row.push(cur);cur='';continue;}
+    if(ch==='\n'){row.push(cur);out.push(row);row=[];cur='';continue;}
+    cur+=ch;}
+  row.push(cur);out.push(row);
+  return out.map(r=>r.map(c=>c.trim()));
+}
+function detectDelim(text){
+  const ls=text.split(/\r?\n/).filter(l=>l.trim()).slice(0,20);if(!ls.length)return ',';
+  let best=',',bs=-1;
+  ['\t',',',';','|'].forEach(d=>{const counts=ls.map(l=>l.split(d).length-1);const mn=Math.min(...counts);const avg=counts.reduce((a,b)=>a+b,0)/counts.length;const sc=mn>0?avg+mn*2:avg*.2;if(sc>bs){bs=sc;best=d;}});
+  if(bs<=0.3&&ls.some(l=>/\S\s{2,}\S/.test(l)))return '  ';
+  return best;
+}
+function cleanGrid(g){return g.map(r=>(r||[]).map(c=>c==null?'':(typeof c==='string'?c.trim():c))).filter(r=>r.some(c=>String(c).trim()!==''));}
+async function impPick(file){
+  if(!file)return;
+  if(!need('importData'))return;
+  imp=impNew();imp.file=file;imp.fileName=file.name;
+  const ext=(file.name.split('.').pop()||'').toLowerCase();const ty=file.type||'';
+  ['impStep2','impStep3','impStep4'].forEach(id=>gid(id).style.display='none');gid('impResult').innerHTML='';
+  if(file.size>25*1024*1024){impSetStatus('<b style="color:var(--terracotta);">This file is larger than 25 MB.</b> Split it into smaller files.');return;}
+  try{
+    if(['xlsx','xls','xlsm','ods'].includes(ext)||/spreadsheet|excel/.test(ty)){imp.kind='Excel';impSetStatus('Reading '+esc(file.name)+'…',true);const X=await needXLSX();const wb=X.read(await file.arrayBuffer(),{type:'array'});imp.sheets={};imp.dsheets={};wb.SheetNames.forEach(n=>{const r=X.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:''});const d=X.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:false,defval:''});const keep=r.map((row,i)=>(row||[]).some(c=>String(c==null?'':c).trim()!=='')?i:-1).filter(i=>i>=0);imp.sheets[n]=keep.map(i=>(r[i]||[]).map(c=>typeof c==='string'?c.trim():c));imp.dsheets[n]=keep.map(i=>(d[i]||[]).map(c=>String(c==null?'':c).trim()));});imp.sheet=wb.SheetNames.find(n=>imp.sheets[n].length)||wb.SheetNames[0];imp.grid=imp.sheets[imp.sheet]||[];imp.dgrid=imp.dsheets[imp.sheet]||null;}
+    else if(ext==='pdf'||ty==='application/pdf'){imp.kind='PDF';impSetStatus('Reading the text in '+esc(file.name)+'…',true);await impReadPdf(file);if(imp.kind==='PDF (scanned)'){impShowRead();return impReadWithClaude();}}
+    else if(/^image\//.test(ty)||['jpg','jpeg','png','webp','heic','gif','bmp'].includes(ext)){imp.kind='Photo';imp.imgBlob=file;impShowRead();return impReadWithClaude();}
+    else{imp.kind='Text';imp.text=await file.text();imp.grid=cleanGrid(splitDelimited(imp.text,detectDelim(imp.text)));}
+  }catch(e){impSetStatus('<b style="color:var(--terracotta);">Could not read this file:</b> '+esc(e.message||e)+'. If it is an Excel or PDF file, check your internet connection (the reader loads from cdnjs), or save it as CSV and try again.');return;}
+  impShowRead();
+}
+function impFromPaste(){
+  if(!need('importData'))return;
+  const t=gid('impPaste').value;if(!t.trim()){showToast('Paste some rows first');return;}
+  imp=impNew();imp.fileName='Pasted text';imp.kind='Text';imp.text=t;imp.grid=cleanGrid(splitDelimited(t,detectDelim(t)));
+  ['impStep3','impStep4'].forEach(id=>gid(id).style.display='none');gid('impResult').innerHTML='';impShowRead();
+}
+function impReparseText(){if(!imp||!imp.text)return;const d=gid('impDelim').value;imp.grid=cleanGrid(splitDelimited(imp.text,d==='auto'?detectDelim(imp.text):d));imp.headerRow=impGuessHeader(imp.grid);impShowRead(true);}
+async function impReadPdf(file){
+  const lib=await needPDF();const doc=await lib.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false}).promise;
+  const grid=[];let chars=0;imp.pdfDoc=doc;
+  for(let p=1;p<=Math.min(doc.numPages,50);p++){
+    const pg=await doc.getPage(p);const tc=await pg.getTextContent();
+    const items=tc.items.filter(i=>i.str&&i.str.trim()).map(i=>({s:i.str.trim(),x:i.transform[4],y:i.transform[5],w:i.width||i.str.length*4,h:Math.abs(i.transform[3])||8}));
+    chars+=items.reduce((a,i)=>a+i.s.length,0);
+    items.sort((a,b)=>b.y-a.y||a.x-b.x);
+    const lines=[];items.forEach(it=>{const L=lines.find(l=>Math.abs(l.y-it.y)<=Math.max(2,it.h*.45));if(L)L.items.push(it);else lines.push({y:it.y,items:[it]});});
+    lines.sort((a,b)=>b.y-a.y).forEach(l=>{l.items.sort((a,b)=>a.x-b.x);const cells=[];let cur=null;
+      l.items.forEach(it=>{const gap=cur?it.x-(cur.x+cur.w):999;const cw=it.s.length?it.w/it.s.length:4;
+        if(cur&&gap<Math.max(3,cw*1.6)){cur.s+=(gap>cw*.25?' ':'')+it.s;cur.w=it.x+it.w-cur.x;}else{cur={s:it.s,x:it.x,w:it.w};cells.push(cur);}});
+      grid.push(cells.map(c=>c.s));});
+  }
+  if(chars<15){imp.kind='PDF (scanned)';imp.grid=[];return;}
+  // keep only rows that look like the table (the most common column count, ±1)
+  const cnt={};grid.forEach(r=>{if(r.length>1)cnt[r.length]=(cnt[r.length]||0)+1;});
+  const mode=Number(Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0]||1);
+  imp.pdfOther=grid.filter(r=>Math.abs(r.length-mode)>1).length;
+  imp.grid=grid.filter(r=>r.length>1&&Math.abs(r.length-mode)<=1);
+  if(!imp.grid.length)imp.grid=grid;
+}
+async function impImagesForClaude(){
+  const out=[];const MAX=1800;
+  const shrink=async(src)=>{const c=document.createElement('canvas');let w=src.width,h=src.height;const k=Math.min(1,MAX/Math.max(w,h));c.width=Math.round(w*k);c.height=Math.round(h*k);c.getContext('2d').drawImage(src,0,0,c.width,c.height);return await new Promise(r=>c.toBlob(r,'image/jpeg',.88));};
+  if(imp.imgBlob){
+    let bmp;try{bmp=await createImageBitmap(imp.imgBlob);}catch(e){throw new Error('This image type cannot be opened in the browser. Save it as JPG or PNG.');}
+    out.push(await shrink(bmp));
+  }else if(imp.file){
+    const lib=await needPDF();const doc=imp.pdfDoc||await lib.getDocument({data:new Uint8Array(await imp.file.arrayBuffer()),isEvalSupported:false}).promise;
+    for(let p=1;p<=Math.min(doc.numPages,5);p++){const pg=await doc.getPage(p);const vp=pg.getViewport({scale:2});const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;out.push(await shrink(c));}
+  }
+  return out;
+}
+async function impReadWithClaude(){
+  if(!imp||(!imp.file&&!imp.imgBlob)){showToast('Choose a photo or PDF first');return;}
+  const sample=await capUse('sample');
+  if(!sample){impSetStatus('<b style="color:var(--terracotta);">Reading photos and scanned PDFs needs Claude, which is not available in this view.</b> Open the app on claude.ai, or upload the data as Excel, CSV or text.');return;}
+  const tgt=IMP_TARGETS[gid('impTarget').value];
+  try{
+    impSetStatus('Preparing pages…',true);
+    const imgs=await impImagesForClaude();
+    let lim=null;try{lim=sample.limits?await sample.limits():null;}catch(e){}
+    if(lim&&lim.images===false){impSetStatus('<b style="color:var(--terracotta);">Image reading is not enabled for this page.</b> Upload Excel, CSV or text instead.');return;}
+    impSetStatus('Claude is reading '+imgs.length+' image'+(imgs.length>1?'s':'')+'… this can take up to a minute.',true);
+    const prompt='You are extracting tabular data from '+(imgs.length>1?imgs.length+' page images':'an image')+' of a music college record ('+tgt.label+'). '+
+      'Copy every data row of the table exactly as written. Do not guess, correct, translate or invent values; use "" for an empty or unreadable cell. Keep dates, times and amounts as written. '+
+      'Use the column headings shown in the document. If there are no headings, use short headings that describe each column, preferring these names where they fit: '+tgt.fields.map(f=>f.l).join(', ')+'. '+
+      'If the table continues across pages, combine it into one table and do not repeat the heading row. Ignore page titles, logos, totals rows and signatures. '+
+      'Reply with JSON only, no other text, in exactly this shape: {"headers":["..."],"rows":[["...","..."]],"notes":"anything unclear, or empty"}';
+    const res=await sample(prompt,{images:imgs,modelTier:'default',onText:({text})=>{const n=(text.match(/\],\s*\[/g)||[]).length;impSetStatus('Claude is reading… '+(n?n+' rows so far':''),true);}});
+    const txt=res&&res.text||'';const a=txt.indexOf('{'),b=txt.lastIndexOf('}');
+    if(a<0||b<a)throw new Error('Claude did not return a table');
+    const obj=JSON.parse(txt.slice(a,b+1));
+    const H=(obj.headers||[]).map(String);const R=(obj.rows||[]).map(r=>(r||[]).map(c=>c==null?'':String(c)));
+    if(!R.length)throw new Error('No table rows were found in this '+(imp.imgBlob?'image':'PDF'));
+    imp.grid=cleanGrid([H,...R]);imp.ai=true;imp.aiNotes=obj.notes||'';imp.headerRow=0;
+    impShowRead(true);
+  }catch(e){
+    if(e&&e.code==='not_granted'){impSetStatus('<b style="color:var(--terracotta);">Permission to ask Claude was not given.</b> Upload Excel, CSV or text instead.');return;}
+    if(e&&e.code==='rate_limited'){impSetStatus('<b style="color:var(--terracotta);">Claude is busy right now.</b> Wait a minute and press "Read with Claude" again.');return;}
+    impSetStatus('<b style="color:var(--terracotta);">Could not read this '+(imp.imgBlob?'photo':'PDF')+':</b> '+esc(e.message||String(e))+'. Try a clearer, straight photo, or upload Excel or CSV.');
+  }
+}
+function impGuessHeader(g){for(let i=0;i<Math.min(g.length,15);i++){const r=g[i].filter(c=>String(c).trim()!=='');const filled=r.length;const dates=r.filter(c=>parseAnyDate(c,true)).length;const texty=r.filter(c=>typeof c==='string'&&/[a-z]/i.test(c)&&!parseAnyDate(c,true)).length;if(filled>=2&&texty>=1&&(texty>=Math.max(2,filled*.6)||(dates>=3&&texty+dates===filled)))return i;}return 0;}
+function impShowRead(keepHeader){
+  const g=imp.grid;gid('impStep2').style.display='';
+  if(!g.length){impSetStatus('<b style="color:var(--terracotta);">No rows found in '+esc(imp.fileName)+'.</b>'+(imp.kind==='PDF (scanned)'?' This PDF looks scanned.':''));gid('impRaw').innerHTML='';return;}
+  if(!keepHeader)imp.headerRow=impGuessHeader(g);
+  gid('impSheetWrap').style.display=imp.sheets&&Object.keys(imp.sheets).length>1?'':'none';
+  if(imp.sheets)setOpts(gid('impSheet'),Object.keys(imp.sheets).map(n=>[n,n+' ('+imp.sheets[n].length+' rows)']),false),gid('impSheet').value=imp.sheet;
+  gid('impDelimWrap').style.display=imp.kind==='Text'?'':'none';
+  gid('impAiWrap').style.display=(imp.kind.startsWith('PDF')||imp.kind==='Photo')?'':'none';
+  setOpts(gid('impHeaderRow'),[['-1','No header row'],...g.slice(0,Math.min(g.length,20)).map((r,i)=>[String(i),'Row '+(i+1)+': '+r.filter(c=>c!=='').slice(0,3).join(' · ').slice(0,40)])],false);
+  gid('impHeaderRow').value=String(imp.headerRow);
+  const ncol=Math.max(...g.map(r=>r.length));
+  impSetStatus('<b>'+esc(imp.fileName)+'</b> · '+esc(imp.kind)+(imp.ai?' · read by Claude':'')+' · '+g.length+' row'+(g.length===1?'':'s')+', '+ncol+' column'+(ncol===1?'':'s'));
+  const notes=[];
+  if(imp.ai)notes.push('<b>Read by Claude from '+(imp.imgBlob?'a photo':'a PDF')+'.</b> Check every value against the original before importing — handwriting and blurry areas can be misread.'+(imp.aiNotes?' Claude noted: '+esc(imp.aiNotes):''));
+  if(imp.kind==='PDF'&&!imp.ai)notes.push('Text was taken from the PDF and split into columns by position.'+(imp.pdfOther?' '+imp.pdfOther+' line(s) that did not look like table rows (titles, footers) were left out.':'')+' If the columns look wrong, use <b>Read with Claude instead</b>.');
+  gid('impReadNote').innerHTML=notes.join('<br>');
+  impHeaderChanged(true);
+}
+function impSheetChanged(){imp.sheet=gid('impSheet').value;imp.grid=imp.sheets[imp.sheet]||[];imp.dgrid=imp.dsheets?imp.dsheets[imp.sheet]:null;imp.headerRow=impGuessHeader(imp.grid);impShowRead(true);}
+function impHeaderChanged(fromShow){
+  if(!fromShow)imp.headerRow=Number(gid('impHeaderRow').value);
+  const g=imp.grid,hr=imp.headerRow;const ncol=Math.max(1,...g.map(r=>r.length));
+  imp.headers=Array.from({length:ncol},(_,i)=>{const h=hr>=0?String((g[hr]||[])[i]==null?'':(g[hr]||[])[i]).trim():'';return h||'Column '+(i+1);});
+  const seen={};imp.headers=imp.headers.map(h=>{seen[h]=(seen[h]||0)+1;return seen[h]>1?h+' ('+seen[h]+')':h;});
+  imp.rows=g.slice(hr+1);imp.drows=imp.dgrid?imp.dgrid.slice(hr+1):null;imp.edits={};
+  const show=g.slice(Math.max(0,hr),Math.max(0,hr)+8);
+  gid('impRaw').innerHTML='<table><thead><tr><th>#</th>'+imp.headers.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr></thead><tbody>'+imp.rows.slice(0,6).map((r,i)=>'<tr><td class="mono">'+(i+1)+'</td>'+imp.headers.map((_,c)=>'<td>'+esc(dispCell(i,c))+'</td>').join('')+'</tr>').join('')+'</tbody></table>'+(imp.rows.length>6?'<p class="io-hint">…and '+(imp.rows.length-6)+' more row(s).</p>':'');
+  const regCols=imp.headers.filter(h=>parseAnyDate(h,true));gid('impLayoutWrap').style.display=gid('impTarget').value==='attendance'?'':'none';
+  if(gid('impTarget').value==='attendance')gid('impLayout').value=regCols.length>=3?'register':'rows';
+  impBuildMap();
+}
+function cellTxt(v){return v==null?'':String(v);}
+function dispCell(ri,ci){const d=imp.drows&&imp.drows[ri];if(d&&d[ci]!==undefined&&d[ci]!=='')return d[ci];return cellTxt((imp.rows[ri]||[])[ci]);}
+function impDispVal(ri,k){const e=imp.edits[ri];if(e&&k in e)return e[k];const ci=k in imp.map?imp.map[k]:-1;const v=ci>=0?dispCell(ri,ci):'';return v===''&&imp.defs[k]?imp.defs[k]:v;}
+
+/* ---------- mapping ---------- */
+function impFields(){const t=gid('impTarget').value;const f=IMP_TARGETS[t].fields;if(t==='attendance'&&gid('impLayout').value==='register')return f.filter(x=>x.reg!==0);return f;}
+function impAutoMap(){
+  const t=gid('impTarget').value;const saved=((college.importMaps||{})[t])||{};const fields=impFields();const map={};const used=new Set();
+  imp.headers.forEach((h,i)=>{const k=saved[nrm(h)];if(k&&fields.some(f=>f.k===k)&&!(k in map)){map[k]=i;used.add(i);}});
+  const sc=[];fields.forEach(f=>{if(f.k in map)return;imp.headers.forEach((h,i)=>{if(used.has(i))return;const H=nrm(h);if(!H)return;let s=0;
+    [f.k,f.l,...(f.al||[])].forEach(a=>{const A=nrm(a);if(!A)return;if(H===A)s=Math.max(s,10);else if(A.length>=4&&H.includes(A))s=Math.max(s,6);else if(H.length>=4&&A.includes(H))s=Math.max(s,4);});
+    if(s)sc.push([s,f.k,i]);});});
+  sc.sort((a,b)=>b[0]-a[0]).forEach(([s,k,i])=>{if(k in map||used.has(i))return;map[k]=i;used.add(i);});
+  return map;
+}
+function impBuildMap(){
+  if(!imp||!imp.headers.length)return;
+  imp.map=impAutoMap();imp.defs={};
+  const t=gid('impTarget').value;gid('impNewCrsWrap').style.display=t==='students'?'':'none';
+  gid('impStep3').style.display='';impRenderMap();impValidate();
+}
+function impRenderMap(){
+  const fields=impFields();const opts=['<option value="-1">— not in file —</option>',...imp.headers.map((h,i)=>'<option value="'+i+'">'+esc(h)+'</option>')].join('');
+  const fri=imp.rows.findIndex(r=>r.some(c=>String(c).trim()!==''));const ctx0={dayFirst:gid('impDayFirst').value==='1',newCrs:gid('impNewCrs').value==='1'};
+  gid('impMapT').innerHTML=fields.map(f=>{const ci=f.k in imp.map?imp.map[f.k]:-1;let ex='';if(fri>=0&&(ci>=0||imp.defs[f.k])){const c=conv({...f,req:0},impRawVal(fri,f.k),ctx0);ex=c.e?'⚠ '+c.e:(c.name||(Array.isArray(c.v)?c.v.join(' '):String(c.v)));}
+    return '<tr><td><b>'+esc(f.l)+'</b>'+(f.req?' <span style="color:var(--terracotta);">*</span>':'')+'</td><td><select id="impm_'+f.k+'" onchange="impMapChanged(\''+f.k+'\')" aria-label="Column for '+esc(f.l)+'">'+opts.replace('value="'+ci+'"','value="'+ci+'" selected')+'</select></td><td><input id="impd_'+f.k+'" value="'+esc(imp.defs[f.k]||'')+'" placeholder="'+(f.t==='days'?'e.g. Mon Wed':f.t==='time'?'e.g. 17:00':f.t==='mode'?'Online or Offline':f.t==='classType'?'Group or One-to-One':'')+'" oninput="impDefChanged(\''+f.k+'\')" aria-label="Default for '+esc(f.l)+'"></td><td style="font-size:12px;color:var(--muted);max-width:220px;">'+esc(ex)+'</td></tr>';}).join('');
+  const usedCols=new Set(Object.values(imp.map));const un=imp.headers.filter((h,i)=>!usedCols.has(i));
+  const regNote=gid('impTarget').value==='attendance'&&gid('impLayout').value==='register'?'Register layout: every column whose heading is a date is read as that day\'s code ('+imp.headers.filter(h=>parseAnyDate(h,gid('impDayFirst').value==='1')).length+' date columns found). ':'';
+  gid('impUnused').innerHTML=regNote+(un.length?'Columns not used: '+un.map(esc).join(', '):'Every column is used.');
+}
+function impMapChanged(k){const v=Number(gid('impm_'+k).value);if(v<0)delete imp.map[k];else{Object.keys(imp.map).forEach(x=>{if(imp.map[x]===v&&x!==k){delete imp.map[x];const s=gid('impm_'+x);if(s)s.value='-1';}});imp.map[k]=v;}imp.edits={};impRenderMap();impValidate();}
+let _defT=null;function impDefChanged(k){imp.defs[k]=gid('impd_'+k).value;clearTimeout(_defT);_defT=setTimeout(impValidate,250);}
+
+/* ---------- validation ---------- */
+function impRawVal(ri,k){const e=imp.edits[ri];if(e&&k in e)return e[k];const r=imp.rows[ri]||[];const ci=k in imp.map?imp.map[k]:-1;let v=ci>=0?r[ci]:'';if((v==null||String(v).trim()==='')&&imp.defs[k])v=imp.defs[k];return v==null?'':v;}
+function impExpand(){
+  // returns [{ri,date?}] work items (register layout expands to one per date column)
+  const t=gid('impTarget').value;const items=[];
+  imp.rows.forEach((r,ri)=>{if(!r.some(c=>String(c).trim()!==''))return;
+    if(t==='attendance'&&gid('impLayout').value==='register'){const df=gid('impDayFirst').value==='1';imp.headers.forEach((h,ci)=>{const d=parseAnyDate(h,df);if(!d)return;const v=r[ci];if(v==null||String(v).trim()==='')return;items.push({ri,ci,date:d,code:v});});}
+    else items.push({ri});});
+  return items;
+}
+function impValidate(){
+  if(!imp||!imp.headers.length)return;
+  const t=gid('impTarget').value;const fields=impFields();const ctx={dayFirst:gid('impDayFirst').value==='1',newCrs:gid('impNewCrs').value==='1'};const dup=gid('impDup').value;
+  const recs=[];const seen={__b:{}};
+  const missingReq=fields.filter(f=>f.req&&!(f.k in imp.map)&&!imp.defs[f.k]);
+  impExpand().forEach(it=>{
+    const rec={ri:it.ri,ci:it.ci,vals:{},raw:{},errs:[],notes:[]};
+    fields.forEach(f=>{const raw=impRawVal(it.ri,f.k);rec.raw[f.k]=raw;const c=conv(f,raw,ctx);if(c.e)rec.errs.push(c.e);else{rec.vals[f.k]=c.v;if(c.name)rec.vals[f.k+'Name']=c.name;if(c.note)rec.notes.push(c.note);if(c.other)rec.vals.levelOther=String(raw).trim();if(c.s)rec.stu=c.s;}});
+    if((t==='students'||t==='users')&&rec.vals.firstName&&!rec.vals.lastName&&!('lastName' in imp.map)&&!imp.defs.lastName&&/\s/.test(rec.vals.firstName)){const p=rec.vals.firstName.split(/\s+/);rec.vals.firstName=p.shift();rec.vals.lastName=p.join(' ');}
+    if(it.date){rec.raw.date=it.date;rec.raw.status=it.code;rec.vals.date=it.date;const c=conv({l:'Status',t:'att',req:1},it.code,ctx);if(c.e)rec.errs.push(it.date+': '+c.e);else rec.vals.status=c.v;}
+    impCheckRecord(t,rec,dup,seen);recs.push(rec);
+  });
+  imp.recs=recs;imp.missingReq=missingReq;
+  gid('impStep4').style.display='';impRenderPreview();
+}
+function impFindExisting(t,v,rec){
+  if(t==='students'){return students.find(s=>(v.email&&s.email&&s.email.toLowerCase()===v.email)||(v.mobile&&s.mobile===v.mobile)||(!v.email&&!v.mobile&&stuName(s).toLowerCase()===((v.firstName||'')+' '+(v.lastName||'')).trim().toLowerCase()));}
+  if(t==='courses')return courses.find(c=>c.name.toLowerCase().trim()===String(v.name).toLowerCase());
+  if(t==='payments'){const bid=v.batch||(rec.stu&&rec.stu.batchId);return payments.find(p=>p.studentId===v.student&&p.month===v.month&&(p.batchId||'')===(bid||''));}
+  if(t==='attendance')return savedSess(v.student,v.date);
+  if(t==='calendar')return calendarEvents.find(e=>e.title.toLowerCase()===String(v.title).toLowerCase()&&e.start===v.start);
+  if(t==='users')return users.find(u=>u.username.toLowerCase()===String(v.username).toLowerCase());
+}
+function impCheckRecord(t,rec,dup,seen){
+  const v=rec.vals;if(rec.errs.length){rec.st='err';return;}
+  if(t==='students'){
+    if(v.courseName&&String(v.courseName).startsWith('NEW:')){/* course created at import */}
+    const crsName=v.courseNameName||'';const st={id:'new',courseId:String(v.courseName).startsWith('NEW:')?'new_'+nrm(crsName):v.courseName,courseName:crsName,weekdays:v.weekdays,timing:v.timing,classType:v.classType||'One-to-One',mode:v.mode||'Online'};
+    rec.batchName=batchNameOf(st);rec.batchKey=batchKeyOf(st);
+  }
+  if(t==='payments'){const s=rec.stu;if(!v.batch&&!(s&&s.batchId))rec.errs.push('No batch given and the student has no current batch');if(v.paid!==''&&v.totalFee!==''&&Number(v.paid)>Number(v.totalFee))rec.errs.push('Amount paid is more than the total fee');if(v.paymentDate&&v.paymentDate>todayStr())rec.errs.push('Payment date is in the future');}
+  if(t==='attendance'&&rec.stu&&v.date){const sched=(rec.stu.weekdays||[]).includes(wdOf(v.date));if(!sched&&v.status&&v.status!=='C')rec.errs.push(v.date+' is not a class day for '+stuName(rec.stu)+' (only C is allowed)');}
+  if(t==='calendar'){if(v.end&&v.end<v.start)rec.errs.push('End date is before the start date');}
+  if(t==='users'&&v.role==='admin'&&currentUser.role!=='admin')rec.errs.push('Only an Admin can import Admin accounts');
+  if(rec.errs.length){rec.st='err';return;}
+  const key=t==='attendance'?v.student+'|'+v.date:t==='students'?(v.email||v.mobile||((v.firstName||'')+' '+(v.lastName||'')).toLowerCase()):t==='courses'?String(v.name).toLowerCase():t==='payments'?v.student+'|'+v.month+'|'+(v.batch||''):t==='calendar'?String(v.title).toLowerCase()+'|'+v.start:String(v.username||'').toLowerCase();
+  if(seen[key]!==undefined&&t!=='payments'){rec.errs.push('Same record as row '+(seen[key]+1)+' in this file');rec.st='err';return;}
+  seen[key]=rec.ri;
+  const ex=impFindExisting(t,v,rec);rec.ex=ex||null;
+  if(t==='users'&&dup!=='update'&&ex){rec.st='skip';rec.notes.push('username already exists');return;}
+  if(t==='users'&&!ex){if(v.email&&users.some(u=>u.email&&u.email.toLowerCase()===v.email)){rec.errs.push('Another user already has this email');rec.st='err';return;}}
+  rec.st=ex?(dup==='skip'?'skip':dup==='update'?'upd':'new'):'new';
+  if(t==='students'&&rec.st!=='skip'&&(v.classType||'One-to-One')==='Group'&&(v.mode||'Online')==='Online'){
+    const selfId=rec.st==='upd'&&ex?ex.id:null;const already=students.filter(s=>s.batchId===rec.batchKey&&s.id!==selfId).length;const inFile=seen.__b[rec.batchKey]||0;
+    if(already+inFile>=groupCap()){rec.errs.push('Online batch '+rec.batchName+' is full ('+groupCap()+' per Online batch)');rec.st='err';return;}
+    seen.__b[rec.batchKey]=inFile+1;}
+  if(t==='attendance'&&ex)rec.st=dup==='skip'?'skip':'upd';
+}
+const ST_LBL={new:'✓ New',upd:'↻ Update',skip:'– Skip',err:'✗ Error'};
+function impRenderPreview(){
+  const R=imp.recs;const c={new:0,upd:0,skip:0,err:0};R.forEach(r=>c[r.st]++);
+  const t=gid('impTarget').value;const fields=impFields();
+  gid('impCounts').innerHTML=(imp.missingReq&&imp.missingReq.length?'<div class="io-bad">Map a column or enter a default for: '+imp.missingReq.map(f=>esc(f.l)).join(', ')+'</div>':'')+
+    '<span class="io-c new">'+c.new+' new</span><span class="io-c upd">'+c.upd+' to update</span><span class="io-c skip">'+c.skip+' skipped</span><span class="io-c err">'+c.err+' with errors</span><span style="color:var(--muted);font-size:12px;">'+R.length+' '+(t==='attendance'&&gid('impLayout').value==='register'?'attendance marks':'rows')+' read</span>';
+  const f=gid('impShow').value;const list=R.filter(r=>f==='all'||r.st===f);const shown=list.slice(0,imp.showN);
+  const cols=t==='attendance'&&gid('impLayout').value==='register'?[...fields,{k:'date',l:'Date',t:'date'},{k:'status',l:'Status',t:'att'}]:fields;
+  gid('impPrevHost').innerHTML=R.length?'<table class="io-prev"><thead><tr><th>Row</th><th>Result</th>'+cols.map(x=>'<th>'+esc(x.l)+'</th>').join('')+(t==='students'?'<th>Batch</th>':'')+'<th>Problems / notes</th></tr></thead><tbody>'+shown.map(r=>{
+    const reg=r.ci!==undefined;
+    return '<tr class="st-'+r.st+'"><td class="mono">'+(r.ri+1+(imp.headerRow>=0?imp.headerRow+1:0))+'</td><td><span class="io-c '+r.st+'">'+ST_LBL[r.st]+'</span></td>'+cols.map(x=>{const raw=r.raw[x.k];const disp=reg?(Array.isArray(raw)?raw.join(' '):cellTxt(raw)):impDispVal(r.ri,x.k);
+      if(reg&&(x.k==='date'||x.k==='status'))return '<td class="mono">'+esc(disp)+'</td>';
+      return '<td><input class="io-cell" value="'+esc(disp)+'" onchange="impEdit('+r.ri+',\''+x.k+'\',this.value)" aria-label="'+esc(x.l)+' row '+(r.ri+1)+'"></td>';}).join('')+(t==='students'?'<td style="font-size:11px;">'+esc(r.batchName||'')+'</td>':'')+'<td style="font-size:11.5px;'+(r.errs.length?'color:var(--terracotta);':'color:var(--muted);')+'">'+esc([...r.errs,...r.notes].join(' · '))+'</td></tr>';}).join('')+'</tbody></table>':'<p class="io-hint">No data rows below the header row.</p>';
+  gid('impMore').innerHTML=list.length>shown.length?'<button class="btn btn-ghost btn-sm" onclick="imp.showN+=200;impRenderPreview()">Show '+Math.min(200,list.length-shown.length)+' more of '+(list.length-shown.length)+'</button>':'';
+  const go=c.new+c.upd;const blocked=imp.missingReq&&imp.missingReq.length;
+  gid('impGoTxt').innerHTML=blocked?'Finish the matching above first.':go?'<b>'+go+' record'+(go===1?'':'s')+'</b> will be saved'+(c.err?' · '+c.err+' row'+(c.err===1?'':'s')+' with errors will be left out':'')+'.':'Nothing to import yet.';
+  gid('impGoBtn').disabled=!!blocked||!go;gid('impGoBtn').textContent=go?'Import '+go+' '+IMP_TARGETS[t].label.toLowerCase():'Import';
+}
+function impEdit(ri,k,val){imp.edits[ri]=imp.edits[ri]||{};imp.edits[ri][k]=val;impValidate();}
+
+/* ---------- import ---------- */
+function newStudentId(code){let mx=0;students.forEach(s=>{const m=String(s.id).match(/^STU(\d+)/);if(m)mx=Math.max(mx,+m[1]);});return 'STU'+String(mx+1).padStart(4,'0')+'-'+code;}
+async function impRun(){
+  const t=gid('impTarget').value;const T=IMP_TARGETS[t];
+  if(!need('importData')||!need(T.perm))return;
+  impValidate();const todo=imp.recs.filter(r=>r.st==='new'||r.st==='upd');if(!todo.length){showToast('Nothing to import');return;}
+  const nN=todo.filter(r=>r.st==='new').length,nU=todo.length-nN;
+  if(!await ask('Import into '+T.label+': '+nN+' new'+(nU?' and '+nU+' update'+(nU===1?'':'s'):'')+' from "'+imp.fileName+'"? You can undo the new records from Import history.','Import'))return;
+  const by=userLabel(),at=new Date().toISOString();const log={id:nid('imp'),at,by,target:t,file:imp.fileName,kind:imp.kind+(imp.ai?' (read by Claude)':''),added:0,updated:0,skipped:imp.recs.filter(r=>r.st==='skip').length,errors:imp.recs.filter(r=>r.st==='err').length,addedIds:[],newCourses:[]};
+  const failed=[];
+  todo.forEach(r=>{try{const res=impApply(t,r,by,at,log);if(res&&res.err){failed.push(r);r.errs.push(res.err);r.st='err';}}catch(e){failed.push(r);r.errs.push(String(e.message||e));r.st='err';}});
+  log.errors+=failed.length;
+  if(t==='students')syncBatches();
+  const rem=gid('impRemember').checked;if(rem){college.importMaps=college.importMaps||{};const m=college.importMaps[t]=college.importMaps[t]||{};Object.entries(imp.map).forEach(([k,ci])=>{const h=nrm(imp.headers[ci]);if(h&&!/^column\d+$/.test(h))m[h]=k;});}
+  importLog.unshift(log);if(importLog.length>100)importLog.length=100;
+  persistAll();populateAll();
+  gid('impResult').innerHTML='<div class="io-done"><b>Import finished.</b> '+log.added+' added, '+log.updated+' updated, '+log.skipped+' skipped, '+log.errors+' not imported because of errors.'+(log.newCourses.length?' New course'+(log.newCourses.length>1?'s':'')+' created: '+log.newCourses.map(esc).join(', ')+'.':'')+(failed.length?' <br>'+failed.slice(0,5).map(r=>'Row '+(r.ri+1)+': '+esc(r.errs.slice(-1)[0])).join('<br>'):'')+' <button class="btn btn-ghost btn-sm" onclick="ioTab(\'log\')">Import history</button></div>';
+  impRenderPreview();showToast('Imported: '+log.added+' added, '+log.updated+' updated');
+}
+function impApply(t,r,by,at,log){
+  const v=r.vals;const upd=r.st==='upd'&&r.ex;
+  if(t==='students'){
+    let cid=v.courseName,cname=v.courseNameName;
+    if(String(cid).startsWith('NEW:')){let c=courses.find(x=>x.name.toLowerCase()===cname.toLowerCase());if(!c){c={id:nid('c'),name:cname,description:'',level:'Beginner',instructor:'',duration:'',status:'Active',createdBy:'Import'};courses.push(c);log.newCourses.push(cname);log.addedIds.push('courses:'+c.id);}cid=c.id;cname=c.name;}
+    const base=upd?{...r.ex}:{id:'',firstName:'',lastName:'',email:'',countryCode:'+91',mobile:'',fullMobile:'',altContact:'',parent:'',ageGroup:'15plus',country:'',city:'',level:'Beginner',levelOther:'',classType:'One-to-One',frequency:'once',interval:'30',mode:'Online',monthlyFee:'',joiningFee:'',joiningDate:'',pendingClasses:0,status:'Active'};
+    const set=(k,val)=>{if(val!==''&&val!=null)base[k]=val;};
+    ['firstName','lastName','email','mobile','parent','ageGroup','city','country','classType','mode','monthlyFee','joiningFee','joiningDate','status','timing','interval'].forEach(k=>set(k,v[k]));
+    if(v.level){base.level=v.levelOther?'Other':v.level;base.levelOther=v.levelOther||'';}
+    if(v.weekdays&&v.weekdays.length){base.weekdays=v.weekdays;base.frequency=v.weekdays.length>1?'twice':'once';}
+    base.courseId=cid;base.courseName=cname;base.fullMobile=base.mobile?(base.countryCode||'+91')+base.mobile:'';
+    base.totalClassesPerMonth=calcTotal(base.weekdays||[],ym());
+    if(!upd)base.id=newStudentId((cname||'STU').replace(/[^A-Z0-9]/gi,'').slice(0,3).toUpperCase()||'STU');
+    const bk=ensureBatch(base,upd?base.id:null,true);if(bk.err)return {err:bk.err};
+    base.batchId=bk.batch.id;base.batchName=bk.batch.name;base.updatedBy=by+' (import)';base.updatedAt=at;
+    if(upd){const i=students.findIndex(x=>x.id===base.id);students[i]=base;log.updated++;}else{students.push(base);log.added++;log.addedIds.push('students:'+base.id);}
+    return;
+  }
+  if(t==='courses'){
+    if(upd){const c=r.ex;['description','instructor','duration','status'].forEach(k=>{if(v[k])c[k]=v[k];});if(v.level)c.level=v.level;log.updated++;return;}
+    const c={id:nid('c'),name:v.name,description:v.description||'',level:v.level||'Beginner',instructor:v.instructor||'',duration:v.duration||'',status:v.status||'Active',createdBy:by+' (import)'};courses.push(c);log.added++;log.addedIds.push('courses:'+c.id);return;
+  }
+  if(t==='payments'){
+    const s=r.stu;const bid=v.batch||s.batchId;const b=batches.find(x=>x.id===bid);
+    const total=Number(v.totalFee),paid=v.paid===''?0:Number(v.paid);
+    const item={id:upd?r.ex.id:nid('pay'),studentId:s.id,student:stuName(s),batchId:bid,batchName:b?b.name:(v.batchName||''),course:s.courseName||'',month:v.month,paymentDate:v.paymentDate||'',totalFee:total,paid,dues:Math.max(0,total-paid),mode:v.mode||'UPI',remarks:v.remarks||'',updatedBy:by+' (import)',updatedAt:at};
+    item.status=payStatusOf(item);
+    if(upd){const i=payments.findIndex(x=>x.id===item.id);payments[i]=item;log.updated++;}else{payments.push(item);log.added++;log.addedIds.push('payments:'+item.id);}
+    return;
+  }
+  if(t==='attendance'){setAtt(v.student,v.date,v.status,by+' (import)',at);if(upd)log.updated++;else{log.added++;log.addedIds.push('attendance:'+v.student+'|'+v.date);}return;}
+  if(t==='calendar'){
+    const e={id:upd?r.ex.id:nid('cal'),title:v.title,type:v.type||'Holiday',start:v.start,end:v.end||v.start,desc:v.desc||'',appliesTo:'all',batchIds:[],studentIds:[],createdBy:upd?r.ex.createdBy:by+' (import)',createdAt:upd?r.ex.createdAt:at,updatedBy:by,updatedAt:at};
+    if(upd){const i=calendarEvents.findIndex(x=>x.id===e.id);calendarEvents[i]=e;log.updated++;}else{calendarEvents.push(e);log.added++;log.addedIds.push('calendarEvents:'+e.id);}
+    calendarEvents.sort((a,b)=>a.start.localeCompare(b.start));return;
+  }
+  if(t==='users'){
+    if(upd){const u=r.ex;if(u.role==='admin'&&currentUser.role!=='admin')return {err:'Only an Admin can change Admin accounts'};['firstName','lastName','email','mobile','password','role'].forEach(k=>{if(v[k])u[k]=v[k];});if(v.status)u.active=v.status!=='Inactive';u.updatedBy=by+' (import)';u.updatedAt=at;log.updated++;return;}
+    const u={id:nid('u'),firstName:v.firstName,lastName:v.lastName||'',username:v.username,email:v.email,mobile:v.mobile||'',password:v.password,role:v.role,active:v.status!=='Inactive',countryCode:'',fullMobile:'',altContact:'',city:'',country:'',collegeName:'',affiliation:'',createdBy:by+' (import)',createdAt:at};
+    users.push(u);log.added++;log.addedIds.push('users:'+u.id);return;
+  }
+}
+async function undoImport(id){
+  const L=importLog.find(x=>x.id===id);if(!L||L.undone)return;
+  if(!need('importData')||!need(IMP_TARGETS[L.target].perm))return;
+  if(!await ask('Undo the import of "'+L.file+'"? This removes the '+L.added+' record(s) it added'+(L.newCourses&&L.newCourses.length?' and the course(s) it created':'')+'. Records it updated keep their new values.','Undo import'))return;
+  let n=0;
+  (L.addedIds||[]).forEach(x=>{const i=x.indexOf(':');const col=x.slice(0,i),rid=x.slice(i+1);
+    if(col==='attendance'){const j=rid.lastIndexOf('|');const sid=rid.slice(0,j),d=rid.slice(j+1);const rec=attRec(sid,d.slice(0,7));if(rec){const b=rec.sessions.length;rec.sessions=rec.sessions.filter(s=>s.date!==d);n+=b-rec.sessions.length;}return;}
+    const map={students:()=>{const b=students.length;students=students.filter(s=>s.id!==rid);return b-students.length;},courses:()=>{if(students.some(s=>s.courseId===rid))return 0;const b=courses.length;courses=courses.filter(c=>c.id!==rid);return b-courses.length;},payments:()=>{const b=payments.length;payments=payments.filter(p=>p.id!==rid);return b-payments.length;},calendarEvents:()=>{const b=calendarEvents.length;calendarEvents=calendarEvents.filter(e=>e.id!==rid);return b-calendarEvents.length;},users:()=>{if(currentUser.id===rid)return 0;const b=users.length;users=users.filter(u=>u.id!==rid);return b-users.length;}};
+    if(map[col])n+=map[col]();});
+  syncBatches();L.undone=true;L.undoneBy=userLabel();L.undoneAt=new Date().toISOString();
+  persistAll();populateAll();renderImpLog();showToast('Import undone — '+n+' record(s) removed');
+}
+function renderImpLog(){
+  const tb=gid('impLogT');if(!tb)return;
+  tb.innerHTML=importLog.length?importLog.map(L=>'<tr'+(L.undone?' style="opacity:.55;"':'')+'><td class="mono">'+esc(fmtStamp(L.at))+'</td><td>'+esc(L.by)+'</td><td>'+esc((IMP_TARGETS[L.target]||{}).label||L.target)+'</td><td style="max-width:200px;">'+esc(L.file)+'<div style="font-size:10.5px;color:var(--muted);">'+esc(L.kind||'')+'</div></td><td class="mono">'+L.added+'</td><td class="mono">'+L.updated+'</td><td class="mono">'+L.skipped+'</td><td class="mono">'+L.errors+'</td><td>'+(L.undone?'<span style="font-size:11px;color:var(--muted);">Undone '+esc(fmtStamp(L.undoneAt))+'</span>':L.added?'<button class="icon-btn p-importData" onclick="undoImport(\''+L.id+'\')">Undo</button>':'')+'</td></tr>').join(''):'<tr class="empty-row"><td colspan="9">No imports yet.</td></tr>';
+}
+function impReset(){imp=null;['impStep2','impStep3','impStep4'].forEach(id=>gid(id).style.display='none');impSetStatus('');gid('impResult').innerHTML='';gid('impPaste').value='';}
+function impTargetChanged(){
+  const t=gid('impTarget').value;impLastTarget=t;const T=IMP_TARGETS[t];
+  gid('impTargetHint').innerHTML=esc(T.hint)+' <b>Fields:</b> '+T.fields.map(f=>esc(f.l)+(f.req?'*':'')).join(', ')+'.';
+  if(imp&&imp.headers.length){gid('impLayoutWrap').style.display=t==='attendance'?'':'none';if(t==='attendance'){const n=imp.headers.filter(h=>parseAnyDate(h,true)).length;gid('impLayout').value=n>=3?'register':'rows';}imp.edits={};impBuildMap();}
+}
+let ioCur=null,impLastTarget=null;
+function ioTab(w){
+  ioCur=w;
+  if(w==='imp'&&!can('importData'))w='exp';if(w==='exp'&&!can('exportData'))w=can('importData')?'imp':'log';
+  ['imp','exp','log'].forEach(x=>{gid('io'+x[0].toUpperCase()+x.slice(1)).style.display=x===w?'':'none';const b=gid('ioTab'+x[0].toUpperCase()+x.slice(1));if(b)b.classList.toggle('on',x===w);});
+  if(w==='exp')expPreview();if(w==='log')renderImpLog();
+}
+function setupDataIO(){
+  if(!gid('impTarget'))return;
+  const ts=Object.keys(IMP_TARGETS).filter(k=>can(IMP_TARGETS[k].perm));
+  const cur=gid('impTarget').value;setOpts(gid('impTarget'),ts.map(k=>[k,IMP_TARGETS[k].label]),false);if(ts.includes(cur))gid('impTarget').value=cur;
+  if(gid('impTarget').value&&gid('impTarget').value!==impLastTarget)impTargetChanged();
+  const es=expSets();const ce=gid('expSet').value;setOpts(gid('expSet'),es.map(e=>[e.k,e.l]),false);if(es.some(e=>e.k===ce))gid('expSet').value=ce;
+  ioTab(ioCur||(can('importData')?'imp':'exp'));
+}
+function showImport(t){showPage('dataio');if(IMP_TARGETS[t]&&can(IMP_TARGETS[t].perm)){gid('impTarget').value=t;impTargetChanged();}ioTab('imp');}
+(function(){document.addEventListener('dragover',e=>{const d=e.target.closest&&e.target.closest('#impDrop');if(d){e.preventDefault();d.classList.add('over');}});document.addEventListener('dragleave',e=>{const d=e.target.closest&&e.target.closest('#impDrop');if(d)d.classList.remove('over');});document.addEventListener('drop',e=>{const d=e.target.closest&&e.target.closest('#impDrop');if(d){e.preventDefault();d.classList.remove('over');const f=e.dataTransfer&&e.dataTransfer.files[0];if(f)impPick(f);}});})();
+
+/* ---------- downloads ---------- */
+async function saveFile(filename,data,mime){
+  const dl=await capUse('downloads');
+  if(dl){try{await dl.save({filename,data:data instanceof Blob?data:new Blob([data],{type:mime||'text/plain'})});showToast('Saved: '+filename);return true;}
+    catch(e){if(e&&(e.code==='declined'||e.code==='cancelled'||e.name==='AbortError')){showToast('Download cancelled');return false;}
+      try{if(typeof data==='string'){await dl.save({filename,data});showToast('Saved: '+filename);return true;}}catch(e2){}
+      showToast('Could not save the file: '+(e&&e.message||e));return false;}}
+  try{const blob=data instanceof Blob?data:new Blob([data],{type:mime||'text/plain'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);showToast('Downloaded: '+filename);return true;}
+  catch(e){showToast('Downloads are not available here — use Copy as text');return false;}
+}
+function toCSV(rows){if(!rows.length)return '';const h=Object.keys(rows[0]);const q=v=>{const s=v==null?'':String(v);return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};return '\ufeff'+[h.map(q).join(','),...rows.map(r=>h.map(k=>q(r[k])).join(','))].join('\r\n');}
+async function toXLSX(sheets){const X=await needXLSX();const wb=X.utils.book_new();sheets.forEach(([name,rows])=>{const ws=X.utils.json_to_sheet(rows.length?rows:[{'(no records)':''}]);const keys=rows.length?Object.keys(rows[0]):['(no records)'];ws['!cols']=keys.map(k=>({wch:Math.min(40,Math.max(k.length,...rows.slice(0,200).map(r=>String(r[k]==null?'':r[k]).length))+2)}));X.utils.book_append_sheet(wb,ws,name.slice(0,31));});const out=X.write(wb,{bookType:'xlsx',type:'array'});return new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});}
+function expSets(){
+  const S=[
+    {k:'students',l:'Students',p:'viewStudents',f:()=>students.map(s=>({'Student ID':s.id,'First name':s.firstName,'Last name':s.lastName||'','Email':s.email||'','Mobile':s.mobile||'','Parent / guardian':s.parent||'','Age group':AGE_LABELS[s.ageGroup]||s.ageGroup||'','City':s.city||'','Country':s.country||'','Course':s.courseName||'','Level':s.level==='Other'?s.levelOther:s.level||'','Class type':s.classType||'','Mode':s.mode||'','Weekdays':(s.weekdays||[]).join(' '),'Class time':s.timing||'','Class length':(s.interval||'30')+' min','Batch':s.batchName||'','Monthly fee':s.monthlyFee||'','Joining fee':s.joiningFee||'','Joining date':s.joiningDate||'','Status':s.status||''}))},
+    {k:'courses',l:'Courses',p:'viewCourses',f:()=>courses.map(c=>({'Course name':c.name,'Description':c.description||'','Level':c.level||'','Faculty / instructor':c.instructor||'','Duration':c.duration||'','Status':c.status||''}))},
+    {k:'batches',l:'Batches',p:'viewTimetable',f:()=>batches.map(b=>({'Batch ID':b.id,'Batch':b.name,'Course':b.courseName||'','Class type':b.classType,'Mode':b.mode,'Weekdays':(b.weekdays||[]).join(' '),'Class time':b.timing||'','Students':students.filter(s=>s.batchId===b.id).length,'Limit':b.classType==='Group'?(b.mode==='Online'?groupCap():'No limit'):1,'Location':b.location||'','Meeting link':b.meetLink||''}))},
+    {k:'payments',l:'Fee payments',p:'viewFees',f:()=>payments.map(p=>({'Student':p.student,'Batch':p.batchName||'','Course':p.course||'','Fee month':p.month,'Payment date':p.paymentDate||'','Total fee':Number(p.totalFee||0),'Amount paid':Number(p.paid||0),'Pending dues':Number(p.dues||0),'Payment method':p.mode||'','Status':payStatusOf(p),'Remarks':p.remarks||''}))},
+    {k:'attendance',l:'Attendance — every mark',p:'viewAttendance',f:()=>{const out=[];attendance.forEach(a=>{const s=students.find(x=>x.id===a.studentId);(a.sessions||[]).forEach(x=>out.push({'Student':s?stuName(s):a.studentId,'Student ID':a.studentId,'Batch':s?s.batchName||'':'','Date':x.date,'Status':ST2CODE[x.status]||x.status,'Meaning':CODE_NAME[ST2CODE[x.status]]||x.status,'Saved by':x.by||'','Saved at':x.at||'','Previous code':x.was||''}));});return out.sort((a,b)=>a.Date.localeCompare(b.Date)||a.Student.localeCompare(b.Student));}},
+    {k:'attsum',l:'Attendance — monthly summary',p:'viewAttendance',f:()=>{const out=[];attendance.forEach(a=>{const s=students.find(x=>x.id===a.studentId);if(!s)return;const st=attStats(s,a.yearMonth);out.push({'Student':stuName(s),'Batch':s.batchName||'','Month':a.yearMonth,'Total classes':st.total,'Completed':st.done,'Pending':st.pending,'Present':st.present,'Late':st.late,'Absent':st.absent,'Leave':st.v,'Holiday':st.hol,'Faculty on leave':st.dh,'Compensation':st.c});});return out.sort((a,b)=>a.Month.localeCompare(b.Month)||a.Student.localeCompare(b.Student));}},
+    {k:'calendar',l:'College calendar',p:'viewCalendar',f:()=>calendarEvents.map(e=>({'Title':e.title,'Type':e.type,'Start date':e.start,'End date':e.end||e.start,'Applies to':appliesLabel(e),'Description':e.desc||''}))},
+    {k:'classes',l:'Classes',p:'viewClasses',f:()=>classLogs.map(c=>({'Date':c.date,'Batch':c.batchName||'Selected students','What was taught':c.topic,'Notes':c.notes||'','Audio':(c.audio||[]).map(a=>a.title+' '+a.url).join(' | '),'Sharing':c.shareLevel||'none','Expires':c.shareExpiry||''}))},
+    {k:'events',l:'Events & recitals',p:'viewEvents',f:()=>announcements.map(a=>({'Title':a.title,'Date':a.date,'Description':a.desc||'','YouTube':a.youtube||''}))},
+    {k:'users',l:'User logins (no passwords)',p:'manageUsers',f:()=>users.map(u=>({'First name':u.firstName,'Last name':u.lastName||'','Username':u.username,'Email':u.email||'','Mobile':u.mobile||'','Role':u.role,'Status':u.active===false?'Inactive':'Active'}))}
+  ];
+  if(currentUser&&currentUser.role==='student')return [];
+  return S.filter(s=>can(s.p));
+}
+function expPreview(){
+  const s=expSets().find(x=>x.k===gid('expSet').value);if(!s){gid('expPrev').innerHTML='';gid('expInfo').textContent='';return;}
+  const rows=s.f();gid('expInfo').textContent=rows.length+' row'+(rows.length===1?'':'s')+(rows.length>8?' · showing the first 8':'');
+  gid('expPrev').innerHTML=rows.length?'<table><thead><tr>'+Object.keys(rows[0]).map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr></thead><tbody>'+rows.slice(0,8).map(r=>'<tr>'+Object.values(r).map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('')+'</tbody></table>':'<p class="io-hint">No records yet.</p>';
+}
+async function expDownload(){
+  if(!need('exportData'))return;const s=expSets().find(x=>x.k===gid('expSet').value);if(!s)return;const rows=s.f();
+  if(!rows.length){showToast('No records to download');return;}
+  const base='swarsetu_'+s.k+'_'+todayStr();
+  if(gid('expFmt').value==='csv')return saveFile(base+'.csv',toCSV(rows),'text/csv;charset=utf-8');
+  try{await saveFile(base+'.xlsx',await toXLSX([[s.l,rows]]));}catch(e){showToast('Excel writer did not load — downloading CSV instead');saveFile(base+'.csv',toCSV(rows),'text/csv;charset=utf-8');}
+}
+async function expAll(){
+  if(!need('exportData'))return;
+  try{await saveFile('swarsetu_all_data_'+todayStr()+'.xlsx',await toXLSX(expSets().map(s=>[s.l.replace(/[\\\/?*\[\]:]/g,'-'),s.f()])));}catch(e){showToast('Excel writer did not load: '+(e.message||e));}
+}
+function expCopy(){
+  if(!need('exportData'))return;const s=expSets().find(x=>x.k===gid('expSet').value);if(!s)return;const rows=s.f();if(!rows.length){showToast('No records');return;}
+  const h=Object.keys(rows[0]);copyText([h.join('\t'),...rows.map(r=>h.map(k=>String(r[k]==null?'':r[k]).replace(/[\t\n]/g,' ')).join('\t'))].join('\n'),'Copied '+rows.length+' rows — paste into Excel or Google Sheets');
+}
+async function dlTemplate(){
+  const t=gid('impTarget').value;const T=IMP_TARGETS[t];if(!T)return;
+  const ex={students:{'First name':'Aarav','Last name':'Shah','Email':'aarav.shah@gmail.com','Mobile (10 digits)':'9876543210','Course':courses[0]?courses[0].name:'Carnatic Vocal','Class type (Group / One-to-One)':'Group','Mode (Online / Offline)':'Online','Weekdays':'Mon Wed','Class time':'17:00','Class length (30 or 60 min)':'60','Monthly fee':'2500','Joining date':todayStr()},
+    payments:{'Student':'Aarav Shah','Fee month':ym(),'Payment date':todayStr(),'Total fee':'2500','Amount paid':'2500','Payment method':'UPI'},
+    attendance:{'Student':'Aarav Shah','Date':todayStr(),'Status / code':'P'},
+    calendar:{'Title':'Diwali break','Start date':todayStr(),'End date':addDays(todayStr(),2),'Type (Holiday / Vacation / Event / Other)':'Vacation'},
+    courses:{'Course name':'Hindustani Vocal','Level':'Beginner','Faculty / instructor':'Pt. Example','Duration':'12 months','Status (Active / Inactive)':'Active'},
+    users:{'First name':'Neha','Username':'neha','Email':'neha@gmail.com','Role (Admin / Faculty / Student)':'Faculty','Password':'Change@2026','Status (Active / Inactive)':'Active'}}[t]||{};
+  const row={};T.fields.forEach(f=>row[f.l+(f.req?' *':'')]=ex[f.l]||'');
+  const notes=T.fields.map(f=>({'Column':f.l+(f.req?' *':''),'Required':f.req?'Yes':'','What to enter':{email:'A valid email',mobile:'10 digits',num:'A number',date:'A date, e.g. 2026-11-24 or 24/11/2026',month:'A month, e.g. 2026-11 or Nov 2026',time:'e.g. 17:00 or 5 PM',days:'e.g. Mon Wed Fri',course:'A course name already in Courses',student:'Student ID, email, mobile or full name',att:'P, L, A, V, H, DH or C',classType:'Group or One-to-One',mode:'Online or Offline',role:'Admin, Faculty or Student',calType:'Holiday, Vacation, Event or Other'}[f.t]||'Text'}));
+  try{await saveFile('swarsetu_'+t+'_template.xlsx',await toXLSX([[T.label,[row]],['How to fill',notes]]));}catch(e){saveFile('swarsetu_'+t+'_template.csv',toCSV([row]),'text/csv;charset=utf-8');}
+}
+function dlErrorRows(){
+  if(!imp||!imp.recs)return;const bad=imp.recs.filter(r=>r.st==='err');if(!bad.length){showToast('No rows with errors');return;}
+  const rows=bad.map(r=>{const o={};imp.headers.forEach((h,i)=>o[h]=cellTxt((imp.rows[r.ri]||[])[i]));o['Problems']=r.errs.join('; ');return o;});
+  saveFile('rows_to_fix_'+todayStr()+'.csv',toCSV(rows),'text/csv;charset=utf-8');
+}
+
 /* ---------- NAVIGATION ---------- */
-const NAV_ALL=[{id:'dashboard',l:'Dashboard'},{id:'students',l:'Students'},{id:'courses',l:'Courses'},{id:'academic',l:'Academic Structure'},{id:'faculty',l:'Faculty Mgmt'},{id:'timetable',l:'Timetable',ls:'My Schedule'},{id:'calendar',l:'College Calendar'},{grp:'Attendance'},{id:'attendance',l:'Mark Attendance',ls:'My Attendance',sub:1},{id:'attsummary',l:'Summary',sub:1},{id:'classes',l:'Classes',ls:'My Classes'},{id:'payments',l:'Fee Payments',ls:'My Fees'},{id:'notifications',l:'Notifications'},{id:'announcements',l:'Events &amp; Recitals'},{id:'college',l:'College Profile'},{id:'users',l:'User Management'},{id:'roles',l:'Roles &amp; Permissions'}];
+const NAV_ALL=[{id:'dashboard',l:'Dashboard'},{id:'students',l:'Students'},{id:'courses',l:'Courses'},{id:'academic',l:'Academic Structure'},{id:'faculty',l:'Faculty Mgmt'},{id:'timetable',l:'Timetable',ls:'My Schedule'},{id:'calendar',l:'College Calendar'},{grp:'Attendance'},{id:'attendance',l:'Mark Attendance',ls:'My Attendance',sub:1},{id:'attsummary',l:'Summary',sub:1},{id:'classes',l:'Classes',ls:'My Classes'},{id:'payments',l:'Fee Payments',ls:'My Fees'},{id:'notifications',l:'Notifications'},{id:'announcements',l:'Events &amp; Recitals'},{id:'dataio',l:'Import &amp; Export'},{id:'college',l:'College Profile'},{id:'users',l:'User Management'},{id:'roles',l:'Roles &amp; Permissions'}];
 const PAGE_PERM={dashboard:'viewDashboard',students:'viewStudents',courses:'viewCourses',academic:'viewCourses',faculty:'viewFaculty',timetable:'viewTimetable',calendar:'viewCalendar',attendance:'viewAttendance',attsummary:'viewAttendance',classes:'viewClasses',payments:'viewFees',notifications:'sendNotifications',announcements:'viewEvents',college:'viewCollege',users:'manageUsers',roles:'manageUsers'};
-function pageAllowed(id){if(!currentUser)return false;if(id==='denied')return true;if(id==='attsummary'&&currentUser.role==='student')return false;const p=PAGE_PERM[id];return p?can(p):true;}
+function pageAllowed(id){if(!currentUser)return false;if(id==='denied')return true;if(id==='dataio')return currentUser.role!=='student'&&(can('importData')||can('exportData'));if(id==='attsummary'&&currentUser.role==='student')return false;const p=PAGE_PERM[id];return p?can(p):true;}
 function buildNav(role){
   const stu=role==='student';const out=[];
   NAV_ALL.forEach((n,i)=>{
@@ -2840,6 +3534,7 @@ function showPage(name){
   if(name==='college'){updateCollegeStrips();renderCollegeCap();}
   if(name==='users')renderUsers();
   if(name==='roles')renderPerms();
+  if(name==='dataio')setupDataIO();
   if(name==='announcements')renderAnnouncements();
 }
 document.addEventListener('click',e=>{const el=e.target;if(el&&el.matches&&el.matches('input[type=date],input[type=month]')&&!el.disabled&&!el.readOnly&&typeof el.showPicker==='function'){try{el.showPicker();}catch(_){}}});
@@ -2858,7 +3553,7 @@ function populateAll(){
   renderNotifHistory();renderAnnouncements();renderUsers();renderDashboard();
   renderFacultyPage();
   if(document.getElementById('socYt')){document.getElementById('socYt').value=college.youtube||'';document.getElementById('socIg').value=college.instagram||'';document.getElementById('socFb').value=college.facebook||'';}
-  renderSocialPills();updateCollegeStrips();setupAttPage();renderAttSummary();renderClasses();renderAcademic();renderCalendar();renderCollegeCap();renderPerms();
+  renderSocialPills();updateCollegeStrips();setupAttPage();renderAttSummary();renderClasses();renderAcademic();renderCalendar();renderCollegeCap();renderPerms();setupDataIO();renderImpLog();
   // working hours
   if(document.getElementById('whStart')){document.getElementById('whStart').value=college.workingHours?.start||'09:00';document.getElementById('whEnd').value=college.workingHours?.end||'18:00';}
   buildDayPicker('workingDaysPicker',college.workingDays||[]);
@@ -3025,85 +3720,6 @@ function renderStudents(){
 }
 
 /* CSV IMPORT — with column mapping + approval */
-let csvPendingRows=[];let csvPendingHeaders=[];
-
-const CSV_APP_FIELDS=[
-  {key:'firstName',label:'First Name',required:true},
-  {key:'lastName',label:'Last Name'},{key:'email',label:'Email'},
-  {key:'mobile',label:'Mobile'},{key:'ageGroup',label:'Age Group (under5/5to10/10to15/15plus)'},
-  {key:'city',label:'City'},{key:'country',label:'Country'},
-  {key:'level',label:'Level'},{key:'courseName',label:'Course Name'},
-  {key:'classType',label:'Class Type (One-to-One/Group)'},{key:'mode',label:'Mode (Online/Offline)'},
-  {key:'monthlyFee',label:'Monthly Fee'},{key:'joiningDate',label:'Joining Date'},
-  {key:'weekdays',label:'Weekdays (Mon;Tue…)'},{key:'timing',label:'Timing (HH:MM)'},
-];
-
-function importStudentCSV(input){
-  if(!need('editStudents'))return;
-  const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const lines=e.target.result.split('\n').filter(l=>l.trim());
-    if(lines.length<2){showToast('CSV must have a header row and at least one data row');return;}
-    csvPendingHeaders=parseCSVLine(lines[0]).map(h=>h.trim().replace(/"/g,''));
-    csvPendingRows=lines.slice(1).map(l=>parseCSVLine(l)).filter(r=>r.some(v=>v.trim()));
-    showCSVMappingModal();
-  };
-  reader.readAsText(file);input.value='';
-}
-
-function showCSVMappingModal(){
-  // Auto-match headers to app fields by similarity
-  const autoMap={};CSV_APP_FIELDS.forEach(f=>{
-    const match=csvPendingHeaders.find(h=>{
-      const hl=h.toLowerCase().replace(/[\s_-]/g,'');
-      const fl=f.key.toLowerCase();const ll=f.label.toLowerCase().replace(/[\s_-]/g,'').split('(')[0];
-      return hl===fl||hl.includes(fl)||fl.includes(hl)||hl===ll||hl.includes(ll.slice(0,5));
-    });
-    if(match)autoMap[f.key]=match;
-  });
-  let mapHtml='<div class="form-grid" style="margin-bottom:12px;">';
-  CSV_APP_FIELDS.forEach(f=>{
-    mapHtml+='<div class="field"><label>'+esc(f.label)+(f.required?' *':'')+'</label><select id="csvmap_'+f.key+'"><option value="">— skip —</option>'+csvPendingHeaders.map(h=>'<option value="'+esc(h)+'"'+(autoMap[f.key]===h?' selected':'')+'>'+esc(h)+'</option>').join('')+'</select></div>';
-  });
-  mapHtml+='</div>';
-  document.getElementById('csvMappingArea').innerHTML=mapHtml;
-  // Preview table
-  const previewRows=csvPendingRows.slice(0,5);
-  let tbl='<thead><tr>'+csvPendingHeaders.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr></thead><tbody>';
-  tbl+=previewRows.map(r=>'<tr>'+csvPendingHeaders.map((_,i)=>'<td>'+esc(r[i]||'')+'</td>').join('')+'</tr>').join('');
-  tbl+='</tbody>';
-  document.getElementById('csvPreviewTable').innerHTML=tbl;
-  document.getElementById('csvApproveCount').textContent=csvPendingRows.length+' record(s) found — review mapping then click Approve to import.';
-  openModal('csvMappingModal');
-}
-
-function approveCSVImport(){
-  if(!need('editStudents'))return;
-  const mapping={};CSV_APP_FIELDS.forEach(f=>{const sel=document.getElementById('csvmap_'+f.key);if(sel&&sel.value)mapping[f.key]=sel.value;});
-  if(!mapping.firstName){showToast('First Name mapping is required');return;}
-  let added=0;let skipped=0;
-  csvPendingRows.forEach(r=>{
-    const get=key=>{const col=mapping[key];if(!col)return'';const idx=csvPendingHeaders.indexOf(col);return idx>=0?(r[idx]||'').trim():'';}; 
-    const first=get('firstName');if(!first){skipped++;return;}
-    // Duplicate email check
-    const email=get('email');if(email&&students.some(s=>s.email&&s.email.toLowerCase()===email.toLowerCase())){skipped++;return;}
-    stuSeq++;const crsTxt=get('courseName');const crsMatch=courses.find(c=>c.name.toLowerCase()===crsTxt.toLowerCase());
-    const code=(crsTxt||'STU').replace(/[^A-Z0-9]/gi,'').slice(0,3).toUpperCase()||'STU';
-    const wdRaw=get('weekdays');const weekdays=wdRaw?wdRaw.split(/[;,]/).map(d=>d.trim()).filter(d=>DAYS.includes(d)):[];
-    students.push({id:'STU'+String(stuSeq).padStart(4,'0')+'-'+code,firstName:first,lastName:get('lastName'),email,mobile:get('mobile'),altContact:'',countryCode:'',ageGroup:get('ageGroup')||'15plus',city:get('city'),country:get('country'),level:get('level')||'Beginner',levelOther:'',courseId:crsMatch?.id||'',courseName:crsMatch?.name||crsTxt,classType:get('classType')||'One-to-One',frequency:'once',weekdays,timing:get('timing'),interval:'30',mode:get('mode')||'Online',monthlyFee:get('monthlyFee'),joiningFee:'',joiningDate:get('joiningDate'),totalClassesPerMonth:calcTotal(weekdays,ym()),pendingClasses:0,status:'Active'});
-    added++;
-  });
-  stuSeq=students.length;persistAll();closeModal('csvMappingModal');populateStuDropdowns();renderStudents();renderDashboard();
-  showToast(added+' student(s) imported, '+skipped+' skipped (duplicates or missing name)');
-}
-
-function parseCSVLine(line){
-  const result=[];let cur='';let inQ=false;
-  for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){result.push(cur.trim());cur='';}else cur+=ch;}
-  result.push(cur.trim());return result;
-}
-
 /* ═══════════════════════════════════════════════════
    COURSES
 ═══════════════════════════════════════════════════ */
@@ -3244,13 +3860,6 @@ function renderDashboard(){
 /* ═══════════════════════════════════════════════════
    EXPORT CSV
 ═══════════════════════════════════════════════════ */
-function exportCSVFile(data,filename){
-  if(!data||!data.length){showToast('No data to export');return;}
-  const headers=Object.keys(data[0]);const rows=data.map(row=>headers.map(h=>'"'+String(row[h]||'').replace(/"/g,'""')+'"').join(','));
-  const csv=[headers.join(','),...rows].join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);
-  showToast('Exported: '+filename);
-}
 function exportTable(type){
   const ex={
     students:()=>students.map(s=>({'ID':s.id,'First Name':s.firstName,'Last Name':s.lastName||'','Email':s.email,'Mobile':s.mobile,'Level':s.level==='Other'?s.levelOther:s.level,'Course':s.courseName,'Class Type':s.classType,'Age Group':AGE_LABELS[s.ageGroup]||s.ageGroup,'City':s.city,'Country':s.country,'Weekdays':(s.weekdays||[]).join(';'),'Timing':s.timing,'Interval':s.interval+'min','Mode':s.mode,'Frequency':s.frequency,'Monthly Fee':s.monthlyFee,'Joining Fee':s.joiningFee,'Status':s.status})),
