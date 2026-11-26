@@ -27,11 +27,14 @@ A production server in `server/`. The claude.ai test link (v9) keeps working unc
   settings it stays SIMULATED (written to the log).
 - **Deployment:** Dockerfile; Docker Compose with MySQL 8.4, Caddy (automatic HTTPS) and
   nightly backups; `.env.example`; GitHub Actions CI with a MySQL service.
-- **Not yet done:**
-  - The Java code has not been compiled, because Maven Central is blocked from the build
-    machine.
-  - The web screens are not yet connected to the API.
-  - Phase 2 tables are not built yet.
+- **Verified in GitHub Actions:**
+  - the server compiles
+  - 11 of 11 end-to-end API tests pass against MySQL 8.4
+  - the Docker image builds
+  - The first CI run caught one bug: MySQL check-constraint errors returned 500. They now
+    return 400 with a clear message.
+- **Not yet done:** the web screens are not yet connected to the API, and the Phase 2
+  tables are not built.
 
 ## v9 — 2026-11-25
 

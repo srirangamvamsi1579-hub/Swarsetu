@@ -77,7 +77,6 @@ app, Caddy HTTPS, nightly backup), GitHub Actions CI. Any new table: Flyway migr
 composite FK to its parents, endpoint with perms.need(), test in ApiFlowTest, check in
 db-tests/integrity.sh. Gates for the server: mvn verify, db-tests/integrity.sh.
 
-PENDING: compile and run the server tests (Maven Central blocked from the build machine),
-connect the web screens to the API, Phase 2 tables (classes, timetable edits, academic
+PENDING: connect the web screens to the API, Phase 2 tables (classes, timetable edits, academic
 structure, events), server-side import/export, real email/SMS account tests, payment
 gateway or bank statement matching, Android/iOS packaging.

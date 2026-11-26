@@ -132,8 +132,8 @@ and forgot password. To prove the database rules on their own, run
 
 | Done | Pending |
 |---|---|
-| MySQL schema with composite foreign keys, tested (21 checks) | **Compile and run the Java tests.** Maven Central is blocked from the build machine; this happens as soon as `repo.maven.apache.org` is allowed |
-| Phase 1 API: registration with codes, sign-in, forgot password, profile, users and approval, permissions, courses, students, batches, attendance and summary, absence notices, fees, claims, payment details with QR check, calendar, inbox, reminders, data health, audit | Connect the web screens to this API (sign-in, then each screen) |
-| Docker Compose with HTTPS and backups; CI workflow | Phase 2 tables: classes and sharing, timetable session edits, academic structure, events (these use `/api/docs` for now) |
+| MySQL schema with composite foreign keys, tested (21 checks) | Connect the web screens to this API (sign-in, then each screen) |
+| Phase 1 API (registration with codes, sign-in, forgot password, profile, users and approval, permissions, courses, students, batches, attendance and summary, absence notices, fees, claims, payment details with QR check, calendar, inbox, reminders, data health, audit). **Compiles; 11 of 11 end-to-end tests pass on MySQL 8.4 in GitHub Actions** | Phase 2 tables: classes and sharing, timetable session edits, academic structure, events (these use `/api/docs` for now) |
+| Docker Compose with HTTPS and backups; CI workflow (image builds in CI) | Full deployment trial on a real server with your domain |
 | | Import/export on the server (Apache POI, PDFBox) |
 | | Test real email and SMS with your accounts (MSG91 needs a DLT-approved template with one variable, `VAR1`) |
