@@ -1,4 +1,4 @@
-# Swarsetu — Music College Manager (v9)
+# Swarsetu — Music College Manager (v9 web app · v10 server in progress)
 
 A single-file web app (HTML, CSS and vanilla JavaScript) for running a music college:
 students, batches, timetable, college calendar, attendance, classes with shared audio,
@@ -8,6 +8,20 @@ fee payments, events, and user roles with configurable permissions.
 - **Code:** everything is in [`index.html`](index.html).
 - **Docs:** [user guide & FAQ](docs/USER_GUIDE.md) · [requirements](docs/requirements.md) · [data model](docs/data_model.md) ·
   [project prompt](docs/project_prompt.md) · [changelog](CHANGELOG.md)
+
+## Production server (v10, in progress)
+
+`server/` holds the production version: **Java 21 + Spring Boot 3 + MySQL 8**, deployed
+with Docker Compose and Caddy for HTTPS.
+
+- Colleges are kept apart by the database itself: composite foreign keys on
+  `(college_id, id)`.
+- Passwords use BCrypt; sign-in uses JWT with rotating refresh tokens.
+- Real email (SMTP) and SMS (MSG91 or Twilio).
+- Holiday reminders run on the server.
+
+See [server/README.md](server/README.md). The claude.ai link below remains the test
+version until the screens are connected to the server.
 
 ## One link, many colleges
 

@@ -137,3 +137,37 @@ Records created by an import get `createdBy` or `updatedBy` of "<name> (import)"
   and `remarks`.
 - Class logs get `shareLevel` from their old `sharedWith` list, plus a `shareToken`.
 - Users get `active: true`. Notifications get ids. Default permissions are written once.
+
+
+---
+
+# Server database (v10, MySQL 8)
+
+Source of truth: `server/src/main/resources/db/migration/V1__core_schema.sql`.
+
+**Key rule:** each college-owned table has `college_id` (the college code) and the
+primary key `(college_id, id)`. Each link is a composite foreign key
+`(college_id, child_id) → parent(college_id, id)`. A record can therefore only point to
+records of its own college.
+
+| Table | Key | Links (FK) and rules |
+|---|---|---|
+| colleges | id = college code `AAA-XXXX` | unique `name_key` (normalised name) |
+| users | id | college; student (same college, unique per college); approver. Global unique username (case-insensitive), email, mobile |
+| role_permissions | (college, role, permission) | overrides of the default matrix |
+| courses | (college, id) | unique name per college |
+| batches | (college, id) | course (RESTRICT); unique batch key; meet link https |
+| students | (college, id = STU0001-HIN) | course (RESTRICT), batch (RESTRICT) |
+| attendance_marks | (college, student, date) | student (CASCADE), saved_by user; keeps previous code |
+| absence_notices | (college, id) | student (CASCADE), sender, handler |
+| payments | (college, id) | student (RESTRICT), batch (kept name for history), updated_by; `dues` and `status` computed; paid ≤ total |
+| payment_claims | (college, id) | student (CASCADE), payment; reference unique while not rejected; UPI 12 digits |
+| college_payment_details | college | uploaded scanner must pay the same UPI ID (check constraint) |
+| payment_detail_audit | id | old UPI and last 4 of old account |
+| calendar_events (+ _batches, _students) | (college, id) | end ≥ start; targets cascade |
+| inbox_messages, inbox_reads | (college, id) | one user or an audience (all / admin / permission) |
+| college_documents | (college, collection, id) | JSON for Phase 2 lists: classes, ttSessions, levels, facultySlots, events, notifications, importLog |
+| verifications | uuid | hashed email/SMS codes, expiry, attempts |
+| refresh_tokens | id | hashed token, rotation family |
+| outbox | id | email/SMS queue with retries and dedupe key |
+| audit_log | id | who did what, when |

@@ -283,6 +283,16 @@ Version 1.0 | Last updated: 07 Sep 2026
 - Scalability to support multiple branches/campuses.
 - Multi-language support (optional).
 
+## 12. Production server (v10)
+- Java 21 / Spring Boot 3 REST API with MySQL 8. The current screens will call it.
+- Separate colleges in the database (composite foreign keys), not only in the app.
+- Real email (SMTP) and SMS (MSG91/Twilio) for registration codes, password reset,
+  approvals, security alerts and holiday reminders. Manual UTR verification stays.
+- BCrypt passwords, JWT with rotating refresh tokens, lockout, rate limits, audit log,
+  HTTPS.
+- Deploy with Docker Compose on any Linux server or VPS; nightly backups; CI on GitHub
+  Actions.
+
 ## 11. Change Log
 | Date | Change | Section(s) Affected |
 |---|---|---|

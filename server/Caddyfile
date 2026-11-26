@@ -1,0 +1,17 @@
+{$DOMAIN} {
+	encode gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options nosniff
+		-Server
+	}
+	handle /actuator/health* {
+		reverse_proxy app:8080
+	}
+	handle /actuator/* {
+		respond 404
+	}
+	handle {
+		reverse_proxy app:8080
+	}
+}
