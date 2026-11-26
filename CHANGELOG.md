@@ -1,5 +1,38 @@
 # Changelog
 
+## v9 — 2026-11-25
+
+### College code as the key; only your college's data is loaded
+- New database layout keyed by college code: `c/{CODE}/…` for each college's records
+  (users and Admins included), plus a public directory `colleges/{CODE}`.
+- Unique indexes:
+  - `collegeNames/{nameKey}`: the college name is a unique alternate key; names are
+    normalised, and names in other scripts are supported
+  - `logins/{hash}`: usernames, emails and mobiles are unique across all colleges; the
+    index stores no personal data
+  - `refs/{hash}`: each payment reference (UTR) can be used once
+- **Sign-in:** the app looks up the index, loads that single account, checks the password,
+  and then loads and listens to that college's records only. Before sign-in it reads only
+  the public college list. Join requests are written straight into the chosen college.
+- **Sign-out** saves pending changes, stops listening, and clears the college's data from
+  memory and the browser.
+- Inbox messages for a role ("all Admins", "people who manage users") are stored once,
+  with each person's read status.
+- **Automatic one-time upgrade:** v7/v8 shared lists and `meta/college` are moved under
+  their college code, passwords are hashed, the indexes are built, and the old copies are
+  deleted. If the upgrade cannot save, the old data is left untouched.
+
+### Referential integrity
+- Deleting a course in use is blocked; deleting an unused one also removes its levels and
+  faculty slots.
+- Deleting a student with payments is blocked; deleting one without payments also removes
+  their attendance, notices and pending submissions, and unlinks related records.
+- **Data health** card for Admins in College Profile: finds records pointing to missing
+  students, courses or batches, or carrying another college's code, and repairs them
+  safely.
+- Sign-out now always returns to the sign-in tab.
+
+
 ## v8 — 2026-11-25
 
 ### One link for many colleges

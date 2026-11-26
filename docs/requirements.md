@@ -1,4 +1,4 @@
-# Swarsetu — Requirements (current build, v8)
+# Swarsetu — Requirements (current build, v9)
 
 Last updated: 24 Nov 2026. The original v1.0 requirement list (Sept 2026) is kept below
 this section for reference.
@@ -166,7 +166,21 @@ this section for reference.
   the shared database can be read by every signed-in viewer of the link. Production
   needs a server.
 
-## 10. Rules carried over
+## 10. Keys, loading and integrity (v9)
+- **Keys.** The college code is the primary key and is stored on every record. The
+  college name is a unique alternate key. Usernames, emails, mobiles and payment
+  references are unique keys enforced by database indexes.
+- **Loading.** Signed-out visitors read only the public directory. After sign-in the app
+  loads only `c/{CODE}/…` for the user's college. Admins see only their own college's
+  users and requests.
+- **Deletes.** RESTRICT: courses used by students or batches, and students with
+  payments. CASCADE: an unused course → its levels and slots; a student without
+  payments → their attendance, notices, pending submissions and links; an emptied batch →
+  its timetable changes.
+- **Data health.** Admins can list and repair broken links. Payments are reported, never
+  removed.
+
+## 11. Rules carried over
 - Batch = course + weekdays + timing + mode for group classes, with a private batch for
   each one-to-one student. Empty batches are removed automatically.
 - Dues = Total fee − Paid. Every record gets a unique id before saving.

@@ -1,8 +1,22 @@
-# Swarsetu — Data model (v8)
+# Swarsetu — Data model (v9)
 
 The app keeps one list per record type. Each list is a collection in the shared database
 (the artifact `db` capability). Each record is a document with the same id as the record.
-**v8:** colleges live in the `colleges` collection (doc id = college code). Every record
+**v9 layout (current):** the college code is the primary key. Paths:
+`colleges/{CODE}` (public: id, code, name, location, country, createdAt) ·
+`collegeNames/{nameKey}` {code, name} · `logins/{sha}` {code, uid} · `refs/{sha}` {code} ·
+`c/{CODE}/settings/college` (full college) · `c/{CODE}/users/{id}` ·
+`c/{CODE}/{list}/{id}` for every list below · `meta/platform` {layout:'v9'}.
+`nameKey` is the name normalised: lower case, leading "The" removed, letters and digits only
+(hex-encoded for non-Latin scripts). Index hashes are SHA-256 of `swarsetu:` + a typed key
+(`u:username`, `e:email`, `m:mobile`, `ref:UTR`), first 16 bytes in hex. Users carry `ik`
+(their index hashes) and claims carry `refKey`, so the index can be kept in step.
+Foreign keys inside a college: students → courses, batches; batches → courses;
+academic and facultySlots → courses; payments, attendance, absenceNotices, payClaims →
+students; ttSessions → batches; classLogs.shareStudents and calendarEvents
+batchIds/studentIds → students/batches; users.studentId → students; inbox.userId → users.
+
+**v8 (superseded):** colleges live in the `colleges` collection (doc id = college code). Every record
 in the per-college lists carries `collegeId`. `users` is shared across colleges; each user
 has a `collegeId`. `meta/platform` holds migration flags. In the app, the per-college
 lists hold only the signed-in college's rows; the other colleges' rows are kept aside and

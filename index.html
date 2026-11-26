@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swarsetu — Music College Manager v8</title>
+<title>Swarsetu — Music College Manager v9</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -1010,6 +1010,7 @@ tr.st-err td{background:#FFF8F5;}
         </div>
         <div id="cpPayAudit" class="audit"></div>
       </div>
+      <div class="card admin-only" id="cpHealth"></div>
       <div class="card">
         <h3 style="font-size:15px;margin-bottom:4px;">Batch capacity</h3>
         <p style="font-size:12px;color:var(--muted);margin-bottom:10px;" id="cpCapNote"></p>
@@ -1661,10 +1662,6 @@ function migrateV3(){
     showToast('Data migrated from v3 → v4');
   }catch(e){console.warn('Migration failed',e);}
 }
-function readStore(){try{const r=localStorage.getItem(STORE);return r?JSON.parse(r):{};} catch(e){return {};}}
-function writeStore(d){try{localStorage.setItem(STORE,JSON.stringify(stripSecrets(d)));}catch(e){console.error('Storage write failed',e);}}
-function persistAll(){writeStore(snapshot());scheduleSync();if(users.some(u=>u.password!=null))secureUsers();}
-
 /* ═══════════════════════════════════════════════════
    DATABASE — shared store (artifact "db" capability)
    One document per record. localStorage stays as an offline cache.
@@ -1675,59 +1672,6 @@ function jstr(v){if(v===null||typeof v!=='object')return JSON.stringify(v);if(Ar
 function dbId(id){return String(id).replace(/[^A-Za-z0-9_-]/g,'_');}
 function setDbStatus(kind,txt){const el=document.getElementById('dbPill'),t=document.getElementById('dbPillTxt');if(!el)return;el.className='db-pill '+kind;t.textContent=txt;}
 function scheduleSync(){if(!DBH)return;dirty=true;clearTimeout(syncTimer);setDbStatus('busy','Saving…');syncTimer=setTimeout(flushSync,500);}
-async function flushSync(){
-  if(!DBH||syncing){if(DBH)syncTimer=setTimeout(flushSync,400);return;}
-  syncing=true;
-  try{
-    const cur=currentState();const ops=[];
-    for(const col of [...DB_COLS,'meta']){
-      const a=cur[col]||{},b=lastSnap[col]||{};
-      for(const id in a){if(a[id]!==b[id])ops.push(()=>DBH.collection(col).doc(id).set(JSON.parse(a[id])).then(()=>{(lastSnap[col]=lastSnap[col]||{})[id]=a[id];}));}
-      for(const id in b){if(!(id in a))ops.push(()=>DBH.collection(col).doc(id).delete().then(()=>{delete lastSnap[col][id];}));}
-    }
-    for(let i=0;i<ops.length;i+=8){await Promise.all(ops.slice(i,i+8).map(f=>f()));}
-    dirty=false;setDbStatus('ok','Saved to database');
-  }catch(e){
-    console.warn('DB sync failed',e);
-    setDbStatus('err',e&&e.code==='quota_exceeded'?'Database full':'Not saved — retrying');
-    if(!e||(e.code!=='quota_exceeded'&&e.code!=='invalid_argument'))syncTimer=setTimeout(flushSync,6000);
-  }finally{syncing=false;}
-}
-async function initDB(){
-  try{DBH=(window.claude&&window.claude.use)?await window.claude.use('db'):null;}catch(e){DBH=null;}
-  if(!DBH){setDbStatus('','Local only (no database)');if(!users.length&&!colleges.length)loadSampleData();if(ensureMT())writeStore(snapshot());secureUsers();return;}
-  setDbStatus('busy','Connecting…');
-  try{
-    const reads=await Promise.all([...DB_COLS.map(c=>DBH.collection(c).get()),DBH.collection('meta').get()]);
-    const remote={};[...DB_COLS,'meta'].forEach((c,i)=>{remote[c]={};reads[i].docs.forEach(d=>{remote[c][d.id]=JSON.parse(JSON.stringify(d.data()));});});
-    const remoteCount=DB_COLS.reduce((n,c)=>n+Object.keys(remote[c]).length,0)+Object.keys(remote.meta).length;
-    lastSnap={};[...DB_COLS,'meta'].forEach(c=>{lastSnap[c]=Object.fromEntries(Object.entries(remote[c]).map(([k,v])=>[k,jstr(v)]));});
-    if(remoteCount>0){
-      applyRemote(remote);if(ensureMT())persistAll();await secureUsers();refreshAfterRemote();setDbStatus('ok','Connected to database');
-    }else{
-      // database is empty: keep real local data if the viewer has any, otherwise load the sample college
-      const hasReal=users.length>0||colleges.length>0;
-      if(!hasReal)loadSampleData();
-      ensureMT();await secureUsers();writeStore(snapshot());refreshAfterRemote();
-      dirty=true;await flushSync();
-    }
-    subscribeAll();
-  }catch(e){console.warn('DB init failed',e);setDbStatus('err','Database unavailable');DBH=null;}
-}
-function subscribeAll(){
-  [...DB_COLS,'meta'].forEach(c=>{
-    try{dbUnsubs.push(DBH.collection(c).onSnapshot(snap=>{
-      if(syncing||dirty)return;
-      const rows={};snap.docs.forEach(d=>{rows[d.id]=jstr(JSON.parse(JSON.stringify(d.data())));});
-      const prev=lastSnap[c]||{};const a=Object.keys(rows),b=Object.keys(prev);
-      if(a.length===b.length&&a.every(k=>prev[k]===rows[k]))return;
-      lastSnap[c]=rows;
-      const all={};[...DB_COLS,'meta'].forEach(k=>{all[k]=Object.fromEntries(Object.entries(lastSnap[k]||{}).map(([id,v])=>[id,JSON.parse(v)]));});
-      applyRemote(all);refreshAfterRemote();setDbStatus('ok','Updated from database');
-    },e=>console.warn('snapshot',c,e)));}catch(e){}
-  });
-}
-
 /* ═══════════════════════════════════════════════════
    SAMPLE DATA — dummy college so every screen has content
 ═══════════════════════════════════════════════════ */
@@ -1902,8 +1846,6 @@ function populateCCDropdowns(){
   ['raCC','rfCC','rsCC','stuCC'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=ccOpts;});
 }
 window.addEventListener('DOMContentLoaded',()=>{const hm=(location.hash||'').match(/class-([A-Za-z0-9]+)/);if(hm)pendingClassTok=hm[1];window.addEventListener('hashchange',()=>{const m=(location.hash||'').match(/class-([A-Za-z0-9]+)/);if(m){if(currentUser)openSharedClass(m[1]);else pendingClassTok=m[1];}});loadAll();showScreen('loginScreen');populateCountryDropdown('scountry');populateCCDropdowns();initDB();});
-
-function handleLogout(){currentUser=null;attDraft={};rescope(null);document.body.className='';document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));if(otpCtx)otpDone(false);if(reauthRes){const r=reauthRes;reauthRes=null;r(false);}document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';document.getElementById('loginErr').textContent='';showScreen('loginScreen');setLoginTab('ex');}
 
 /* ═══════════════════════════════════════════════════
    FORGOT PASSWORD
@@ -2906,7 +2848,7 @@ function renderAnnouncements(){
 }
 
 /* ---------- COLLEGE PROFILE ---------- */
-function saveCollegeProfile(){
+async function saveCollegeProfile(){
   if(!need('editCollege'))return;
   const er=gid('cpErr');er.textContent='';
   const dl=gid('cpDrive').value.trim();if(dl&&!safeUrl(dl)){er.textContent='Drive link must start with https://';return;}
@@ -2915,14 +2857,14 @@ function saveCollegeProfile(){
   const gsRaw=gid('cpGroup').value;const gs=Number(gsRaw);
   if(!gsRaw||!(gs>=1)||gs>50){er.textContent='Students per Batch must be between 1 and 50.';return;}
   const nm=gid('cpName').value.trim();if(!nm){er.textContent='Enter the college name.';return;}
-  const dup=colleges.find(c=>c.id!==curCID&&normName(c.name)===normName(nm));if(dup){er.textContent='Another college ('+dup.code+') is already registered as "'+dup.name+'". Add your branch or city to make the name unique.';return;}
+  if(!(await collegeNameFree(nm))){er.textContent='Another college is already registered with this name. Add your branch or city to make the name unique.';return;}
   college.approveSignups=gid('cpApprove').value==='1';college.requireGmail=gid('cpGmail').value==='1';college.reminderDays=Number(gid('cpRemDays').value);college.reminderExternal=gid('cpRemExt').value==='1';
   college.name=nm;college.affiliation=gid('cpAffil').value.trim();
   college.location=gid('cpCity').value.trim();college.country=gid('cpCountry').value.trim();
   college.youtube=gid('cpYt').value.trim();college.instagram=gid('cpIg').value.trim();college.facebook=gid('cpFb').value.trim();
   college.address=gid('cpAddress').value.trim();college.phone=gid('cpPhone').value.trim();college.email=em;
   college.groupSize=Math.round(gs);college.driveLink=dl;college.appUrl=au;
-  syncBatches();persistAll();updateCollegeStrips();renderSocialPills();renderCollegeCap();renderBatchGrid();
+  syncBatches();persistAll();const di=colleges.findIndex(c=>c.id===curCID);if(di>=0)colleges[di]=pubCollege(college);updateCollegeStrips();renderSocialPills();renderCollegeCap();renderBatchGrid();renderIntegrity();
   if(gid('socYt'))gid('socYt').value=college.youtube;if(gid('socIg'))gid('socIg').value=college.instagram;if(gid('socFb'))gid('socFb').value=college.facebook;
   const over=batches.filter(b=>b.classType==='Group'&&b.mode==='Online'&&students.filter(s=>s.batchId===b.id).length>college.groupSize);
   runAutoReminders();
@@ -3374,9 +3316,10 @@ async function impRun(){
   impValidate();const todo=imp.recs.filter(r=>r.st==='new'||r.st==='upd');if(!todo.length){showToast('Nothing to import');return;}
   const nN=todo.filter(r=>r.st==='new').length,nU=todo.length-nN;
   if(!await ask('Import into '+T.label+': '+nN+' new'+(nU?' and '+nU+' update'+(nU===1?'':'s'):'')+' from "'+imp.fileName+'"? You can undo the new records from Import history.','Import'))return;
+  if(t==='users'){for(const r of todo.filter(r=>r.st==='new')){const m=await identsFree({username:r.vals.username,email:r.vals.email,mobile:r.vals.mobile});if(m){r.errs.push(m.replace(' Use "Forgot password" on the sign-in page.',''));r.st='err';}}}
   const by=userLabel(),at=new Date().toISOString();const log={id:nid('imp'),at,by,target:t,file:imp.fileName,kind:imp.kind+(imp.ai?' (read by Claude)':''),added:0,updated:0,skipped:imp.recs.filter(r=>r.st==='skip').length,errors:imp.recs.filter(r=>r.st==='err').length,addedIds:[],newCourses:[]};
   const failed=[];
-  todo.forEach(r=>{try{const res=impApply(t,r,by,at,log);if(res&&res.err){failed.push(r);r.errs.push(res.err);r.st='err';}}catch(e){failed.push(r);r.errs.push(String(e.message||e));r.st='err';}});
+  todo.filter(r=>r.st!=='err').forEach(r=>{try{const res=impApply(t,r,by,at,log);if(res&&res.err){failed.push(r);r.errs.push(res.err);r.st='err';}}catch(e){failed.push(r);r.errs.push(String(e.message||e));r.st='err';}});
   log.errors+=failed.length;
   if(t==='students')syncBatches();
   const rem=gid('impRemember').checked;if(rem){college.importMaps=college.importMaps||{};const m=college.importMaps[t]=college.importMaps[t]||{};Object.entries(imp.map).forEach(([k,ci])=>{const h=nrm(imp.headers[ci]);if(h&&!/^column\d+$/.test(h))m[h]=k;});}
@@ -3553,7 +3496,6 @@ function splitScope(all){
 function rescope(cid){const all={};SCOPED.forEach(c=>all[c]=allRows(c));curCID=cid||null;splitScope(all);}
 function collegeUsers(){return users.filter(u=>u.collegeId===curCID);}
 function collegeById(id){return colleges.find(c=>c.id===id)||null;}
-function normName(s){return String(s||'').toLowerCase().replace(/^the\s+/,'').replace(/[^a-z0-9]/g,'');}
 function genCollegeCode(name){
   const ini=String(name||'').split(/[^A-Za-z]+/).filter(w=>w&&!/^(of|the|and|for|de|di)$/i.test(w)).map(w=>w[0].toUpperCase()).join('').slice(0,3).padEnd(3,'X');
   const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let code;
@@ -3589,8 +3531,6 @@ function b64d(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
 async function pbkdf2(pw,salt){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:b64d(salt),iterations:PW_ITER,hash:'SHA-256'},k,256);return b64e(new Uint8Array(bits));}
 async function setPassword(u,pw){u.pwSalt=b64e(crypto.getRandomValues(new Uint8Array(16)));u.pwHash=await pbkdf2(pw,u.pwSalt);delete u.password;u.pwSetAt=new Date().toISOString();}
 async function verifyPw(u,pw){if(!u||!pw)return false;if(u.pwHash){try{return (await pbkdf2(pw,u.pwSalt))===u.pwHash;}catch(e){return false;}}return u.password!=null&&u.password===pw;}
-let _securing=null;
-function secureUsers(){if(_securing)return _securing;if(!users.some(u=>u.password!=null))return Promise.resolve();_securing=(async()=>{try{for(const u of users){if(u.password!=null)await setPassword(u,u.password);}persistAll();}catch(e){console.warn('hash failed',e);}finally{_securing=null;}})();return _securing;}
 function stripSecrets(d){if(d&&d.users)d={...d,users:d.users.map(u=>{if(u.password==null&&!u.otp)return u;const c={...u};delete c.password;return c;})};return d;}
 async function sha(s){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return b64e(new Uint8Array(h));}
 function genTempPassword(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ',a='abcdefghijkmnpqrstuvwxyz',n='23456789',s='@#$%&*!';const r=crypto.getRandomValues(new Uint8Array(12));const pick=(set,i)=>set[r[i]%set.length];let p=pick(A,0)+pick(a,1)+pick(a,2)+pick(n,3)+pick(s,4)+pick(A,5)+pick(a,6)+pick(n,7)+pick(a,8)+pick(n,9);return p;}
@@ -3616,10 +3556,6 @@ function mobileCheck(m,cc){
   if(/^(\d)\1+$/.test(d)||['0123456789','1234567890','9876543210'].includes(d))return {e:'That does not look like a real mobile number.'};
   return {v:d};
 }
-function identTaken(val,exceptUser){
-  const s=String(val||'').trim().toLowerCase();if(!s)return false;const dg=s.replace(/\D/g,'');
-  return users.some(u=>u!==exceptUser&&((u.username||'').toLowerCase()===s||(u.email||'').toLowerCase()===s||(dg.length>=7&&dg===s&&u.mobile===dg)));
-}
 function usernameCheck(un,email,mobile,exceptUser){
   const s=String(un||'').trim();
   if(s.length<3||s.length>60)return {e:'Username must be 3–60 characters.'};
@@ -3627,12 +3563,7 @@ function usernameCheck(un,email,mobile,exceptUser){
   if(s.includes('@')){if(s.toLowerCase()!==String(email||'').toLowerCase())return {e:'If your username is an email, it must be the same as your email above.'};}
   else if(/^\+?\d+$/.test(s)){if(s.replace(/\D/g,'').slice(-10)!==String(mobile||'')){return {e:'If your username is a mobile number, it must be the same as your mobile above.'};}}
   else if(!/^[A-Za-z0-9._-]+$/.test(s))return {e:'Username can use letters, numbers, dots, dashes and underscores.'};
-  if(identTaken(s,exceptUser))return {e:'This username is already in use. Try another.'};
   return {v:s};
-}
-function findLoginUser(id){
-  const s=String(id||'').trim().toLowerCase();if(!s)return null;const dg=s.replace(/\D/g,'');
-  return users.find(u=>(u.username||'').toLowerCase()===s)||users.find(u=>u.email&&u.email.toLowerCase()===s)||(dg.length>=7&&/^[\d\s+()-]+$/.test(s)?users.find(u=>u.mobile&&u.mobile===dg.slice(-10)):null)||null;
 }
 function maskEmail(e){if(!e)return '';const [a,b]=e.split('@');return a.slice(0,2)+'•••@'+b;}
 function maskMobile(m){return m?'••••••'+String(m).slice(-4):'';}
@@ -3678,108 +3609,12 @@ function showInfo(title,html){gid('infoTitle').textContent=title;gid('infoBody')
 
 /* ---------- sign in ---------- */
 const LOCK_AFTER=5,LOCK_MIN=15;
-async function handleLogin(){
-  const id=gid('loginUser').value.trim(),pw=gid('loginPass').value,err=gid('loginErr');
-  if(!id||!pw){err.textContent='Enter your username, email or mobile, and your password.';return;}
-  err.textContent='Checking…';
-  const u=findLoginUser(id);
-  if(u&&u.lockUntil&&Date.now()<Date.parse(u.lockUntil)){err.textContent='Too many wrong passwords. This account is locked until '+new Date(u.lockUntil).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+'. Use "Forgot password" to reset it now.';return;}
-  const ok=await verifyPw(u,pw);
-  if(!ok){
-    if(u){u.failCount=(u.failCount||0)+1;if(u.failCount>=LOCK_AFTER){u.lockUntil=new Date(Date.now()+LOCK_MIN*60000).toISOString();u.failCount=0;addInbox(u.collegeId,null,'Account locked after wrong passwords',(u.firstName||u.username)+"'s account was locked for "+LOCK_MIN+' minutes after '+LOCK_AFTER+' wrong passwords.','security','users','lock_'+u.id+'_'+u.lockUntil,'admin');}persistAll();}
-    err.textContent='Incorrect username or password.';return;
-  }
-  if(u.status==='pending'){const c=collegeById(u.collegeId);err.textContent='Your request to join '+(c?c.name:'the college')+' is waiting for the college Admin to approve it.';return;}
-  if(u.status==='rejected'){err.textContent='Your request to join was not approved'+(u.rejectReason?': '+u.rejectReason:'')+'. Contact the college office.';return;}
-  if(u.active===false||u.status==='inactive'){err.textContent='This account is deactivated. Please contact the college admin.';return;}
-  if(!collegeById(u.collegeId)){err.textContent='This account is not linked to a college. Contact your college admin.';return;}
-  u.failCount=0;delete u.lockUntil;u.prevLogin=u.lastLogin||'';u.lastLogin=new Date().toISOString();
-  err.textContent='';enterApp(u);
-  if(u.password!=null)secureUsers();
-  if(u.mustChange)setTimeout(()=>openPwModal(true),300);
-}
-
 /* ---------- registration ---------- */
 function fillCollegeSelects(){const opts='<option value="">Choose your college…</option>'+colleges.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(c=>'<option value="'+esc(c.id)+'">'+esc(collegeLabel(c))+'</option>').join('');['rfCollegeSel','rsCollegeSel'].forEach(id=>{const el=gid(id);if(el){const v=el.value;el.innerHTML=opts;el.value=v;}});}
 function codeToSel(pre){const c=findCollegeByCode(gid(pre+'Code').value);if(c)gid(pre+'CollegeSel').value=c.id;}
 function raNameCheck(){const n=gid('raCollege').value;const hit=n.trim()&&colleges.find(c=>normName(c.name)===normName(n));gid('raColCheck').innerHTML=hit?'<span style="color:var(--terracotta);font-weight:600;">'+esc(hit.name)+' ('+esc(hit.code)+') is already registered. Join it instead, or add your branch or city to the name.</span>':'Each college name can be registered only once.';}
-function goReg(role){const m={admin:'regAdmin',faculty:'regFaculty',student:'regStudent'};showScreen(m[role]||'loginScreen');populateCCDropdowns();fillCollegeSelects();}
-async function handleSignup(role){
-  const pfx={admin:'ra',faculty:'rf',student:'rs'}[role];const v=k=>(gid(pfx+k)?gid(pfx+k).value.trim():'');const err=gid(pfx+'Err');
-  const fail=(m,fix)=>{err.innerHTML=esc(m)+(fix?' <button class="btn-link" type="button" onclick="gid(\''+pfx+'Email\').value=\''+esc(fix)+'\';this.parentNode.textContent=\'\';">Use '+esc(fix)+'</button>':'');};
-  let col=null;
-  if(role==='admin'){
-    const cn=v('College');if(!cn)return fail('Enter the college name.');
-    if(colleges.some(c=>normName(c.name)===normName(cn))){const h=colleges.find(c=>normName(c.name)===normName(cn));return fail(h.name+' ('+h.code+') is already registered. Ask its Admin to add you, or join it as Faculty. If you are a different branch, add the branch or city to the name.');}
-    if(!v('ColCity')||!v('ColCountry'))return fail('Enter the college city and country.');
-  }else{
-    col=collegeById(gid(pfx+'CollegeSel').value)||findCollegeByCode(v('Code'));
-    if(!col)return fail(v('Code')?'No college has the code '+v('Code').toUpperCase()+'. Check it with your college office.':'Choose your college, or enter its code.');
-  }
-  const first=v('First');if(!first)return fail('Enter your first name.');
-  const em=emailCheck(v('Email'),col&&col.requireGmail);if(em.e)return fail(em.e,em.fix);
-  const cc=gid(pfx+'CC')?gid(pfx+'CC').value:'+91';const mo=mobileCheck(v('Mobile'),cc);if(mo.e)return fail(mo.e);
-  if(identTaken(em.v))return fail('An account with this email already exists. Use "Forgot password" on the sign-in page.');
-  if(users.some(u=>u.mobile===mo.v))return fail('An account with this mobile number already exists. Use "Forgot password" on the sign-in page.');
-  const un=usernameCheck(v('User'),em.v,mo.v);if(un.e)return fail(un.e);
-  if(v('User')!==v('UserC'))return fail('The two usernames do not match.');
-  const pass=gid(pfx+'Pass').value;if(!passOk(pass))return fail('The password does not meet all the rules shown.');
-  if(pass!==gid(pfx+'PassC').value)return fail('The two passwords do not match.');
-  err.textContent='';
-  const ok=await otpStart({title:'Verify your email and mobile',sub:'We sent a 6-digit code to each. Enter both to finish.',targets:[{key:'e',label:'email',dest:maskEmail(em.v)},{key:'m',label:'mobile',dest:maskMobile(mo.v)}]});
-  if(!ok){fail('Verification was cancelled. Press the button again when you are ready.');return;}
-  const now=new Date().toISOString();
-  if(role==='admin'){
-    if(colleges.some(c=>normName(c.name)===normName(v('College'))))return fail('That college was registered a moment ago by someone else.');
-    const code=genCollegeCode(v('College'));
-    col={...blankCollege(),id:code,code,name:v('College'),affiliation:v('Affil'),location:v('ColCity'),country:v('ColCountry'),approveSignups:true,reminderDays:1,createdAt:now};
-    colleges.push(col);
-  }
-  const autoOk=role==='student'&&col.approveSignups===false;
-  const u={id:nid('u'),collegeId:col.id,firstName:first,lastName:v('Last'),email:em.v,username:un.v,role,status:role==='admin'||autoOk?'active':'pending',active:role==='admin'||autoOk,countryCode:cc,mobile:mo.v,fullMobile:cc+mo.v,altContact:v('AltContact'),city:v('City'),country:v('Country'),emailVerified:now,mobileVerified:now,createdAt:now,requestedAt:now};
-  if(role==='admin'){u.createdBy='Registered the college';col.createdBy=u.id;}
-  await setPassword(u,pass);users.push(u);
-  if(role!=='admin')addInbox(col.id,null,'New join request',(first+' '+v('Last')).trim()+' asked to join as '+role+'.','join','users','join_'+u.id,'manageUsers');
-  persistAll();
-  if(role==='admin'){
-    enterApp(u);
-    showInfo('Your college is registered','<p><b>'+esc(col.name)+'</b> has the college code <b class="mono" style="font-size:18px;">'+esc(col.code)+'</b>.</p><p>Share this code with your faculty and students. They open the same link, choose <b>Join my college</b>, and pick your college or enter the code. You approve them in <b>User Management</b>.</p><p>Next: fill in the College Profile (address, payment details), then add courses and students. <b>Help &amp; FAQ</b> has step-by-step guides.</p>');
-  }else{
-    showScreen('loginScreen');setLoginTab('ex');
-    gid('loginErr').textContent='';
-    showInfo(autoOk?'You can sign in now':'Request sent','<p>'+(autoOk?'Your account at <b>'+esc(col.name)+'</b> is ready. Sign in with your username, email or mobile.':'Your request to join <b>'+esc(col.name)+'</b> as '+esc(role)+' was sent to the college Admin. You can sign in once it is approved.')+'</p>');
-  }
-}
-
 /* ---------- forgot password ---------- */
 let resetCtx=null;
-function sendReset(){
-  const id=gid('fgEmail').value.trim();const err=gid('fgErr');
-  if(!id){err.textContent='Enter your username, email or mobile number.';return;}
-  const u=findLoginUser(id);
-  err.textContent='';
-  resetCtx={uid:u?u.id:null,code:newCode(),exp:Date.now()+10*60*1000,tries:0};
-  gid('fgOtp').innerHTML=u?'If this account exists, a 6-digit code was sent to its email '+esc(maskEmail(u.email))+(u.mobile?' and mobile '+esc(maskMobile(u.mobile)):'')+'.<div class="otp-sim" style="margin-top:8px;"><b>Simulated sending.</b> No SMS or email service is connected in this prototype, so the code is shown here: <b class="mono">'+resetCtx.code+'</b></div>':'If this account exists, a 6-digit code was sent to its email and mobile.';
-  gid('fgS1').style.display='none';gid('fgS2').style.display='block';gid('fgCode').value='';gid('fgCodeErr').textContent='';
-}
-function verifyReset(){
-  const er=gid('fgCodeErr');if(!resetCtx){er.textContent='Start again.';return;}
-  if(Date.now()>resetCtx.exp){er.textContent='This code has expired. Go back and send a new one.';return;}
-  if(resetCtx.tries>=5){er.textContent='Too many wrong codes. Go back and send a new one.';return;}
-  if(!resetCtx.uid||gid('fgCode').value.trim()!==resetCtx.code){resetCtx.tries++;er.textContent='That code is not right.';return;}
-  er.textContent='';gid('fgS2').style.display='none';gid('fgS3').style.display='block';
-}
-async function finishReset(){
-  const p1=gid('fgNew').value,p2=gid('fgConf').value,err=gid('fgResetErr');
-  if(!passOk(p1)){err.textContent='The password does not meet all the rules.';return;}
-  if(p1!==p2){err.textContent='The passwords do not match.';return;}
-  const u=resetCtx&&users.find(x=>x.id===resetCtx.uid);if(!u){err.textContent='Start again.';return;}
-  await setPassword(u,p1);u.failCount=0;delete u.lockUntil;delete u.mustChange;resetCtx=null;
-  addInbox(u.collegeId,u.id,'Your password was reset','Your password was changed using a reset code on '+fmtStamp(new Date().toISOString())+'. If this was not you, contact the college admin.','security','profile','pwreset_'+u.id+'_'+Date.now());
-  persistAll();showToast('Password reset. Sign in with your new password.');
-  ['fgS3','fgS2'].forEach(x=>gid(x).style.display='none');gid('fgS1').style.display='block';['fgNew','fgConf','fgEmail'].forEach(x=>gid(x).value='');err.textContent='';showScreen('loginScreen');
-}
-
 /* ---------- change password ---------- */
 let pwForced=false;
 function openPwModal(forced){
@@ -3809,28 +3644,7 @@ function roleCan(role,perm,col){
 }
 
 /* ---------- inbox ---------- */
-function addInbox(cid,uid,title,body,kind,link,key,audience){
-  if(!cid)return 0;
-  const col=collegeById(cid)||college;
-  const pool=users.filter(u=>u.collegeId===cid&&u.status!=='pending'&&u.status!=='rejected'&&u.active!==false);
-  const targets=uid?[uid]:pool.filter(u=>audience==='admin'?u.role==='admin':audience?roleCan(u.role,audience,col):true).map(u=>u.id);
-  const all=cid===curCID?inbox:(OTHERS.inbox=OTHERS.inbox||[]);
-  let n=0;targets.forEach(t=>{const id=dbId(key?key+'_'+t:nid('in'));if(all.some(x=>x.id===id)||(cid!==curCID&&inbox.some(x=>x.id===id)))return;all.unshift({id,collegeId:cid,userId:t,title,body,kind:kind||'system',link:link||'',at:new Date().toISOString(),read:false});n++;});
-  return n;
-}
-function myInbox(){return currentUser?inbox.filter(m=>m.userId===currentUser.id):[];}
-function updateBell(){const n=myInbox().filter(m=>!m.read).length;const b=gid('bellN');if(b){b.textContent=n;b.style.display=n?'':'none';}}
 const INB_ICON={holiday:'🗓',absence:'🙋',payment:'₹',join:'👤',security:'🔒',system:'•'};
-function renderInbox(){
-  const host=gid('inbHost');if(!host||!currentUser)return;
-  const f=gid('inbF').value;const list=myInbox().filter(m=>f==='all'||!m.read);
-  host.innerHTML=list.length?list.slice(0,200).map(m=>'<div class="inb '+(m.read?'read':'unread')+'"><span class="dotu"></span><div style="flex:1;"><h4>'+(INB_ICON[m.kind]||'•')+' '+esc(m.title)+'</h4><p>'+esc(m.body)+'</p><div style="font-size:11px;color:var(--muted);margin-top:3px;">'+esc(fmtStamp(m.at))+'</div></div><div class="row-actions" style="flex-wrap:wrap;">'+(m.link&&pageAllowed(m.link)?'<button class="icon-btn" onclick="inboxOpen(\''+m.id+'\')">Open</button>':'')+(m.read?'':'<button class="icon-btn" onclick="inboxRead(\''+m.id+'\')">Mark read</button>')+'</div></div>').join(''):'<p class="io-hint" style="padding:14px 4px;">'+(f==='all'?'No messages yet.':'You are all caught up.')+'</p>';
-  updateBell();
-}
-function inboxRead(id){const m=inbox.find(x=>x.id===id);if(m&&!m.read){m.read=true;persistAll();}renderInbox();}
-function inboxOpen(id){const m=inbox.find(x=>x.id===id);if(!m)return;if(!m.read){m.read=true;persistAll();}showPage(m.link);}
-function inboxReadAll(){let n=0;myInbox().forEach(m=>{if(!m.read){m.read=true;n++;}});if(n)persistAll();renderInbox();showToast(n?n+' marked as read':'Nothing unread');}
-
 /* ---------- automatic holiday & vacation reminders ---------- */
 function runAutoReminders(){
   if(!currentUser||!curCID)return 0;
@@ -4003,8 +3817,7 @@ async function spRenderQr(){
   if(!p.upi){el.innerHTML='<div class="io-hint">Pay by bank transfer using the details shown.</div>';return;}
   try{el.innerHTML=await qrSvg(url)+'<div class="io-hint">Scan with any UPI app'+(amt?' · '+inr(amt)+' filled in':'')+'</div>';}catch(e){el.innerHTML='<div class="io-hint">QR needs an internet connection. Use the UPI ID instead.</div>';}
 }
-function refTaken(ref){const r=String(ref).toUpperCase();return allRows('payClaims').some(c=>String(c.ref).toUpperCase()===r&&c.status!=='rejected')||allRows('payments').some(p=>(p.refs||[]).map(x=>String(x).toUpperCase()).includes(r));}
-function submitClaim(){
+async function submitClaim(){
   const me=myStudent();const er=gid('spErr');if(!me)return;
   const amt=Number(gid('spAmt').value);const ref=gid('spRef').value.trim().replace(/\s/g,'').toUpperCase();const method=gid('spMethod').value;const date=gid('spDate').value;const mon=gid('spMonth').value;
   if(!(amt>0)){er.textContent='Enter the amount you paid.';return;}
@@ -4012,8 +3825,10 @@ function submitClaim(){
   if(method==='UPI'&&!/^\d{12}$/.test(ref)){er.textContent='A UPI transaction reference (UTR) is 12 digits. You can find it in your UPI app under the payment.';return;}
   if(method!=='UPI'&&!/^[A-Z0-9]{6,22}$/.test(ref)){er.textContent='Enter the bank transfer reference (6–22 letters and numbers).';return;}
   if(!date||date>todayStr()){er.textContent='Choose the date you paid (not in the future).';return;}
-  if(refTaken(ref)){er.textContent='This transaction reference has already been submitted. Each payment can be sent only once.';return;}
-  const c={id:nid('pc'),collegeId:curCID,studentId:me.id,student:stuName(me),batchId:me.batchId||'',month:mon==='other'?ym():mon,amount:amt,method,ref,paidOn:date,at:new Date().toISOString(),by:currentUser.id,status:'pending'};
+  er.textContent='Checking…';const refKey=await sha16('ref:'+ref);
+  if(payClaims.some(c=>c.refKey===refKey&&c.status!=='rejected')||!(await refFree(refKey))){er.textContent='This transaction reference has already been submitted. Each payment can be sent only once.';return;}
+  er.textContent='';
+  const c={id:nid('pc'),collegeId:curCID,studentId:me.id,student:stuName(me),batchId:me.batchId||'',month:mon==='other'?ym():mon,amount:amt,method,ref,refKey,paidOn:date,at:new Date().toISOString(),by:currentUser.id,status:'pending'};
   payClaims.push(c);
   addInbox(curCID,null,'Payment to verify: '+c.student+' '+inr(amt),method+' reference '+ref+' paid on '+date+' for '+c.month+'.','payment','payments','pc_'+c.id,'editFees');
   persistAll();renderStudentPay();showToast('Sent. The college will verify your payment.');
@@ -4091,9 +3906,8 @@ async function saveProfile(){
   const first=g('pfFirst');if(!first){er.textContent='Enter your first name.';return;}
   const em=emailCheck(g('pfEmail'),college.requireGmail&&u.role!=='admin');if(em.e){er.textContent=em.e;return;}
   const mo=mobileCheck(g('pfMobile'),u.countryCode||'+91');if(mo.e){er.textContent=mo.e;return;}
-  if(em.v!==String(u.email||'').toLowerCase()&&identTaken(em.v,u)){er.textContent='Another account already uses this email.';return;}
-  if(mo.v!==u.mobile&&users.some(x=>x!==u&&x.mobile===mo.v)){er.textContent='Another account already uses this mobile number.';return;}
   const un=g('pfUser')===u.username?{v:u.username}:usernameCheck(g('pfUser'),em.v,mo.v,u);if(un.e){er.textContent=un.e;return;}
+  er.textContent='Checking…';const tk=await identsFree({username:un.v,email:em.v,mobile:mo.v},u.id);if(tk){er.textContent=tk.replace(' Use "Forgot password" on the sign-in page.','');return;}
   const tg=[];if(em.v!==String(u.email||'').toLowerCase())tg.push({key:'e',label:'new email',dest:maskEmail(em.v)});if(mo.v!==u.mobile)tg.push({key:'m',label:'new mobile',dest:maskMobile(mo.v)});
   er.textContent='';
   if(tg.length&&!await otpStart({title:'Verify your new contact details',sub:'Enter the code we sent to confirm the change.',targets:tg}))return;
@@ -4101,21 +3915,11 @@ async function saveProfile(){
   const oldEmail=u.email;
   Object.assign(u,{firstName:first,lastName:g('pfLast'),username:un.v,email:em.v,mobile:mo.v,fullMobile:(u.countryCode||'+91')+mo.v,altContact:g('pfAlt'),city:g('pfCity'),country:g('pfCountry'),updatedAt:new Date().toISOString()});
   if(tg.some(t=>t.key==='e'))u.emailVerified=new Date().toISOString();if(tg.some(t=>t.key==='m'))u.mobileVerified=new Date().toISOString();
+  await setIdentKeys(u);
   if(s){if(!u.studentId)u.studentId=s.id;s.email=em.v;s.mobile=mo.v;s.firstName=first;s.lastName=g('pfLast');}
   if(tg.length)addInbox(curCID,u.id,'Your contact details changed','Email/mobile on your account changed on '+fmtStamp(u.updatedAt)+(oldEmail&&oldEmail!==em.v?' (old email '+maskEmail(oldEmail)+')':'')+'. If this was not you, contact the college admin.','security','profile','pfchg_'+u.id+'_'+Date.now());
   persistAll();gid('sideUser').textContent=(u.firstName||u.username)+' '+(u.lastName||'');renderProfile();showToast('Your details were saved');
 }
-async function requestCollegeMove(){
-  const to=collegeById(gid('pfCollegeSel').value);if(!to){showToast('Choose a college');return;}
-  if(currentUser.role==='admin'&&collegeUsers().filter(u=>u.role==='admin'&&u.status==='active'&&u.id!==currentUser.id).length<1){showToast('You are the only Admin here. Make someone else an Admin first.');return;}
-  if(!await ask('Move your account to '+to.name+'? You will be signed out until its Admin approves you. Your records stay with '+college.name+'.','Request to move'))return;
-  if(!await reauth('Enter your password to move your account.'))return;
-  const u=currentUser;const from=college.name;
-  u.collegeId=to.id;u.status='pending';u.active=false;u.requestedAt=new Date().toISOString();u.movedFrom=from;delete u.studentId;if(u.role==='admin')u.role='faculty';
-  addInbox(to.id,null,'New join request',(u.firstName+' '+(u.lastName||'')).trim()+' (moving from '+from+') asked to join.','join','users','join_'+u.id+'_'+Date.now(),'manageUsers');
-  persistAll();handleLogout();showInfo('Request sent','<p>Your request to join <b>'+esc(to.name)+'</b> was sent to its Admin. You can sign in once it is approved.</p>');
-}
-
 /* ---------- help & FAQ ---------- */
 const HELP_GUIDES=[
  {t:'Start: one link for everyone',r:['all'],s:['Open the Swarsetu link.','To start a new college, choose New User → Register a new college. You become its Admin and get a college code (for example RAM-7K2Q).','Faculty and students choose New User → Join my college, pick the college from the list or type the code, and send a join request.','Everyone checks their email and mobile with a 6-digit code.','The Admin approves join requests in User Management. Approved people sign in with their username, email or mobile and the app opens their own college with the right screens for their role.']},
@@ -4164,31 +3968,8 @@ let navAttOpen=false;
 function toggleNavGrp(){navAttOpen=!navAttOpen;buildNav(currentUser.role);}
 
 
-function loadAll(){
-  migrateV3();
-  const d=readStore();
-  colleges=d.colleges||[];users=d.users||[];platform=d.platform||{};
-  if(d.college&&d.college.name&&!colleges.length)legacyCollege=d.college;
-  const all={};SCOPED.forEach(c=>all[c]=d[c]||[]);splitScope(all);
-}
-function snapshot(){const o={colleges,users,platform};SCOPED.forEach(c=>o[c]=allRows(c));return o;}
-function currentState(){const s=stripSecrets(snapshot());const o={};DB_COLS.forEach(c=>{const arr=s[c]||[];arr.forEach(r=>{if(r.id==null)r.id=nid('x');});o[c]=Object.fromEntries(arr.map(r=>[dbId(r.id),jstr(r)]));});o.meta={platform:jstr(platform)};return o;}
-function applyRemote(snapByCol){
-  const g=c=>Object.values(snapByCol[c]||{});
-  users=g('users');colleges=g('colleges');
-  const meta=snapByCol.meta||{};if(meta.college&&meta.college.name&&!colleges.length)legacyCollege=meta.college;if(meta.platform)platform=meta.platform;
-  const all={};SCOPED.forEach(c=>all[c]=g(c));splitScope(all);
-  writeStore(snapshot());
-}
-function refreshAfterRemote(){
-  if(!currentUser)return;
-  const me=users.find(u=>u.id===currentUser.id);
-  if(!me||me.active===false||(me.status&&me.status!=='active')||me.collegeId!==curCID){handleLogout();gid('loginErr').textContent='Your account was deactivated, moved or removed. Contact the college admin.';return;}
-  currentUser=me;
-  try{applyPerms();populateAll();updateBell();const cur=document.querySelector('.page.active');if(cur&&!pageAllowed(cur.id.replace('page-','')))showPage(firstPage());}catch(e){console.warn(e);}
-}
 function enterApp(user){
-  currentUser=user;rescope(user.collegeId);
+  currentUser=user;
   SCREENS.forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});
   document.getElementById('app').style.display='block';
   document.body.className='role-'+user.role;
@@ -4257,17 +4038,16 @@ async function saveUser(){
   if(!first){er.textContent='Enter the first name.';return;}
   const em=emailCheck(g('usrEmail'));if(em.e){er.textContent=em.e;return;}
   const mob=g('usrMobile');let mv='';if(mob){const mc=mobileCheck(mob,(u&&u.countryCode)||'+91');if(mc.e){er.textContent=mc.e;return;}mv=mc.v;}
-  if(em.v!==String(u&&u.email||'').toLowerCase()&&identTaken(em.v,u)){er.textContent='Another account already uses this email.';return;}
-  if(mv&&users.some(x=>x!==u&&x.mobile===mv)){er.textContent='Another account already uses this mobile number.';return;}
   const un=u&&g('usrName')===u.username?{v:u.username}:usernameCheck(g('usrName'),em.v,mv,u);if(un.e){er.textContent=un.e;return;}
   if(!u&&!pass){er.textContent='Enter a starting password.';return;}
   if(pass&&!passOk(pass)){er.textContent='Password needs 8+ characters with an uppercase letter, a lowercase letter, a number and a symbol.';return;}
   if(role==='admin'&&currentUser.role!=='admin'){er.textContent='Only an Admin can create or promote Admin accounts.';return;}
   if(u&&u.role==='admin'&&(role!=='admin'||!active)&&activeAdmins().filter(x=>x!==u).length<1){er.textContent='There must be at least one active Admin.';return;}
   if(u&&currentUser.id===u.id&&!active){er.textContent='You cannot deactivate your own account.';return;}
+  er.textContent='Checking…';const tk=await identsFree({username:un.v,email:em.v,mobile:mv},u?u.id:null);if(tk){er.textContent=tk.replace(' Use "Forgot password" on the sign-in page.','');return;}er.textContent='';
   const now=new Date().toISOString();
-  if(u){if(u.role!==role)addInbox(curCID,null,'Role changed: '+(u.firstName||u.username),userLabel()+' changed '+(u.firstName||u.username)+' from '+u.role+' to '+role+'.','security','users','role_'+u.id+'_'+Date.now(),'admin');Object.assign(u,{firstName:first,lastName:g('usrLast'),username:un.v,email:em.v,mobile:mv,role,active,status:active?'active':'inactive',updatedBy:userLabel(),updatedAt:now});if(pass){await setPassword(u,pass);u.mustChange=u.id!==currentUser.id;}if(currentUser.id===u.id)currentUser=u;}
-  else{const nu={id:nid('u'),collegeId:curCID,firstName:first,lastName:g('usrLast'),email:em.v,username:un.v,role,active,status:active?'active':'inactive',countryCode:'+91',mobile:mv,fullMobile:mv?'+91'+mv:'',altContact:'',city:'',country:'',createdBy:userLabel(),createdAt:now,mustChange:true};await setPassword(nu,pass);users.push(nu);}
+  if(u){if(u.role!==role)addInbox(curCID,null,'Role changed: '+(u.firstName||u.username),userLabel()+' changed '+(u.firstName||u.username)+' from '+u.role+' to '+role+'.','security','users','role_'+u.id+'_'+Date.now(),'admin');Object.assign(u,{firstName:first,lastName:g('usrLast'),username:un.v,email:em.v,mobile:mv,role,active,status:active?'active':'inactive',updatedBy:userLabel(),updatedAt:now});if(pass){await setPassword(u,pass);u.mustChange=u.id!==currentUser.id;}await setIdentKeys(u);if(currentUser.id===u.id)currentUser=u;}
+  else{const nu={id:nid('u'),collegeId:curCID,firstName:first,lastName:g('usrLast'),email:em.v,username:un.v,role,active,status:active?'active':'inactive',countryCode:'+91',mobile:mv,fullMobile:mv?'+91'+mv:'',altContact:'',city:'',country:'',createdBy:userLabel(),createdAt:now,mustChange:true};await setPassword(nu,pass);await setIdentKeys(nu);users.push(nu);}
   persistAll();closeModal('userModal');renderUsers();showToast(u?'User updated':'User created — '+un.v+' can now sign in as '+role);
   if(u&&currentUser.id===u.id)applyPerms();
 }
@@ -4281,6 +4061,416 @@ async function toggleUserActive(id){
   u.active=!act;u.status=u.active?'active':'inactive';u.updatedBy=userLabel();u.updatedAt=new Date().toISOString();persistAll();renderUsers();showToast(u.active?'User activated':'User deactivated — history kept');
 }
 
+/* ═══════════════════════════════════════════════════
+   V9 — college-keyed storage and referential integrity
+   Database layout (college code = primary key):
+     colleges/{CODE}            public directory: code, name, city, country
+     collegeNames/{nameKey}     unique index: college name → code
+     logins/{hash}              unique index: username / email / mobile → code + user id (hashed, no personal data)
+     refs/{hash}                unique index: payment reference (UTR) → code
+     c/{CODE}/settings/college  the college's full profile, permissions, payment details
+     c/{CODE}/users/{id}        that college's accounts (admins, faculty, students)
+     c/{CODE}/{list}/{id}       students, courses, attendance, payments, … of that college only
+   After sign-in the app loads only c/{CODE}/… for the person's own college.
+═══════════════════════════════════════════════════ */
+const COLLEGE_COLS=['users',...SCOPED];
+const FLAT_COLS=['users','colleges',...SCOPED];
+const LEGACY_STORE='swarsetu_data_v4';
+let collegeUnsubs=[];
+function cpath(code,col){return 'c/'+code+'/'+col;}
+function nameKeyOf(n){const s=String(n||'').normalize('NFKC').toLowerCase().replace(/^the\s+/,'').replace(/[^\p{L}\p{N}]/gu,'');return /^[a-z0-9]*$/.test(s)?s:Array.from(new TextEncoder().encode(s)).map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,200);}
+function normName(s){return nameKeyOf(s);}
+function pubCollege(c){return {id:c.id||c.code,code:c.code,name:c.name||'',location:c.location||'',country:c.country||'',createdAt:c.createdAt||''};}
+async function sha16(s){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('swarsetu:'+s));return Array.from(new Uint8Array(h)).slice(0,16).map(b=>b.toString(16).padStart(2,'0')).join('');}
+function identKeysRaw(u){const k=[];if(u.username)k.push('u:'+String(u.username).toLowerCase());if(u.email)k.push('e:'+String(u.email).toLowerCase());if(u.mobile)k.push('m:'+u.mobile);return k;}
+async function setIdentKeys(u){u.ik=await Promise.all(identKeysRaw(u).map(sha16));}
+
+/* ---------- database helpers ---------- */
+function LocalDB(){
+  const K='swarsetu_localdb_v9';let S;try{S=JSON.parse(localStorage.getItem(K)||'{}');}catch(e){S={};}
+  const save=()=>{try{localStorage.setItem(K,JSON.stringify(S));}catch(e){console.warn('local save failed',e);}};
+  const cp=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v));
+  return {local:true,collection:c=>({
+    get:async()=>({docs:Object.entries(S[c]||{}).map(([id,v])=>({id,data:()=>cp(v)}))}),
+    doc:id=>({get:async()=>({exists:(S[c]||{})[id]!==undefined,data:()=>cp((S[c]||{})[id])}),set:async v=>{(S[c]=S[c]||{})[id]=cp(v);save();},delete:async()=>{if(S[c]){delete S[c][id];if(!Object.keys(S[c]).length)delete S[c];}save();}}),
+    onSnapshot:()=>()=>{}})};
+}
+function dref(path){const i=path.lastIndexOf('/');return DBH.collection(path.slice(0,i)).doc(path.slice(i+1));}
+async function docGet(path){
+  try{const r=dref(path);
+    if(typeof r.get!=='function'){const i=path.lastIndexOf('/');const all=await DBH.collection(path.slice(0,i)).get();const d=all.docs.find(x=>x.id===path.slice(i+1));return d?JSON.parse(JSON.stringify(d.data())):null;}
+    const s=await r.get();if(!s)return null;let ex=s.exists;if(typeof ex==='function')ex=ex.call(s);
+    const d=typeof s.data==='function'?s.data():s.data;if(ex===false||d==null)return null;return JSON.parse(JSON.stringify(d));
+  }catch(e){return null;}
+}
+async function colGet(path){const r=await DBH.collection(path).get();const o={};(r.docs||[]).forEach(d=>{o[d.id]=JSON.parse(JSON.stringify(d.data()));});return o;}
+async function dbSet(path,data){await dref(path).set(JSON.parse(JSON.stringify(data)));}
+async function dbDel(path){await dref(path).delete();}
+async function lookupIdent(raw){const d=await docGet('logins/'+await sha16(raw));return d&&d.code?d:null;}
+async function identFree(raw,exceptUid){const d=await lookupIdent(raw);return !d||(exceptUid&&d.uid===exceptUid);}
+async function identsFree(u,exceptUid){for(const k of identKeysRaw(u)){if(!await identFree(k,exceptUid))return k[0]==='u'?'This username is already in use. Try another.':k[0]==='e'?'An account with this email already exists. Use "Forgot password" on the sign-in page.':'An account with this mobile number already exists. Use "Forgot password" on the sign-in page.';}return '';}
+
+/* ---------- local copy (only the signed-in college, cleared at sign-out) ---------- */
+function readStore(){return {};}
+function writeStore(){if(!curCID)return;try{const o={college};COLLEGE_COLS.forEach(c=>o[c]=c==='users'?stripSecrets({users}).users:wget(c));localStorage.setItem('swarsetu_c_'+curCID,JSON.stringify(o));}catch(e){}}
+function clearLocalCopy(code){try{if(code)localStorage.removeItem('swarsetu_c_'+code);}catch(e){}}
+
+/* ---------- what this college owns in the database ---------- */
+function snapshot(){const o={college,colleges,platform,users};SCOPED.forEach(c=>o[c]=wget(c));return o;}
+function stateFor(code){
+  const o={};if(!code)return o;
+  COLLEGE_COLS.forEach(c=>{const m={};(c==='users'?users:wget(c)).forEach(r=>{if(r.id==null)r.id=nid('x');r.collegeId=code;let v=r;if(c==='users'){v={...r};delete v.password;}m[dbId(r.id)]=jstr(v);});o[cpath(code,c)]=m;});
+  o[cpath(code,'settings')]={college:jstr({...college,id:code,code})};
+  o.colleges={[dbId(code)]:jstr(pubCollege({...college,id:code,code}))};
+  if(college.name)o.collegeNames={[nameKeyOf(college.name)]:jstr({code,name:college.name})};
+  const L={};users.forEach(u=>(u.ik||[]).forEach(h=>{L[h]=jstr({code,uid:u.id});}));o.logins=L;
+  const R={};payClaims.forEach(c=>{if(c.refKey&&c.status!=='rejected')R[c.refKey]=jstr({code});});o.refs=R;
+  return o;
+}
+function currentState(){return stateFor(curCID);}
+async function pushDiff(cur,base){
+  const ops=[];
+  for(const p of new Set([...Object.keys(cur),...Object.keys(base)])){const a=cur[p]||{},b=base[p]||{};
+    for(const id in a){if(a[id]!==b[id])ops.push(()=>DBH.collection(p).doc(id).set(JSON.parse(a[id])).then(()=>{(base[p]=base[p]||{})[id]=a[id];}));}
+    for(const id in b){if(!(id in a))ops.push(()=>DBH.collection(p).doc(id).delete().then(()=>{delete base[p][id];}));}}
+  for(let i=0;i<ops.length;i+=8){await Promise.all(ops.slice(i,i+8).map(f=>f()));}
+  return ops.length;
+}
+async function flushSync(){
+  if(!DBH||!curCID)return;
+  if(syncing){syncTimer=setTimeout(flushSync,400);return;}
+  syncing=true;
+  try{await pushDiff(currentState(),lastSnap);dirty=false;setDbStatus('ok','Saved to database');}
+  catch(e){console.warn('DB sync failed',e);setDbStatus('err',e&&e.code==='quota_exceeded'?'Database full':'Not saved — retrying');if(!e||(e.code!=='quota_exceeded'&&e.code!=='invalid_argument'))syncTimer=setTimeout(flushSync,6000);}
+  finally{syncing=false;}
+}
+function persistAll(){writeStore();scheduleSync();if(users.some(u=>u.password!=null||!u.ik))secureUsers();}
+let _securing2=null;
+function secureUsers(){
+  if(_securing2)return _securing2;if(!users.some(u=>u.password!=null||!u.ik))return Promise.resolve();
+  _securing2=(async()=>{try{for(const u of users){if(u.password!=null)await setPassword(u,u.password);if(!u.ik)await setIdentKeys(u);}if(curCID){writeStore();scheduleSync();}}catch(e){console.warn('secure failed',e);}finally{_securing2=null;}})();
+  return _securing2;
+}
+
+/* ---------- load one college ---------- */
+function applyCollegeSnap(){
+  const p=c=>Object.values(lastSnap[cpath(curCID,c)]||{}).map(v=>JSON.parse(v));
+  users=p('users');SCOPED.forEach(c=>wset(c,p(c)));OTHERS={};
+  const st=(lastSnap[cpath(curCID,'settings')]||{}).college;
+  college=st?JSON.parse(st):{...blankCollege(),id:curCID,code:curCID};
+  calendarEvents.sort((a,b)=>String(a.start).localeCompare(String(b.start)));importLog.sort((a,b)=>String(b.at).localeCompare(String(a.at)));notifLog.sort((a,b)=>String(b.time||'').localeCompare(String(a.time||'')));inbox.sort((a,b)=>String(b.at).localeCompare(String(a.at)));students.sort((a,b)=>String(a.id).localeCompare(String(b.id)));
+  stuSeq=students.length;
+}
+function unsubscribeCollege(){collegeUnsubs.forEach(f=>{try{f();}catch(e){}});collegeUnsubs=[];}
+async function loadCollege(code){
+  unsubscribeCollege();lastSnap={};
+  const cols=[...COLLEGE_COLS,'settings'];
+  const res=await Promise.all(cols.map(c=>colGet(cpath(code,c))));
+  cols.forEach((c,i)=>{lastSnap[cpath(code,c)]=Object.fromEntries(Object.entries(res[i]).map(([k,v])=>[k,jstr(v)]));});
+  curCID=code;applyCollegeSnap();
+  const own=await docGet('colleges/'+dbId(code));if(own)lastSnap.colleges={[dbId(code)]:jstr(own)};
+  if(college.name){const nk=nameKeyOf(college.name);const nd=await docGet('collegeNames/'+nk);if(nd&&nd.code===code)lastSnap.collegeNames={[nk]:jstr(nd)};}
+  lastSnap.logins={};await Promise.all(users.flatMap(u=>(u.ik||[]).map(async h=>{const d=await docGet('logins/'+h);if(d&&d.code===code)lastSnap.logins[h]=jstr(d);})));
+  lastSnap.refs={};await Promise.all(payClaims.filter(c=>c.refKey).map(async c=>{const d=await docGet('refs/'+c.refKey);if(d&&d.code===code)lastSnap.refs[c.refKey]=jstr(d);}));
+  subscribeCollege(code);
+}
+function subscribeCollege(code){
+  [...COLLEGE_COLS,'settings'].forEach(c=>{const p=cpath(code,c);
+    try{const un=DBH.collection(p).onSnapshot(snap=>{
+      if(syncing||dirty||curCID!==code)return;
+      const rows={};(snap.docs||[]).forEach(d=>{rows[d.id]=jstr(JSON.parse(JSON.stringify(d.data())));});
+      const prev=lastSnap[p]||{};const a=Object.keys(rows),b=Object.keys(prev);
+      if(a.length===b.length&&a.every(k=>prev[k]===rows[k]))return;
+      lastSnap[p]=rows;applyCollegeSnap();refreshAfterRemote();setDbStatus('ok','Updated from database');
+    },e=>console.warn('snapshot',p,e));if(typeof un==='function')collegeUnsubs.push(un);}catch(e){}
+  });
+}
+async function loadDirectory(){try{const d=await colGet('colleges');colleges=Object.values(d).sort((a,b)=>String(a.name).localeCompare(String(b.name)));}catch(e){}}
+function loadAll(){}
+function applyRemote(){}
+
+/* ---------- start-up, first-time setup and migration ---------- */
+async function initDB(){
+  let real=null;try{real=(window.claude&&window.claude.use)?await window.claude.use('db'):null;}catch(e){real=null;}
+  DBH=real||LocalDB();
+  setDbStatus(real?'busy':'',real?'Connecting…':'Local only (no database)');
+  try{
+    platform=(await docGet('meta/platform'))||{};
+    if(platform.layout!=='v9')await migrateToV9();
+    await loadDirectory();
+    setDbStatus(real?'ok':'',real?'Connected to database':'Local only (no database)');
+  }catch(e){console.warn('DB init failed',e);setDbStatus('err','Database unavailable');}
+}
+async function migrateToV9(){
+  // Source: v7/v8 flat collections, else an old local copy, else sample data for a brand-new database.
+  setDbStatus('busy','Upgrading data…');
+  const flat={};let n=0;
+  for(const c of [...FLAT_COLS,'meta']){try{flat[c]=await colGet(c);n+=Object.keys(flat[c]).length;}catch(e){flat[c]={};}}
+  const already=Object.keys(await colGet('colleges').catch(()=>({}))).length;
+  users=Object.values(flat.users||{});colleges=Object.values(flat.colleges||{});
+  legacyCollege=(flat.meta||{}).college&&!colleges.length?(flat.meta||{}).college:null;
+  OTHERS={};SCOPED.forEach(c=>OTHERS[c]=Object.values(flat[c]||{}));curCID=null;SCOPED.forEach(c=>wset(c,[]));
+  if(!users.length&&!colleges.length){
+    let local=null;try{local=JSON.parse(localStorage.getItem(LEGACY_STORE)||'null');}catch(e){}
+    if(local&&(local.users||[]).length){users=local.users||[];colleges=local.colleges||[];legacyCollege=local.college&&local.college.name&&!colleges.length?local.college:null;SCOPED.forEach(c=>OTHERS[c]=local[c]||[]);}
+    else if(!already){college=blankCollege();loadSampleData();legacyCollege={...college};SCOPED.forEach(c=>{OTHERS[c]=wget(c);wset(c,[]);});}
+  }
+  if(users.length||colleges.length||legacyCollege){
+    college=blankCollege();ensureMT();
+    for(const u of users){if(u.password!=null)await setPassword(u,u.password);await setIdentKeys(u);}
+    const all={};SCOPED.forEach(c=>all[c]=allRows(c));const allUsers=users.slice();const cols=colleges.slice();
+    for(const col of cols){
+      curCID=col.id;college={...col};users=allUsers.filter(u=>u.collegeId===col.id);SCOPED.forEach(c=>wset(c,all[c].filter(r=>r.collegeId===col.id)));
+      await pushDiff(stateFor(col.id),{});
+    }
+    // remove the old flat copies
+    for(const c of FLAT_COLS){for(const id of Object.keys(flat[c]||{})){try{await DBH.collection(c).doc(id).delete();}catch(e){}}}
+    for(const id of Object.keys(flat.meta||{})){if(id!=='platform'){try{await DBH.collection('meta').doc(id).delete();}catch(e){}}}
+  }
+  try{localStorage.removeItem(LEGACY_STORE);}catch(e){}
+  platform={...platform,layout:'v9',migratedAt:new Date().toISOString()};await dbSet('meta/platform',platform);
+  curCID=null;users=[];college=blankCollege();OTHERS={};SCOPED.forEach(c=>wset(c,[]));lastSnap={};
+}
+async function refreshDirectoryAndSelects(){await loadDirectory();fillCollegeSelects();}
+
+/* ---------- sign-in / sign-out ---------- */
+async function findLoginUser(id){
+  const s=String(id||'').trim();if(!s)return null;const lo=s.toLowerCase();const dg=s.replace(/\D/g,'');
+  const keys=['u:'+lo];if(lo.includes('@'))keys.push('e:'+lo);if(dg.length>=10&&/^[\d\s+()-]+$/.test(s))keys.push('m:'+dg.slice(-10));
+  for(const k of keys){const r=await lookupIdent(k);if(r){const u=await docGet(cpath(r.code,'users')+'/'+dbId(r.uid));if(u&&u.collegeId===r.code)return {u,code:r.code};}}
+  return null;
+}
+async function handleLogin(){
+  const id=gid('loginUser').value.trim(),pw=gid('loginPass').value,err=gid('loginErr');
+  if(!id||!pw){err.textContent='Enter your username, email or mobile, and your password.';return;}
+  err.textContent='Checking…';
+  const hit=await findLoginUser(id);const u=hit&&hit.u;
+  if(u&&u.lockUntil&&Date.now()<Date.parse(u.lockUntil)){err.textContent='Too many wrong passwords. This account is locked until '+new Date(u.lockUntil).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+'. Use "Forgot password" to reset it now.';return;}
+  const ok=await verifyPw(u,pw);
+  if(!ok){
+    if(u){u.failCount=(u.failCount||0)+1;if(u.failCount>=LOCK_AFTER){u.lockUntil=new Date(Date.now()+LOCK_MIN*60000).toISOString();u.failCount=0;addInbox(hit.code,null,'Account locked after wrong passwords',(u.firstName||u.username)+"'s account was locked for "+LOCK_MIN+' minutes after '+LOCK_AFTER+' wrong passwords.','security','users','lock_'+u.id+'_'+Date.parse(u.lockUntil),'admin');}try{await dbSet(cpath(hit.code,'users')+'/'+dbId(u.id),u);}catch(e){}}
+    err.textContent='Incorrect username or password.';return;
+  }
+  if(u.status==='pending'){const c=colleges.find(x=>x.id===hit.code);err.textContent='Your request to join '+(c?c.name:'the college')+' is waiting for the college Admin to approve it.';return;}
+  if(u.status==='rejected'){err.textContent='Your request to join was not approved'+(u.rejectReason?': '+u.rejectReason:'')+'. Contact the college office.';return;}
+  if(u.active===false||u.status==='inactive'){err.textContent='This account is deactivated. Please contact the college admin.';return;}
+  err.textContent='Opening your college…';
+  try{await loadCollege(hit.code);}catch(e){err.textContent='Could not load your college. Check your connection and try again.';return;}
+  const me=users.find(x=>x.id===u.id);if(!me){err.textContent='This account is not linked to a college. Contact your college admin.';curCID=null;return;}
+  me.failCount=0;delete me.lockUntil;me.prevLogin=me.lastLogin||'';me.lastLogin=new Date().toISOString();
+  err.textContent='';enterApp(me);persistAll();
+  if(me.mustChange)setTimeout(()=>openPwModal(true),300);
+}
+function handleLogout(){
+  if(DBH&&curCID&&(dirty||syncTimer)){clearTimeout(syncTimer);syncTimer=null;const cur=currentState(),base=lastSnap;pushDiff(cur,base).catch(e=>console.warn('final save failed',e));}
+  const code=curCID;unsubscribeCollege();
+  currentUser=null;attDraft={};curCID=null;users=[];college=blankCollege();SCOPED.forEach(c=>wset(c,[]));OTHERS={};lastSnap={};dirty=false;
+  clearLocalCopy(code);
+  document.body.className='';document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));if(otpCtx)otpDone(false);if(reauthRes){const r=reauthRes;reauthRes=null;r(false);}
+  document.getElementById('app').style.display='none';showScreen('loginScreen');try{setLoginTab('ex');}catch(e){}
+  const lp=gid('loginPass');if(lp)lp.value='';updateCollegeStrips();
+}
+function refreshAfterRemote(){
+  if(!currentUser)return;
+  const me=users.find(u=>u.id===currentUser.id);
+  if(!me||me.active===false||(me.status&&me.status!=='active')){handleLogout();gid('loginErr').textContent='Your account was deactivated, moved or removed. Contact the college admin.';return;}
+  currentUser=me;
+  try{applyPerms();populateAll();updateBell();const cur=document.querySelector('.page.active');if(cur&&!pageAllowed(cur.id.replace('page-','')))showPage(firstPage());}catch(e){console.warn(e);}
+}
+
+/* ---------- registration ---------- */
+function goReg(role){const m={admin:'regAdmin',faculty:'regFaculty',student:'regStudent'};showScreen(m[role]||'loginScreen');populateCCDropdowns();fillCollegeSelects();refreshDirectoryAndSelects();}
+async function handleSignup(role){
+  const pfx={admin:'ra',faculty:'rf',student:'rs'}[role];const v=k=>(gid(pfx+k)?gid(pfx+k).value.trim():'');const err=gid(pfx+'Err');
+  const fail=(m,fix)=>{err.innerHTML=esc(m)+(fix?' <button class="btn-link" type="button" onclick="gid(\''+pfx+'Email\').value=\''+esc(fix)+'\';this.parentNode.textContent=\'\';">Use '+esc(fix)+'</button>':'');};
+  err.textContent='Checking…';
+  await loadDirectory();
+  let col=null;
+  if(role==='admin'){
+    const cn=v('College');if(!cn)return fail('Enter the college name.');
+    const nd=await docGet('collegeNames/'+nameKeyOf(cn));const h=nd||colleges.find(c=>nameKeyOf(c.name)===nameKeyOf(cn));
+    if(h)return fail((h.name||cn)+' ('+h.code+') is already registered. Ask its Admin to add you, or join it as Faculty. If you are a different branch, add the branch or city to the name.');
+    if(!v('ColCity')||!v('ColCountry'))return fail('Enter the college city and country.');
+  }else{
+    const id=gid(pfx+'CollegeSel').value;col=colleges.find(c=>c.id===id)||findCollegeByCode(v('Code'));
+    if(!col)return fail(v('Code')?'No college has the code '+v('Code').toUpperCase()+'. Check it with your college office.':'Choose your college, or enter its code.');
+    const full=await docGet(cpath(col.id,'settings')+'/college');col={...col,...(full?{approveSignups:full.approveSignups,requireGmail:full.requireGmail}:{})};
+  }
+  const first=v('First');if(!first)return fail('Enter your first name.');
+  const em=emailCheck(v('Email'),col&&col.requireGmail);if(em.e)return fail(em.e,em.fix);
+  const cc=gid(pfx+'CC')?gid(pfx+'CC').value:'+91';const mo=mobileCheck(v('Mobile'),cc);if(mo.e)return fail(mo.e);
+  const un=usernameCheck(v('User'),em.v,mo.v);if(un.e)return fail(un.e);
+  if(v('User')!==v('UserC'))return fail('The two usernames do not match.');
+  const pass=gid(pfx+'Pass').value;if(!passOk(pass))return fail('The password does not meet all the rules shown.');
+  if(pass!==gid(pfx+'PassC').value)return fail('The two passwords do not match.');
+  const taken=await identsFree({username:un.v,email:em.v,mobile:mo.v});if(taken)return fail(taken);
+  err.textContent='';
+  const ok=await otpStart({title:'Verify your email and mobile',sub:'We sent a 6-digit code to each. Enter both to finish.',targets:[{key:'e',label:'email',dest:maskEmail(em.v)},{key:'m',label:'mobile',dest:maskMobile(mo.v)}]});
+  if(!ok){fail('Verification was cancelled. Press the button again when you are ready.');return;}
+  err.textContent='Saving…';
+  const again=await identsFree({username:un.v,email:em.v,mobile:mo.v});if(again)return fail(again);
+  const now=new Date().toISOString();
+  if(role==='admin'){
+    if(await docGet('collegeNames/'+nameKeyOf(v('College'))))return fail('That college was registered a moment ago by someone else.');
+    let code;do{code=genCollegeCode(v('College'));}while(await docGet('colleges/'+dbId(code)));
+    col={...blankCollege(),id:code,code,name:v('College'),affiliation:v('Affil'),location:v('ColCity'),country:v('ColCountry'),approveSignups:true,reminderDays:1,createdAt:now};
+  }
+  const autoOk=role==='student'&&col.approveSignups===false;
+  const u={id:nid('u'),collegeId:col.id,firstName:first,lastName:v('Last'),email:em.v,username:un.v,role,status:role==='admin'||autoOk?'active':'pending',active:role==='admin'||autoOk,countryCode:cc,mobile:mo.v,fullMobile:cc+mo.v,altContact:v('AltContact'),city:v('City'),country:v('Country'),emailVerified:now,mobileVerified:now,createdAt:now,requestedAt:now};
+  await setPassword(u,pass);await setIdentKeys(u);
+  try{
+    if(role==='admin'){
+      u.createdBy='Registered the college';col.createdBy=u.id;
+      curCID=col.id;college=col;users=[u];SCOPED.forEach(c=>wset(c,[]));lastSnap={};
+      await pushDiff(stateFor(col.id),lastSnap);
+      await loadCollege(col.id);colleges.push(pubCollege(col));
+      err.textContent='';enterApp(users.find(x=>x.id===u.id));
+      showInfo('Your college is registered','<p><b>'+esc(col.name)+'</b> has the college code <b class="mono" style="font-size:18px;">'+esc(col.code)+'</b>.</p><p>Share this code with your faculty and students. They open the same link, choose <b>Join my college</b>, and pick your college or enter the code. You approve them in <b>User Management</b>.</p><p>Next: fill in the College Profile (address, payment details), then add courses and students. <b>Help &amp; FAQ</b> has step-by-step guides.</p>');
+    }else{
+      await dbSet(cpath(col.id,'users')+'/'+dbId(u.id),{...u});
+      await Promise.all(u.ik.map(h=>dbSet('logins/'+h,{code:col.id,uid:u.id})));
+      if(!autoOk)addInbox(col.id,null,'New join request',(first+' '+v('Last')).trim()+' asked to join as '+role+'.','join','users','join_'+u.id,'manageUsers');
+      err.textContent='';showScreen('loginScreen');setLoginTab('ex');gid('loginErr').textContent='';
+      showInfo(autoOk?'You can sign in now':'Request sent','<p>'+(autoOk?'Your account at <b>'+esc(col.name)+'</b> is ready. Sign in with your username, email or mobile.':'Your request to join <b>'+esc(col.name)+'</b> as '+esc(role)+' was sent to the college Admin. You can sign in once it is approved.')+'</p>');
+    }
+  }catch(e){fail('Could not save your registration. Check your connection and try again.');}
+}
+
+/* ---------- forgot password ---------- */
+async function sendReset(){
+  const id=gid('fgEmail').value.trim();const err=gid('fgErr');
+  if(!id){err.textContent='Enter your username, email or mobile number.';return;}
+  err.textContent='Checking…';const hit=await findLoginUser(id);const u=hit&&hit.u;err.textContent='';
+  resetCtx={uid:u?u.id:null,code:hit?hit.code:null,code6:newCode(),exp:Date.now()+10*60*1000,tries:0};
+  gid('fgOtp').innerHTML=u?'If this account exists, a 6-digit code was sent to its email '+esc(maskEmail(u.email))+(u.mobile?' and mobile '+esc(maskMobile(u.mobile)):'')+'.<div class="otp-sim" style="margin-top:8px;"><b>Simulated sending.</b> No SMS or email service is connected in this prototype, so the code is shown here: <b class="mono">'+resetCtx.code6+'</b></div>':'If this account exists, a 6-digit code was sent to its email and mobile.';
+  gid('fgS1').style.display='none';gid('fgS2').style.display='block';gid('fgCode').value='';gid('fgCodeErr').textContent='';
+}
+function verifyReset(){
+  const er=gid('fgCodeErr');if(!resetCtx){er.textContent='Start again.';return;}
+  if(Date.now()>resetCtx.exp){er.textContent='This code has expired. Go back and send a new one.';return;}
+  if(resetCtx.tries>=5){er.textContent='Too many wrong codes. Go back and send a new one.';return;}
+  if(!resetCtx.uid||gid('fgCode').value.trim()!==resetCtx.code6){resetCtx.tries++;er.textContent='That code is not right.';return;}
+  er.textContent='';gid('fgS2').style.display='none';gid('fgS3').style.display='block';
+}
+async function finishReset(){
+  const p1=gid('fgNew').value,p2=gid('fgConf').value,err=gid('fgResetErr');
+  if(!passOk(p1)){err.textContent='The password does not meet all the rules.';return;}
+  if(p1!==p2){err.textContent='The passwords do not match.';return;}
+  if(!resetCtx||!resetCtx.uid){err.textContent='Start again.';return;}
+  const path=cpath(resetCtx.code,'users')+'/'+dbId(resetCtx.uid);const u=await docGet(path);if(!u){err.textContent='Start again.';return;}
+  await setPassword(u,p1);u.failCount=0;delete u.lockUntil;delete u.mustChange;
+  try{await dbSet(path,u);}catch(e){err.textContent='Could not save. Try again.';return;}
+  addInbox(resetCtx.code,u.id,'Your password was reset','Your password was changed using a reset code on '+fmtStamp(new Date().toISOString())+'. If this was not you, contact the college admin.','security','profile','pwreset_'+u.id+'_'+Date.now());
+  resetCtx=null;showToast('Password reset. Sign in with your new password.');
+  ['fgS3','fgS2'].forEach(x=>gid(x).style.display='none');gid('fgS1').style.display='block';['fgNew','fgConf','fgEmail'].forEach(x=>gid(x).value='');err.textContent='';showScreen('loginScreen');
+}
+
+/* ---------- inbox (per-person and per-role messages) ---------- */
+function addInbox(cid,uid,title,body,kind,link,key,audience){
+  if(!cid)return 0;
+  const id=dbId(key?(uid?key+'_'+uid:key):nid('in'));
+  const doc={id,collegeId:cid,userId:uid||null,audience:uid?null:(audience||'all'),title,body,kind:kind||'system',link:link||'',at:new Date().toISOString(),read:false,readBy:[]};
+  if(cid===curCID){if(inbox.some(x=>x.id===id))return 0;inbox.unshift(doc);return 1;}
+  if(DBH)docGet(cpath(cid,'inbox')+'/'+id).then(ex=>{if(!ex)return dbSet(cpath(cid,'inbox')+'/'+id,doc);}).catch(()=>{});
+  return 1;
+}
+function audienceFor(m,u){if(m.userId)return m.userId===u.id;const a=m.audience||'all';if(a==='all')return true;if(a==='admin')return u.role==='admin';return roleCan(u.role,a);}
+function isRead(m){return m.userId?!!m.read:(m.readBy||[]).includes(currentUser.id);}
+function setRead(m){if(m.userId)m.read=true;else{m.readBy=m.readBy||[];if(!m.readBy.includes(currentUser.id))m.readBy.push(currentUser.id);}}
+function myInbox(){return currentUser?inbox.filter(m=>audienceFor(m,currentUser)):[];}
+function updateBell(){const n=myInbox().filter(m=>!isRead(m)).length;const b=gid('bellN');if(b){b.textContent=n;b.style.display=n?'':'none';}}
+function renderInbox(){
+  const host=gid('inbHost');if(!host||!currentUser)return;
+  const f=gid('inbF').value;const list=myInbox().filter(m=>f==='all'||!isRead(m));
+  host.innerHTML=list.length?list.slice(0,200).map(m=>{const rd=isRead(m);return '<div class="inb '+(rd?'read':'unread')+'"><span class="dotu"></span><div style="flex:1;"><h4>'+(INB_ICON[m.kind]||'•')+' '+esc(m.title)+'</h4><p>'+esc(m.body)+'</p><div style="font-size:11px;color:var(--muted);margin-top:3px;">'+esc(fmtStamp(m.at))+'</div></div><div class="row-actions" style="flex-wrap:wrap;">'+(m.link&&pageAllowed(m.link)?'<button class="icon-btn" onclick="inboxOpen(\''+m.id+'\')">Open</button>':'')+(rd?'':'<button class="icon-btn" onclick="inboxRead(\''+m.id+'\')">Mark read</button>')+'</div></div>';}).join(''):'<p class="io-hint" style="padding:14px 4px;">'+(f==='all'?'No messages yet.':'You are all caught up.')+'</p>';
+  updateBell();
+}
+function inboxRead(id){const m=inbox.find(x=>x.id===id);if(m&&!isRead(m)){setRead(m);persistAll();}renderInbox();}
+function inboxOpen(id){const m=inbox.find(x=>x.id===id);if(!m)return;if(!isRead(m)){setRead(m);persistAll();}showPage(m.link);}
+function inboxReadAll(){let n=0;myInbox().forEach(m=>{if(!isRead(m)){setRead(m);n++;}});if(n)persistAll();renderInbox();showToast(n?n+' marked as read':'Nothing unread');}
+
+/* ---------- unique-key checks while signed in ---------- */
+async function collegeNameFree(name){const nk=nameKeyOf(name);if(!nk)return false;const d=await docGet('collegeNames/'+nk);return !d||d.code===curCID;}
+async function refFree(refKey){const d=await docGet('refs/'+refKey);return !d;}
+
+/* ---------- referential integrity ---------- */
+function integrityIssues(){
+  const I=[];const S=new Set(students.map(s=>s.id)),C=new Set(courses.map(c=>c.id)),B=new Set(batches.map(b=>b.id)),U=new Set(users.map(u=>u.id));
+  const add=(col,id,msg,fix)=>I.push({col,id,msg,fix});
+  SCOPED.forEach(c=>wget(c).forEach(r=>{if(r.collegeId&&r.collegeId!==curCID)add(c,r.id,c+' record '+r.id+' is marked with another college ('+r.collegeId+')','stamp');}));
+  users.forEach(u=>{if(u.collegeId!==curCID)add('users',u.id,'Login '+u.username+' is marked with another college','stamp');if(u.studentId&&!S.has(u.studentId))add('users',u.id,'Login '+u.username+' is linked to a student that no longer exists','unlink');});
+  students.forEach(s=>{if(s.courseId&&!C.has(s.courseId))add('students',s.id,stuName(s)+' ('+s.id+') points to a course that no longer exists','report');if(s.batchId&&!B.has(s.batchId))add('students',s.id,stuName(s)+' ('+s.id+') points to a missing batch','rebatch');});
+  batches.forEach(b=>{if(!C.has(b.courseId))add('batches',b.id,'Batch '+b.name+' points to a course that no longer exists','report');});
+  academic.forEach(a=>{if(a.courseId&&!C.has(a.courseId))add('academic',a.id,'Level '+(a.title||a.level)+' points to a course that no longer exists','delete');});
+  facultySlots.forEach(f=>{if(f.courseId&&!C.has(f.courseId))add('facultySlots',f.id,'Slot for '+(f.courseName||f.courseId)+' points to a course that no longer exists','delete');});
+  payments.forEach(p=>{if(!S.has(p.studentId))add('payments',p.id,'Payment '+p.month+' for '+p.student+': the student no longer exists (kept as a financial record)','report');});
+  attendance.forEach(a=>{if(!S.has(a.studentId))add('attendance',a.id,'Attendance '+a.yearMonth+' for a student that no longer exists','delete');});
+  absenceNotices.forEach(n=>{if(!S.has(n.studentId))add('absenceNotices',n.id,'Absence notice '+n.date+' for a student that no longer exists','delete');});
+  payClaims.forEach(c=>{if(!S.has(c.studentId)&&c.status!=='verified')add('payClaims',c.id,'Payment submission '+c.ref+' for a student that no longer exists','delete');});
+  ttSessions.forEach(t=>{if(!B.has(t.batchId))add('ttSessions',t.id,'Timetable change on '+t.date+' for a batch that no longer exists','delete');});
+  classLogs.forEach(c=>{const bad=(c.shareStudents||[]).filter(x=>!S.has(x));if(bad.length)add('classLogs',c.id,'Class '+c.date+' is shared with '+bad.length+' removed student(s)','prune');});
+  calendarEvents.forEach(e=>{const bb=(e.batchIds||[]).filter(x=>!B.has(x)),bs=(e.studentIds||[]).filter(x=>!S.has(x));if(bb.length||bs.length)add('calendarEvents',e.id,'Calendar "'+e.title+'" applies to '+(bb.length+bs.length)+' removed batch(es)/student(s)','prune');});
+  inbox.forEach(m=>{if(m.userId&&!U.has(m.userId))add('inbox',m.id,'Message for a login that no longer exists','delete');});
+  return I;
+}
+function renderIntegrity(){
+  const host=gid('cpHealth');if(!host)return;
+  if(!currentUser||currentUser.role!=='admin'){host.innerHTML='';return;}
+  const I=integrityIssues();const fixable=I.filter(i=>i.fix!=='report').length;
+  host.innerHTML='<h3 style="font-size:15px;margin-bottom:4px;">Data health</h3><p class="io-hint">Every record is keyed to college code <b class="mono">'+esc(curCID)+'</b> and must point to records that exist in this college.</p>'+
+    (I.length?'<div class="warn">'+I.length+' issue'+(I.length===1?'':'s')+' found'+(fixable?' · '+fixable+' can be fixed safely':'')+'.</div><ul style="font-size:12.5px;line-height:1.6;margin:6px 0 10px 18px;">'+I.slice(0,30).map(i=>'<li>'+esc(i.msg)+(i.fix==='report'?' <span class="io-hint">(review by hand)</span>':'')+'</li>').join('')+(I.length>30?'<li>…and '+(I.length-30)+' more</li>':'')+'</ul>'+(fixable?'<button class="btn btn-ghost btn-sm" onclick="fixIntegrity()">Fix what can be fixed safely</button>':''):'<div class="safe">No problems found. All records belong to this college and every link points to an existing record.</div>');
+}
+async function fixIntegrity(){
+  if(!currentUser||currentUser.role!=='admin')return;
+  const I=integrityIssues().filter(i=>i.fix!=='report');if(!I.length)return;
+  if(!await ask('Fix '+I.length+' issue(s)? Orphaned attendance, notices, timetable changes and messages are removed; links to removed students and batches are cleared; batches are rebuilt. Payments are never removed.','Fix'))return;
+  const S=new Set(students.map(s=>s.id)),B=new Set(batches.map(b=>b.id));
+  const del={};I.filter(i=>i.fix==='delete').forEach(i=>{(del[i.col]=del[i.col]||new Set()).add(i.id);});
+  Object.keys(del).forEach(c=>wset(c,wget(c).filter(r=>!del[c].has(r.id))));
+  SCOPED.forEach(c=>wget(c).forEach(r=>{r.collegeId=curCID;}));users.forEach(u=>{u.collegeId=curCID;if(u.studentId&&!S.has(u.studentId))delete u.studentId;});
+  classLogs.forEach(c=>{if(c.shareStudents)c.shareStudents=c.shareStudents.filter(x=>S.has(x));c.sharedWith=classAudience(c);});
+  calendarEvents.forEach(e=>{e.batchIds=(e.batchIds||[]).filter(x=>B.has(x));e.studentIds=(e.studentIds||[]).filter(x=>S.has(x));if(e.appliesTo==='batches'&&!e.batchIds.length)e.appliesTo='all';if(e.appliesTo==='students'&&!e.studentIds.length)e.appliesTo='all';});
+  syncBatches();cascadeBatchCleanup();persistAll();renderIntegrity();showToast('Fixed');
+}
+function cascadeBatchCleanup(){const B=new Set(batches.map(b=>b.id));ttSessions=ttSessions.filter(t=>B.has(t.batchId));}
+
+/* ---------- deletes that respect links ---------- */
+async function deleteCourse(id){
+  if(!need('deleteRecords'))return;const c=courses.find(x=>x.id===id);if(!c)return;
+  const ns=students.filter(s=>s.courseId===id).length,nb=batches.filter(b=>b.courseId===id).length,na=academic.filter(a=>a.courseId===id).length,nf=facultySlots.filter(f=>f.courseId===id).length;
+  if(ns||nb){showInfo('This course is in use','<p><b>'+esc(c.name)+'</b> cannot be deleted because '+[ns?ns+' student(s)':'',nb?nb+' batch(es)':''].filter(Boolean).join(' and ')+' use it.</p><p>Set the course to <b>Inactive</b> instead, or move the students to another course first.</p>');return;}
+  if(!await ask('Delete course "'+c.name+'"?'+(na||nf?' Its '+[na?na+' academic level(s)':'',nf?nf+' faculty slot(s)':''].filter(Boolean).join(' and ')+' will be deleted too.':''),'Delete'))return;
+  courses=courses.filter(x=>x.id!==id);academic=academic.filter(a=>a.courseId!==id);facultySlots=facultySlots.filter(f=>f.courseId!==id);
+  persistAll();populateCrsDropdowns();renderCourses();renderDashboard();showToast('Course deleted');
+}
+async function deleteStudent(id){
+  if(!need('deleteRecords'))return;const s=students.find(x=>x.id===id);if(!s)return;
+  const np=payments.filter(p=>p.studentId===id).length,nv=payClaims.filter(c=>c.studentId===id&&c.status==='verified').length;
+  if(np||nv){showInfo('This student has fee records','<p><b>'+esc(stuName(s))+'</b> has '+np+' payment record(s). Payments are financial history and must stay linked to the student.</p><p>Set the student\'s status to <b>Inactive</b> instead.</p>');return;}
+  const na=attendance.filter(a=>a.studentId===id).length,nn=absenceNotices.filter(n=>n.studentId===id).length,nu=users.filter(u=>u.studentId===id).length;
+  if(!await ask('Remove '+stuName(s)+' ('+id+')? This also removes '+na+' attendance record(s) and '+nn+' absence notice(s)'+(nu?', and unlinks their login':'')+'.','Remove'))return;
+  students=students.filter(x=>x.id!==id);attendance=attendance.filter(a=>a.studentId!==id);absenceNotices=absenceNotices.filter(n=>n.studentId!==id);payClaims=payClaims.filter(c=>c.studentId!==id);
+  users.forEach(u=>{if(u.studentId===id)delete u.studentId;});
+  classLogs.forEach(c=>{if(c.shareStudents&&c.shareStudents.includes(id)){c.shareStudents=c.shareStudents.filter(x=>x!==id);c.sharedWith=classAudience(c);}});
+  calendarEvents.forEach(e=>{if((e.studentIds||[]).includes(id))e.studentIds=e.studentIds.filter(x=>x!==id);});
+  syncBatches();cascadeBatchCleanup();persistAll();populateStuDropdowns();renderStudents();renderDashboard();showToast('Student removed');
+}
+
+async function flushNow(){clearTimeout(syncTimer);let n=0;while(syncing&&n++<100)await new Promise(r=>setTimeout(r,100));await flushSync();}
+async function requestCollegeMove(){
+  const to=collegeById(gid('pfCollegeSel').value);if(!to){showToast('Choose a college');return;}
+  if(currentUser.role==='admin'&&collegeUsers().filter(u=>u.role==='admin'&&u.status==='active'&&u.id!==currentUser.id).length<1){showToast('You are the only Admin here. Make someone else an Admin first.');return;}
+  if(!await ask('Move your account to '+to.name+'? You will be signed out until its Admin approves you. Your records stay with '+college.name+'.','Request to move'))return;
+  if(!await reauth('Enter your password to move your account.'))return;
+  const u=currentUser;const from=college.name;const now=new Date().toISOString();
+  const moved={...u,collegeId:to.id,status:'pending',active:false,requestedAt:now,movedFrom:from};delete moved.studentId;delete moved.password;if(moved.role==='admin')moved.role='faculty';
+  if(!moved.ik)await setIdentKeys(moved);
+  users=users.filter(x=>x.id!==u.id);
+  try{await flushNow();await dbSet(cpath(to.id,'users')+'/'+dbId(moved.id),moved);await Promise.all(moved.ik.map(h=>dbSet('logins/'+h,{code:to.id,uid:moved.id})));}
+  catch(e){showToast('Could not move your account. Try again.');users.push(u);persistAll();return;}
+  addInbox(to.id,null,'New join request',(u.firstName+' '+(u.lastName||'')).trim()+' (moving from '+from+') asked to join.','join','users','join_'+u.id+'_'+Date.now(),'manageUsers');
+  handleLogout();showInfo('Request sent','<p>Your request to join <b>'+esc(to.name)+'</b> was sent to its Admin. You can sign in once it is approved.</p>');
+}
 /* ---------- NAVIGATION ---------- */
 const NAV_ALL=[{id:'dashboard',l:'Dashboard'},{id:'students',l:'Students'},{id:'courses',l:'Courses'},{id:'academic',l:'Academic Structure'},{id:'faculty',l:'Faculty Mgmt'},{id:'timetable',l:'Timetable',ls:'My Schedule'},{id:'calendar',l:'College Calendar'},{grp:'Attendance'},{id:'attendance',l:'Mark Attendance',ls:'My Attendance',sub:1},{id:'attsummary',l:'Summary',sub:1},{id:'classes',l:'Classes',ls:'My Classes'},{id:'payments',l:'Fee Payments',ls:'My Fees'},{id:'notifications',l:'Notifications'},{id:'announcements',l:'Events &amp; Recitals'},{id:'dataio',l:'Import &amp; Export'},{id:'college',l:'College Profile'},{id:'users',l:'User Management'},{id:'roles',l:'Roles &amp; Permissions'},{id:'profile',l:'My Profile'},{id:'help',l:'Help &amp; FAQ'}];
 const PAGE_PERM={dashboard:'viewDashboard',students:'viewStudents',courses:'viewCourses',academic:'viewCourses',faculty:'viewFaculty',timetable:'viewTimetable',calendar:'viewCalendar',attendance:'viewAttendance',attsummary:'viewAttendance',classes:'viewClasses',payments:'viewFees',notifications:'sendNotifications',announcements:'viewEvents',college:'viewCollege',users:'manageUsers',roles:'manageUsers'};
@@ -4326,7 +4516,7 @@ function showPage(name){
   if(name==='profile')renderProfile();
   if(name==='inbox')renderInbox();
   if(name==='help')renderHelp();
-  if(name==='college')renderPayDetails();
+  if(name==='college'){renderPayDetails();renderIntegrity();}
   if(navAttOpen&&name!=='attendance'&&name!=='attsummary'){navAttOpen=false;}
   if(currentUser)buildNav(currentUser.role);
   if(name==='announcements')renderAnnouncements();
@@ -4472,11 +4662,6 @@ function saveStudent(){
   populateStuDropdowns();renderStudents();renderDashboard();
   showToast('Student saved — ID: '+item.id);showPage('students');
 }
-async function deleteStudent(id){
-  if(!need('deleteRecords'))return;
-  if(!await ask('Remove this student?'))return;
-  students=students.filter(x=>x.id!==id);persistAll();populateStuDropdowns();renderStudents();renderDashboard();showToast('Student removed');
-}
 function renderStudents(){
   if(syncBatches())persistAll();
   const q=(document.getElementById('stuSearch')?.value||'').toLowerCase();
@@ -4533,7 +4718,6 @@ function saveCourse(){
   if(editCrsId){const i=courses.findIndex(x=>x.id===editCrsId);if(i>=0)courses[i]=item;else courses.push(item);}else courses.push(item);
   persistAll();closeModal('courseModal');populateCrsDropdowns();renderCourses();renderDashboard();showToast('Course saved');showPage('courses');
 }
-async function deleteCourse(id){if(!need('deleteRecords'))return;if(!await ask('Delete course?'))return;courses=courses.filter(x=>x.id!==id);persistAll();populateCrsDropdowns();renderCourses();renderDashboard();}
 function renderCourses(){
   const tbody=document.getElementById('coursesT');if(!tbody)return;
   if(!courses.length){tbody.innerHTML='<tr class="empty-row"><td colspan="7">No courses yet.</td></tr>';return;}

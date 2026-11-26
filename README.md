@@ -1,4 +1,4 @@
-# Swarsetu — Music College Manager (v8)
+# Swarsetu — Music College Manager (v9)
 
 A single-file web app (HTML, CSS and vanilla JavaScript) for running a music college:
 students, batches, timetable, college calendar, attendance, classes with shared audio,
@@ -92,11 +92,44 @@ Notifications · Events & Recitals · Import & Export · College Profile · User
 - **Uniqueness:** college names, college codes, usernames, emails, mobile numbers and
   student IDs are all unique.
 
-**Limits of this prototype (please read):** all colleges share one artifact database,
-which any signed-in viewer of the link can read. Sign-in, college separation and these
+**Limits of this prototype (please read):** the app now loads only the signed-in college,
+but all colleges still share one artifact database, whose access rules cannot be set per
+college. Someone with the link and technical skill could still read another college's
+records directly. Sign-in, college separation and these
 checks run in the browser. Codes sent by SMS or email are simulated and shown on screen.
 A production deployment needs a server that enforces college separation and
 permissions, real SMS and email sending, and a payment gateway or bank statement matching.
+
+## How data is keyed (v9)
+
+The **college code** is the primary key. Every record lives under its college's code and
+carries that code in `collegeId`. The **college name** is a unique alternate key, used to
+look up the code and to stop duplicates.
+
+| Database path | What it holds |
+|---|---|
+| `colleges/{CODE}` | Public directory: code, name, city, country (for the join list) |
+| `collegeNames/{nameKey}` | Unique index: college name → code |
+| `logins/{hash}` | Unique index: username / email / mobile → code + user id (hashed; no names, emails or numbers) |
+| `refs/{hash}` | Unique index: payment reference (UTR) → code |
+| `c/{CODE}/settings/college` | Full profile, permissions, payment details |
+| `c/{CODE}/users/…` | That college's accounts, Admins included |
+| `c/{CODE}/students/…`, `…/payments/…`, etc. | All other records for that college |
+
+**Sign-in:** the app looks up the login index, opens `c/{CODE}/users/{id}`, checks the
+password, and only then loads `c/{CODE}/…`. Nothing from another college is fetched, and
+sign-out clears it from memory and the browser.
+
+**Integrity rules:**
+- A course used by students or batches cannot be deleted; set it to Inactive instead.
+  Deleting an unused course also removes its academic levels and faculty slots.
+- A student with payment records cannot be deleted; set them to Inactive. Deleting a
+  student without payments also removes their attendance, absence notices and pending
+  payment submissions, unlinks their login, and removes them from class sharing and
+  calendar lists.
+- Emptied batches remove their timetable changes.
+- **College Profile → Data health** (Admin) lists records that point to missing records or
+  carry another college's code. It fixes them safely; payments are never removed.
 
 ## Data storage
 

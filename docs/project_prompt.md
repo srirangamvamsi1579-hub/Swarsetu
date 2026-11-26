@@ -1,11 +1,13 @@
-PROJECT: Swarsetu — Music College Manager (v8)
+PROJECT: Swarsetu — Music College Manager (v9)
 Single-file HTML/CSS/vanilla JS app for music college teachers. Shared database via
 the artifact db capability (one document per record, diff sync from persistAll()),
 localStorage as offline copy. Web link for testing, Android/iOS app later.
 
-MULTI-COLLEGE: one link, many colleges. colleges collection (id = unique code). Every
-scoped record has collegeId. rescope()/splitScope() keep only the signed-in college in the
-working lists; snapshot() merges the others back. Registering a college makes you its
+MULTI-COLLEGE: one link, many colleges, keyed by college code. Storage: c/{CODE}/{list}/{id},
+c/{CODE}/settings/college, public colleges/{CODE}; unique indexes collegeNames/{nameKey},
+logins/{sha} (username/email/mobile), refs/{sha} (UTR). Load only the signed-in college
+(loadCollege); pushDiff only writes paths that college owns. Enforce RESTRICT/CASCADE on
+deletes and keep integrityIssues()/fixIntegrity() passing. Registering a college makes you its
 Admin; faculty/students join by college or code and wait for approval. College names unique.
 
 ROLES: Admin (everything, always), Faculty, Student. Faculty and Student rights come from
