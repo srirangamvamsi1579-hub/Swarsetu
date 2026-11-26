@@ -2,7 +2,6 @@ package app.swarsetu.fees;
 
 import app.swarsetu.common.*;
 import app.swarsetu.inbox.Inbox;
-import app.swarsetu.notify.Outbox;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
@@ -22,10 +21,9 @@ public class FeesController {
     private final Perms perms;
     private final Audit audit;
     private final Inbox inbox;
-    private final Outbox outbox;
 
-    public FeesController(JdbcClient jdbc, CurrentUser current, Perms perms, Audit audit, Inbox inbox, Outbox outbox) {
-        this.jdbc = jdbc; this.current = current; this.perms = perms; this.audit = audit; this.inbox = inbox; this.outbox = outbox;
+    public FeesController(JdbcClient jdbc, CurrentUser current, Perms perms, Audit audit, Inbox inbox) {
+        this.jdbc = jdbc; this.current = current; this.perms = perms; this.audit = audit; this.inbox = inbox;
     }
 
     @GetMapping("/payments")
@@ -68,6 +66,7 @@ public class FeesController {
     public Map<String, Object> add(@Valid @RequestBody PaymentIn p) {
         Me me = current.get();
         perms.need(me, "editFees");
+        amounts(p);
         String batchName = batchName(me, p.batchId());
         LocalDate date = p.paymentDate() == null || p.paymentDate().isBlank() ? null : Check.date(p.paymentDate(), "Payment date");
         List<String> ids = new ArrayList<>();
@@ -90,6 +89,7 @@ public class FeesController {
         Me me = current.get();
         perms.need(me, "editFees");
         if (p.months().size() != 1) throw ApiException.bad("Edit one month at a time.");
+        amounts(p);
         String batchName = batchName(me, p.batchId());
         int n = jdbc.sql("UPDATE payments SET student_id = ?, batch_id = ?, batch_name = ?, fee_month = ?, payment_date = ?, total_fee = ?, paid = ?, "
                 + "method = ?, remarks = ?, updated_by = ?, version = version + 1 WHERE college_id = ? AND id = ?")
@@ -110,6 +110,10 @@ public class FeesController {
         if (n == 0) throw ApiException.notFound("Payment not found.");
         audit.log(me, "payment.deleted", "payment", id, null);
         return Map.of("ok", true);
+    }
+
+    private static void amounts(PaymentIn p) {
+        if (p.paid().compareTo(p.totalFee()) > 0) throw ApiException.bad("Amount paid cannot be more than the total fee.");
     }
 
     private String batchName(Me me, String batchId) {

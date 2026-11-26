@@ -69,9 +69,19 @@ public class ErrorHandler {
         return body(HttpStatus.PAYLOAD_TOO_LARGE, "The file is too large (2 MB at most).");
     }
 
+    /** MySQL check constraints (error 3819) are not translated by Spring, so they arrive here. */
+    @ExceptionHandler(org.springframework.jdbc.UncategorizedSQLException.class)
+    ResponseEntity<Map<String, Object>> uncategorized(org.springframework.jdbc.UncategorizedSQLException e) {
+        if (e.getSQLException() != null && e.getSQLException().getErrorCode() == 3819) return rule(String.valueOf(e.getSQLException().getMessage()));
+        return other(e);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     ResponseEntity<Map<String, Object>> integrity(DataIntegrityViolationException e) {
-        String m = String.valueOf(e.getMostSpecificCause().getMessage());
+        return rule(String.valueOf(e.getMostSpecificCause().getMessage()));
+    }
+
+    private ResponseEntity<Map<String, Object>> rule(String m) {
         Matcher d = DUP_KEY.matcher(m);
         if (m.contains("Duplicate entry") && d.find()) {
             return body(HttpStatus.CONFLICT, MESSAGES.getOrDefault(d.group(1), "This record already exists."));
