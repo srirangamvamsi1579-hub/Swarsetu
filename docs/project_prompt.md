@@ -68,6 +68,15 @@ docs/data_model.md, docs/project_prompt.md (this prompt), a shareable link, and 
 summary of what changed, what is pending and what is simulated. Commit to GitHub only
 when the push has succeeded.
 
-PENDING: real SMS/email sending, server-side enforcement of college separation and
-permissions, payment gateway or bank statement matching, importing classes and events,
-Android/iOS packaging.
+SERVER (v10, in server/): Java 21 + Spring Boot 3 + MySQL 8 (Flyway), JDBC (JdbcClient),
+Spring Security with JWT access tokens (15 min) and rotating hashed refresh tokens, BCrypt.
+Every college-owned table is keyed (college_id, id) with composite foreign keys; college_id
+always comes from the signed-in user's database row. Email over SMTP and SMS via MSG91/Twilio
+through the outbox table (SIMULATED = logged when not configured). Docker Compose (MySQL 8.4,
+app, Caddy HTTPS, nightly backup), GitHub Actions CI. Any new table: Flyway migration Vn__,
+composite FK to its parents, endpoint with perms.need(), test in ApiFlowTest, check in
+db-tests/integrity.sh. Gates for the server: mvn verify, db-tests/integrity.sh.
+
+PENDING: connect the web screens to the API, Phase 2 tables (classes, timetable edits, academic
+structure, events), server-side import/export, real email/SMS account tests, payment
+gateway or bank statement matching, Android/iOS packaging.

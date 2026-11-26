@@ -1,0 +1,55 @@
+# Production stack: MySQL 8.4 + Swarsetu + Caddy (automatic HTTPS from Let's Encrypt).
+# 1) cp .env.example .env and fill it in   2) point your domain's DNS to this server   3) docker compose up -d
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: swarsetu
+      MYSQL_USER: swarsetu
+      MYSQL_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?set DB_ROOT_PASSWORD in .env}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci", "--default-time-zone=+00:00"]
+    volumes: [dbdata:/var/lib/mysql]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      retries: 10
+    # No "ports:" — the database is not reachable from the internet.
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+    env_file: .env
+    environment:
+      DB_URL: jdbc:mysql://db:3306/swarsetu?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      DB_USER: swarsetu
+      APP_URL: https://${DOMAIN}
+      CORS_ORIGINS: https://${DOMAIN}
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on: [app]
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddydata:/data
+
+  backup:
+    image: mysql:8.4
+    restart: unless-stopped
+    depends_on: [db]
+    environment:
+      MYSQL_PWD: ${DB_ROOT_PASSWORD}
+    volumes: [./backups:/backups]
+    # Nightly compressed dump, keeps 14 days. Copy ./backups off the server too.
+    entrypoint: ["sh", "-c", "while true; do mysqldump -h db -u root --single-transaction --routines swarsetu | gzip > /backups/swarsetu-$$(date +%F).sql.gz; find /backups -name '*.sql.gz' -mtime +14 -delete; sleep 86400; done"]
+
+volumes:
+  dbdata:
+  caddydata:

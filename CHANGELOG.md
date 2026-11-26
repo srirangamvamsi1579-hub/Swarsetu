@@ -1,5 +1,41 @@
 # Changelog
 
+## v10 (in progress) — Java + MySQL server — 2026-11-25
+
+A production server in `server/`. The claude.ai test link (v9) keeps working unchanged.
+
+- **MySQL 8 schema** (Flyway `V1__core_schema.sql`): 22 tables.
+  - Every college-owned table is keyed `(college_id, id)`, and links use composite foreign
+    keys, so the database refuses data that crosses colleges.
+  - Unique keys: college name, username/email/mobile across all colleges, and active
+    payment reference.
+  - Check constraints: mobile number, month format, amounts, calendar dates, https links,
+    and that an uploaded scanner pays the saved UPI ID.
+  - Dues and fee status are computed columns.
+  - `db-tests/integrity.sh`: 21 checks, all passing.
+- **Spring Boot 3 API (Java 21), Phase 1:**
+  - registration of a new college or a join request, with email and SMS codes
+  - sign-in by username, email or mobile; JWT and rotating refresh tokens; lockout
+  - forgot password, profile and contact change, user approval, roles and permissions
+  - courses, students and batches (online group capacity, automatic batches)
+  - attendance with audit and monthly summary; absence notices
+  - fees with multi-month entry; claims with staff verification
+  - payment details with password re-entry, audit, alerts and server-side QR decoding
+  - college calendar; inbox; holiday reminders by inbox and email
+  - data health, audit log, dashboard
+- **Real email (SMTP) and SMS (MSG91 / Twilio)** through a retrying outbox. Without
+  settings it stays SIMULATED (written to the log).
+- **Deployment:** Dockerfile; Docker Compose with MySQL 8.4, Caddy (automatic HTTPS) and
+  nightly backups; `.env.example`; GitHub Actions CI with a MySQL service.
+- **Verified in GitHub Actions:**
+  - the server compiles
+  - 11 of 11 end-to-end API tests pass against MySQL 8.4
+  - the Docker image builds
+  - The first CI run caught one bug: MySQL check-constraint errors returned 500. They now
+    return 400 with a clear message.
+- **Not yet done:** the web screens are not yet connected to the API, and the Phase 2
+  tables are not built.
+
 ## v9 — 2026-11-25
 
 ### College code as the key; only your college's data is loaded
